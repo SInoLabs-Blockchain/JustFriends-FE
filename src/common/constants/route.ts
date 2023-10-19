@@ -1,5 +1,5 @@
-const HOME = '/';
-const PROFILE = '/profile';
+const HOME = "/";
+const PROFILE = "/profile";
 
 export const ROUTE = {
   HOME,
