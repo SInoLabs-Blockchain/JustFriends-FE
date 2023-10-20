@@ -1,6 +1,6 @@
-import Home from 'src/presentation/features/home';
-import Profile from 'src/presentation/features/profile';
-import { ROUTE } from 'src/common/constants/route';
+import Home from "src/presentation/features/home";
+import Profile from "src/presentation/features/profile";
+import { ROUTE } from "src/common/constants/route";
 
 export const appRoutes = [
   {
