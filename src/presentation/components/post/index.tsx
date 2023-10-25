@@ -18,12 +18,12 @@ import MoreIcon from "src/presentation/assets/icons/more.svg";
 
 interface PropTypes {
   data: any;
-  width: string;
+  width?: string;
 }
 
 const Post = ({ data, width }: PropTypes) => {
   return (
-    <Card sx={{ width: width || "50%" }}>
+    <Card sx={{ width, height: "fit-content" }}>
       <PostContainer>
         <CardHeader
           avatar={
@@ -66,11 +66,10 @@ const Post = ({ data, width }: PropTypes) => {
                 {data.holder} holders
               </Typography>
               <CustomButton
+                title="Buy Share"
                 variant={"contained"}
                 startIcon={<img src={ShareIcon} alt="share" />}
-              >
-                Buy Share
-              </CustomButton>
+              />
             </Box>
           </Box>
         </CardActions>

@@ -3,9 +3,11 @@ import COLOR from "src/presentation/theme/Color";
 
 const PostContainer = styled("div")(() => ({
   padding: "0 30px",
+  height: "fit-content",
+
   ".MuiPaper-root": {
-    borderRadius: '16px',
-    boxShadow: "0px 5px 40px -8px rgba(86, 107, 135, 0.08)",
+    borderRadius: "16px",
+    height: "fit-content",
   },
 
   ".MuiAvatar-root": {
