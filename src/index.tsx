@@ -9,8 +9,6 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-console.log(process.env.REACT_APP_PROJECT_ID);
-
 root.render(
   <React.StrictMode>
     <App />
