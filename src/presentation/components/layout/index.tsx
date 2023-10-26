@@ -1,5 +1,6 @@
+import Footer from '../footer';
 import Header from '../header';
-import { StyledLayout } from './styles';
+import { StyledContent, StyledLayout } from './styles';
 
 interface IProps {
   children: any;
@@ -11,7 +12,8 @@ const Layout = (props: IProps) => {
   return (
     <StyledLayout>
       <Header />
-      {children}
+      <StyledContent>{children}</StyledContent>
+      <Footer />
     </StyledLayout>
   );
 };

@@ -1,10 +1,9 @@
-import { Web3Button } from "@web3modal/react";
+import { Typography } from '@mui/material';
 
 const Home = () => {
   return (
     <div>
-      <p>Home</p>
-      <Web3Button />
+      <Typography>Home</Typography>
     </div>
   );
 };
