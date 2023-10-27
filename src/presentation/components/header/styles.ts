@@ -21,7 +21,7 @@ const SearchContainer = styled('div')({
 
   input: {
     height: 0,
-    fontFamily: 'Gilroy-Regular',
+    fontFamily: 'Regular',
     fontSize: 14,
   },
 

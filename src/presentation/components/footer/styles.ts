@@ -33,7 +33,7 @@ const SocialSection = styled('div')({
 
 const AddressText = styled(Typography)({
   fontSize: 14,
-  fontFamily: 'Gilroy-Regular',
+  fontFamily: 'Regular',
   lineHeight: '18px',
   color: COLOR.neutral.neutral_4,
 });

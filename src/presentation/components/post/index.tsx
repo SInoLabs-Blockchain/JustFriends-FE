@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Avatar,
   Box,
@@ -8,13 +7,15 @@ import {
   CardHeader,
   IconButton,
   Typography,
-} from "@mui/material";
-import CustomButton from "../button";
-import { PostContainer } from "./styles";
-import UpvoteIcon from "src/presentation/assets/icons/upvote.svg";
-import DownvoteIcon from "src/presentation/assets/icons/downvote.svg";
-import ShareIcon from "src/presentation/assets/icons/share.svg";
-import MoreIcon from "src/presentation/assets/icons/more.svg";
+} from '@mui/material';
+import {
+  DownvoteIcon,
+  MoreIcon,
+  ShareIcon,
+  UpvoteIcon,
+} from 'src/presentation/theme/assets/icons';
+import CustomButton from '../button';
+import { PostContainer } from './styles';
 
 interface PropTypes {
   data: any;
@@ -23,52 +24,52 @@ interface PropTypes {
 
 const Post = ({ data, width }: PropTypes) => {
   return (
-    <Card sx={{ width, height: "fit-content" }}>
+    <Card sx={{ width, height: 'fit-content' }}>
       <PostContainer>
         <CardHeader
           avatar={
             <Avatar>
-              <img src={data.creator.avatar} alt="avatar" />
+              <img src={data.creator.avatar} alt='avatar' />
             </Avatar>
           }
           title={data.creator.name}
-          subheader="September 14, 2016"
+          subheader='September 14, 2016'
           action={
             <IconButton>
-              <img src={MoreIcon} alt="more" />
+              <MoreIcon />
             </IconButton>
           }
         />
         <CardContent>
           <Typography>{data.content}</Typography>
         </CardContent>
-        <Box className="separator">
+        <Box className='separator'>
           <hr />
         </Box>
         <CardActions>
           <Box>
             <IconButton>
-              <img src={UpvoteIcon} alt={"icons"} />
-              <Typography className="post__interactions-votes">
+              <UpvoteIcon />
+              <Typography className='post__interactions-votes'>
                 {data.upvote} upvotes
               </Typography>
             </IconButton>
             <IconButton>
-              <img src={DownvoteIcon} alt={"icons"} />
-              <Typography className="post__interactions-votes">
+              <DownvoteIcon />
+              <Typography className='post__interactions-votes'>
                 {data.downvote} downvotes
               </Typography>
             </IconButton>
           </Box>
           <Box>
             <Box>
-              <Typography className="post__interactions-holders">
+              <Typography className='post__interactions-holders'>
                 {data.holder} holders
               </Typography>
               <CustomButton
-                title="Buy Share"
-                variant={"contained"}
-                startIcon={<img src={ShareIcon} alt="share" />}
+                title='Buy Share'
+                variant={'contained'}
+                startIcon={<ShareIcon />}
               />
             </Box>
           </Box>

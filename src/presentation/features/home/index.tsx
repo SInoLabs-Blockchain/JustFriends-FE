@@ -3,8 +3,13 @@ import Post from 'src/presentation/components/post';
 import PostInput from './PostInput';
 import ProfileCard from './ProfileCard';
 import TopAuthor from './TopAuthor';
+import Filter from './components/Filter';
+import { HomeContainer } from './styles';
+import useHome from './useHome';
 
 const Home = () => {
+  const { checked, setChecked } = useHome();
+
   const data = {
     creator: {
       name: 'Donald Trump',
@@ -17,9 +22,13 @@ const Home = () => {
     downvote: 18,
     holder: 312,
   };
+
   return (
-    <Box display={'flex'} padding={'30px'} justifyContent={'space-between'}>
-      <ProfileCard />
+    <HomeContainer>
+      <Box display={'flex'} flexDirection={'column'} gap={3.75}>
+        <ProfileCard />
+        <Filter checked={checked} setChecked={setChecked} />
+      </Box>
       <Box display={'flex'} flexDirection={'column'} width={'50%'} gap={'24px'}>
         <PostInput />
         <Post data={data} />
@@ -28,7 +37,7 @@ const Home = () => {
         <Post data={data} />
       </Box>
       <TopAuthor />
-    </Box>
+    </HomeContainer>
   );
 };
 
