@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Button } from "@mui/material";
+import COLOR from "src/presentation/theme/Color";
 
 export const CustomizedButton = styled(Button)(() => ({
   padding: "8px 20px",
@@ -11,4 +12,5 @@ export const CustomizedButton = styled(Button)(() => ({
   lineHeight: "18px",
   letterSpacing: 0,
   background: "linear-gradient(95.5deg, #A07AF7 0%, #55A0F0 100.09%)",
+  color: COLOR.white
 }));
