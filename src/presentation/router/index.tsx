@@ -1,6 +1,6 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Layout from '../components/layout';
-import { appRoutes } from './appRoutes';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "../components/layout";
+import { appRoutes } from "./appRoutes";
 
 const AppRouter = () => {
   const privateRoutes = appRoutes.filter((route) => route.isPrivate);

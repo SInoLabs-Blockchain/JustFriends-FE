@@ -7,7 +7,7 @@ const ConnectButton = ({ title, ...props }: any) => {
 
   return (
     <CustomizedButton {...props} onClick={() => open()}>
-      {props.title}
+      {title}
     </CustomizedButton>
   );
 };
