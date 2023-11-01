@@ -1,14 +1,13 @@
 import { Box } from '@mui/material';
+import Menu from 'src/presentation/components/layout/menu';
 import Post from 'src/presentation/components/post';
 import PostInput from './PostInput';
-import ProfileCard from './ProfileCard';
 import TopAuthor from './TopAuthor';
-import Filter from './components/Filter';
 import { HomeContainer } from './styles';
 import useHome from './useHome';
 
 const Home = () => {
-  const { checked, setChecked } = useHome();
+  const {} = useHome();
 
   const data = {
     creator: {
@@ -25,10 +24,7 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <Box display={'flex'} flexDirection={'column'} gap={3.75}>
-        <ProfileCard />
-        <Filter checked={checked} setChecked={setChecked} />
-      </Box>
+      <Menu />
       <Box display={'flex'} flexDirection={'column'} width={'50%'} gap={'24px'}>
         <PostInput />
         <Post data={data} />

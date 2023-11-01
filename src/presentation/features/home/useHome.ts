@@ -1,13 +1,9 @@
-import { useState } from "react";
-
 const useHome = () => {
-    const [checked, setChecked] = useState(false);
+  const copyAddress = async () => {
+    await navigator.clipboard.writeText('This is the text to be');
+  };
 
-    const copyAddress = async () => {
-        await navigator.clipboard.writeText("This is the text to be");
-    };
-
-    return { checked, setChecked, copyAddress };
+  return { copyAddress };
 };
 
 export default useHome;

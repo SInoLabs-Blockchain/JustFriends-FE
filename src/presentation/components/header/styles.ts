@@ -9,6 +9,10 @@ const HeaderContainer = styled('div')({
   alignItems: 'center',
 });
 
+const LogoWrapper = styled('div')({
+  cursor: 'pointer',
+});
+
 const SearchContainer = styled('div')({
   width: 300,
   borderRadius: 10,
@@ -34,4 +38,4 @@ const ButtonContainer = styled('div')({
   marginLeft: 'auto',
 });
 
-export { HeaderContainer, SearchContainer, ButtonContainer };
+export { HeaderContainer, LogoWrapper, SearchContainer, ButtonContainer };

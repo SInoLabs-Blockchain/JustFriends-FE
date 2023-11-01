@@ -15,3 +15,4 @@ export { ReactComponent as TagIcon } from 'src/presentation/theme/assets/icons/t
 export { ReactComponent as WalletIcon } from 'src/presentation/theme/assets/icons/wallet.svg';
 export { ReactComponent as NotepadIcon } from 'src/presentation/theme/assets/icons/menu/notepad-bookmark.svg';
 export { ReactComponent as ChartIcon } from 'src/presentation/theme/assets/icons/menu/chart-line-up.svg';
+export { ReactComponent as CommentIcon } from 'src/presentation/theme/assets/icons/comment.svg';

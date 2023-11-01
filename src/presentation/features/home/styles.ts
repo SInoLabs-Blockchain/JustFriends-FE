@@ -4,7 +4,7 @@ import COLOR from 'src/presentation/theme/Color';
 
 const HomeContainer = styled('div')({
   display: 'flex',
-  gap: 35,
+  justifyContent: 'space-between',
   padding: '30px 30px 200px',
 });
 

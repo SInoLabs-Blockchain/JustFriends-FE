@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Card,
   CardActions,
   CardContent,
   CardHeader,
@@ -9,22 +8,69 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  CommentIcon,
   DownvoteIcon,
   MoreIcon,
   ShareIcon,
   UpvoteIcon,
 } from 'src/presentation/theme/assets/icons';
 import CustomButton from '../button';
-import { PostContainer } from './styles';
+import { PostContainer, PostSection, PriceContainer } from './styles';
 
 interface PropTypes {
   data: any;
-  width?: string;
 }
 
-const Post = ({ data, width }: PropTypes) => {
+const Post = ({ data }: PropTypes) => {
+  const isConnectedWallet = true;
+  const isFreeZone = false;
+
+  const renderRightContent = () => {
+    if (isConnectedWallet) {
+      return (
+        <PriceContainer>
+          <Typography>100 KLAY</Typography>
+        </PriceContainer>
+      );
+    }
+    return (
+      <IconButton>
+        <MoreIcon />
+      </IconButton>
+    );
+  };
+
+  const renderCommentAction = () => {
+    if (isFreeZone)
+      return (
+        <IconButton>
+          <CommentIcon />
+          <Typography className='post__interactions-votes'>
+            {data.downvote} downvotes
+          </Typography>
+        </IconButton>
+      );
+  };
+
+  const renderPaidPostActions = () => {
+    if (!isFreeZone) {
+      return (
+        <Box className='post__interactions-container'>
+          <Typography className='post__interactions-holders'>
+            {data.holder} holders
+          </Typography>
+          <CustomButton
+            title='Buy Share'
+            variant={'contained'}
+            startIcon={<ShareIcon />}
+          />
+        </Box>
+      );
+    }
+  };
+
   return (
-    <Card sx={{ width, height: 'fit-content' }}>
+    <PostSection>
       <PostContainer>
         <CardHeader
           avatar={
@@ -33,15 +79,11 @@ const Post = ({ data, width }: PropTypes) => {
             </Avatar>
           }
           title={data.creator.name}
-          subheader='September 14, 2016'
-          action={
-            <IconButton>
-              <MoreIcon />
-            </IconButton>
-          }
+          subheader='8 hours ago'
+          action={renderRightContent()}
         />
         <CardContent>
-          <Typography>{data.content}</Typography>
+          <Typography className='content'>{data.content}</Typography>
         </CardContent>
         <Box className='separator'>
           <hr />
@@ -60,22 +102,12 @@ const Post = ({ data, width }: PropTypes) => {
                 {data.downvote} downvotes
               </Typography>
             </IconButton>
+            {renderCommentAction()}
           </Box>
-          <Box>
-            <Box>
-              <Typography className='post__interactions-holders'>
-                {data.holder} holders
-              </Typography>
-              <CustomButton
-                title='Buy Share'
-                variant={'contained'}
-                startIcon={<ShareIcon />}
-              />
-            </Box>
-          </Box>
+          {renderPaidPostActions()}
         </CardActions>
       </PostContainer>
-    </Card>
+    </PostSection>
   );
 };
 

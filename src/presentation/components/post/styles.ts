@@ -1,97 +1,132 @@
-import styled from "@emotion/styled";
-import COLOR from "src/presentation/theme/Color";
+import styled from '@emotion/styled';
+import COLOR from 'src/presentation/theme/Color';
 
-const PostContainer = styled("div")(() => ({
-  padding: "0 30px",
-  height: "fit-content",
+const PostSection = styled('div')(() => ({
+  borderRadius: 16,
+  backgroundColor: COLOR.white,
+  boxShadow: '0 5px 40px -8px rgba(86, 107, 135, 0.08)',
+}));
 
-  ".MuiPaper-root": {
-    borderRadius: "16px",
-    height: "fit-content",
+const PostContainer = styled('div')(() => ({
+  padding: '0 30px',
+  height: 'fit-content',
+
+  '.MuiPaper-root': {
+    borderRadius: '16px',
+    height: 'fit-content',
   },
 
-  ".MuiAvatar-root": {
-    width: "44px",
-    height: "44px",
-    borderRadius: "10px",
+  '.MuiAvatar-root': {
+    width: '44px',
+    height: '44px',
+    borderRadius: '10px',
     img: {
-      width: "44px",
-      height: "44px",
+      width: '44px',
+      height: '44px',
     },
   },
 
-  ".MuiCardHeader-root": {
-    padding: "30px 0 12px 0",
+  '.MuiCardHeader-root': {
+    padding: '30px 0 12px 0',
   },
 
-  ".MuiCardContent-root": {
-    padding: "12px 0 16px 0",
+  '.MuiCardContent-root': {
+    padding: '12px 0 16px 0',
   },
 
-  ".MuiCardHeader-content": {
-    ".MuiCardHeader-title": {
+  '.MuiCardHeader-content': {
+    '.MuiCardHeader-title': {
       color: COLOR.neutral.neutral_1,
-      fontSize: "16px",
-      fontWeight: 700,
-      lineHeight: "20px",
-      letterSpacing: "0px",
+      fontSize: 16,
+      fontFamily: 'Bold',
+      lineHeight: '20px',
     },
-    ".MuiCardHeader-subheader": {
-      fontSize: "14px",
-      fontWeight: 400,
-      lineHeight: "18px",
-      letterSpacing: "0px",
+    '.MuiCardHeader-subheader': {
+      fontFamily: 'Regular',
+      lineHeight: '18px',
       color: COLOR.neutral.neutral_2,
+      marginTop: 4,
     },
   },
 
-  ".MuiCardActions-root": {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "14px 0 28px 0",
+  '.content': {
+    fontFamily: 'Gilroy',
+    lineHeight: '24px',
+    fontSize: 14,
+    color: COLOR.neutral.neutral_4,
+  },
+
+  '.MuiCardActions-root': {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '14px 0 28px 0',
     div: {
-      display: "flex",
-      alignItems: "center",
-      gap: "15px",
+      display: 'flex',
+      alignItems: 'center',
+      gap: '15px',
     },
-    ".post__interactions-votes": {
-      fontSize: "14px",
-      fontWeight: 600,
-      lineHeight: "18px",
-      letterSpacing: "0px",
-      color: COLOR.neutral.neutral_2,
+
+    '.post__interactions-container': {
+      gap: 27,
     },
-    ".post__interactions-holders": {
-      fontSize: "14px",
-      fontWeight: 600,
-      lineHeight: "18px",
-      letterSpacing: "0px",
+
+    '.post__interactions-votes': {
+      fontSize: 14,
+      fontFamily: 'Semibold',
+      lineHeight: '18px',
       color: COLOR.neutral.neutral_4,
     },
-    ".MuiButtonBase-root": {
+    '.post__interactions-holders': {
+      fontSize: '14px',
+      fontFamily: 'Semibold',
+      lineHeight: '18px',
+      color: COLOR.neutral.neutral_4,
+    },
+    '.MuiButtonBase-root': {
       borderRadius: 0,
-      display: "flex",
-      gap: "8px",
+      display: 'flex',
+      gap: '8px',
+
+      '&.MuiIconButton-root:hover': {
+        padding: '9px 12px',
+        backgroundColor: COLOR.border,
+        borderRadius: 6,
+      },
     },
   },
 
-  ".MuiCardHeader-action": {
+  '.MuiCardHeader-action': {
     margin: 0,
-    height: "inherit",
-    ".MuiButtonBase-root": {
-      borderRadius: "6px",
+    height: 'inherit',
+    '.MuiButtonBase-root': {
+      borderRadius: '6px',
       padding: 0,
     },
   },
 
-  ".separator": {
+  '.separator': {
     hr: {
       backgroundColor: COLOR.neutral.neutral_3,
-      border: "none",
-      height: "1px",
+      border: 'none',
+      height: '1px',
       margin: 0,
     },
   },
 }));
 
-export { PostContainer };
+const PriceContainer = styled('div')(() => ({
+  backgroundColor: COLOR.white,
+  border: `1px solid ${COLOR.neutral.neutral_3}`,
+  borderRadius: 8,
+  padding: '6px 12px',
+
+  p: {
+    color: COLOR.neutral.neutral_4,
+    fontFamily: 'Semibold',
+    lineHeight: '18px',
+    fontSize: 14,
+    marginTop: 2,
+  },
+}));
+
+export { PostSection, PostContainer, PriceContainer };

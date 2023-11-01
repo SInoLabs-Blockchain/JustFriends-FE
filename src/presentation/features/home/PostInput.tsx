@@ -20,7 +20,10 @@ const PostInput = () => {
           />
           <Typography>What's on your mind?</Typography>
         </Box>
-        <CustomButton title={'Share Post'} />
+        <CustomButton
+          title='Share Post'
+          backgroundColor='linear-gradient(95.5deg, #A07AF7 0%, #55A0F0 100.09%)'
+        />
       </Box>
       <Box className='post__input-extra'>
         <IconButton>

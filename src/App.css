@@ -28,3 +28,12 @@
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'Gilroy';
+  src: local('Gilroy-Medium'),
+    url('./presentation/theme/assets/fonts/Gilroy-Medium.ttf')
+      format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
