@@ -1,39 +1,40 @@
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 /* Fonts */
 @font-face {
-  font-family: 'Semibold';
-  src: local('Gilroy-Semibold'),
-    url('./presentation/theme/assets/fonts/Gilroy-Semibold.ttf')
-      format('truetype');
-  font-weight: 600;
-  font-style: normal;
+    font-family: "Semibold";
+    src: local("Gilroy-Semibold"),
+        url("./presentation/theme/assets/fonts/Gilroy-Semibold.ttf")
+            format("truetype");
+    font-weight: 600;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Bold';
-  src: local('Gilroy-Bold'),
-    url('./presentation/theme/assets/fonts/Gilroy-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
+    font-family: "Bold";
+    src: local("Gilroy-Bold"),
+        url("./presentation/theme/assets/fonts/Gilroy-Bold.ttf")
+            format("truetype");
+    font-weight: bold;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Regular';
-  src: local('Gilroy-Regular'),
-    url('./presentation/theme/assets/fonts/Gilroy-Regular.ttf')
-      format('truetype');
-  font-weight: normal;
-  font-style: normal;
+    font-family: "Regular";
+    src: local("Gilroy-Regular"),
+        url("./presentation/theme/assets/fonts/Gilroy-Regular.ttf")
+            format("truetype");
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gilroy';
-  src: local('Gilroy-Medium'),
-    url('./presentation/theme/assets/fonts/Gilroy-Medium.ttf')
-      format('truetype');
-  font-weight: 500;
-  font-style: normal;
+    font-family: "Gilroy";
+    src: local("Gilroy-Medium"),
+        url("./presentation/theme/assets/fonts/Gilroy-Medium.ttf")
+            format("truetype");
+    font-weight: 500;
+    font-style: normal;
 }
