@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import useHome from "../../useHome";
 import {
@@ -7,25 +7,42 @@ import {
     StyledSelectMenu,
     StyledSelectItem,
     StyledTextArea,
+    StyledBottomActions,
+    StyledButtonShare,
+    StyledBaseFeeContainer,
 } from "./styles";
-import { ArrowDownIcon, CloseIcon } from "src/presentation/theme/assets/icons";
+import {
+    ArrowDownIcon,
+    CloseIcon,
+    PaperClipIcon,
+    PictureIcon,
+    TagUserIcon,
+    TextBoldIcon,
+    TextItalicIcon,
+    TextUnderlineIcon,
+    TextsStrikethroughIcon,
+} from "src/presentation/theme/assets/icons";
 import { POST_OPTIONS } from "src/common/constants";
+import CustomButton from "src/presentation/components/button";
 
 interface IProps {
     open: boolean;
+    onToggleModal: () => void;
 }
 
 const ModalCreatePost = (props: IProps) => {
-    const { open } = props;
+    const { open, onToggleModal } = props;
     const {
         option,
         openOptionSelect,
         textareaValue,
         textareaHeight,
-        handleToggleModal,
+        baseFee,
         onToggleSelect,
         onSelectMenu,
         handleTextareaChange,
+        setBaseFee,
+        handleSharePost,
     } = useHome();
 
     const renderPostOptions = () => (
@@ -50,10 +67,24 @@ const ModalCreatePost = (props: IProps) => {
         </Box>
     );
 
+    const renderBaseFeeInput = () => (
+        <StyledBaseFeeContainer className="flex-center">
+            <Typography className="action__title">Base fee</Typography>
+            <Box className="action__input-container flex-center">
+                <TextField
+                    value={baseFee}
+                    onChange={(e) => setBaseFee(e.target.value)}
+                    placeholder="0"
+                />
+                <Typography className="fee__symbol">KLAY</Typography>
+            </Box>
+        </StyledBaseFeeContainer>
+    );
+
     return (
         <Modal
             open={open}
-            onClose={handleToggleModal}
+            onClose={onToggleModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description">
             <ModalContainer>
@@ -62,7 +93,7 @@ const ModalCreatePost = (props: IProps) => {
                         Create post
                     </Typography>
                     <Box className="modal-header__action">
-                        <CloseIcon />
+                        <CloseIcon onClick={onToggleModal} />
                     </Box>
                 </Box>
                 <Box className="modal-information flex-center">
@@ -84,6 +115,43 @@ const ModalCreatePost = (props: IProps) => {
                     style={{ height: `${textareaHeight}px` }}
                     onChange={handleTextareaChange}
                 />
+                <StyledBottomActions className="flex-center">
+                    <Typography className="action__title">
+                        Add to you post
+                    </Typography>
+                    <Box className="bottom__attachs flex-center">
+                        <Box className="bottom__attach-item">
+                            <TextBoldIcon />
+                        </Box>
+                        <Box className="bottom__attach-item">
+                            <TextItalicIcon />
+                        </Box>
+                        <Box className="bottom__attach-item">
+                            <TextUnderlineIcon />
+                        </Box>
+                        <Box className="bottom__attach-item">
+                            <TextsStrikethroughIcon />
+                        </Box>
+                        <Box className="bottom__attach-item">
+                            <PictureIcon />
+                        </Box>
+                        <Box className="bottom__attach-item">
+                            <PaperClipIcon />
+                        </Box>
+                        <Box className="bottom__attach-item">
+                            <TagUserIcon />
+                        </Box>
+                    </Box>
+                </StyledBottomActions>
+                {option.id === 2 && renderBaseFeeInput()}
+                <StyledButtonShare>
+                    <CustomButton
+                        title="Share"
+                        backgroundColor="linear-gradient(95.5deg, #A07AF7 0%, #55A0F0 100.09%)"
+                        variant={"contained"}
+                        onClick={handleSharePost}
+                    />
+                </StyledButtonShare>
             </ModalContainer>
         </Modal>
     );

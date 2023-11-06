@@ -11,6 +11,7 @@ const useHome = () => {
     const [openOptionSelect, setOpenOptionSelect] = useState(false);
     const [textareaValue, setTextareaValue] = useState("");
     const [textareaHeight, setTextareaHeight] = useState<number>(160);
+    const [baseFee, setBaseFee] = useState<string>("");
 
     const copyAddress = async () => {
         await navigator.clipboard.writeText("This is the text to be");
@@ -26,13 +27,20 @@ const useHome = () => {
 
     const onSelectMenu = (data: OptionState) => {
         setOption(data);
+        setBaseFee("");
         onToggleSelect();
     };
 
     const handleTextareaChange = (event: any) => {
         setTextareaValue(event.target.value);
-        // Adjust the textarea height based on its scrollHeight and the minimum height
-        setTextareaHeight(Math.max(event.target.scrollHeight, 160));
+
+        if (event.target.value)
+            setTextareaHeight(Math.max(event.target.scrollHeight, 160));
+        else setTextareaHeight(0);
+    };
+
+    const handleSharePost = () => {
+        console.log("shares");
     };
 
     return {
@@ -41,11 +49,14 @@ const useHome = () => {
         openOptionSelect,
         textareaValue,
         textareaHeight,
+        baseFee,
         copyAddress,
         onToggleSelect,
         handleToggleModal,
         onSelectMenu,
         handleTextareaChange,
+        setBaseFee,
+        handleSharePost,
     };
 };
 

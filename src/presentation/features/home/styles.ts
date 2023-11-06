@@ -157,10 +157,11 @@ const PostInputContainer = styled("div")(() => ({
         p: {
             fontSize: "16px",
             fontWeight: 700,
-            lineHeight: "20px",
+            lineHeight: "36px",
             letterSpacing: "0px",
             color: COLOR.neutral.neutral_2,
             cursor: "text",
+            width: "60%",
         },
 
         img: {

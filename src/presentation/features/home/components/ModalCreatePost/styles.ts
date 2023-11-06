@@ -3,7 +3,7 @@ import COLOR from "src/presentation/theme/Color";
 
 const ModalContainer = styled("div")({
     position: "absolute",
-    top: "31%",
+    top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "43%",
@@ -64,6 +64,13 @@ const ModalContainer = styled("div")({
             marginBottom: 6,
         },
     },
+
+    ".action__title": {
+        fontFamily: "Semibold",
+        fontSize: 16,
+        color: COLOR.neutral.neutral_1,
+        width: "30%",
+    },
 });
 
 const StyledSelect = styled("div")({
@@ -115,10 +122,11 @@ const StyledTextArea = styled("textarea")({
     marginTop: 30,
     width: "100%",
     maxHeight: "50vh",
+    minHeight: "30vh",
     border: "none",
     outline: "none",
     color: COLOR.neutral.neutral_1,
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: "22px",
     fontFamily: "Gilroy",
     resize: "none",
@@ -131,10 +139,63 @@ const StyledTextArea = styled("textarea")({
     },
 });
 
+const StyledBottomActions = styled("div")({
+    marginTop: 30,
+    paddingTop: 30,
+    borderTop: `1px solid ${COLOR.neutral.neutral_3}`,
+
+    ".bottom__attachs": {
+        gap: 15,
+
+        ".bottom__attach-item": {
+            width: 24,
+            height: 24,
+            cursor: "pointer",
+        },
+    },
+});
+
+const StyledButtonShare = styled("div")({
+    marginTop: 30,
+
+    button: {
+        width: "100%",
+        padding: "11px 0",
+        borderRadius: "10px !important",
+        fontSize: 16,
+    },
+});
+
+const StyledBaseFeeContainer = styled("div")({
+    marginTop: 20,
+
+    ".action__input-container": {
+        gap: 10,
+
+        input: {
+            padding: "8px 16px",
+            outline: "none",
+        },
+
+        fieldset: {
+            borderColor: `${COLOR.neutral.neutral_3} !important`,
+        },
+
+        ".fee__symbol": {
+            color: COLOR.neutral.neutral_4,
+            fontSize: 14,
+            fontFamily: "Semibold",
+        },
+    },
+});
+
 export {
     ModalContainer,
     StyledSelect,
     StyledSelectMenu,
     StyledSelectItem,
     StyledTextArea,
+    StyledBottomActions,
+    StyledButtonShare,
+    StyledBaseFeeContainer,
 };

@@ -37,7 +37,10 @@ const Home = () => {
                 <Post data={data} />
             </Box>
             <TopAuthor />
-            <ModalCreatePost open={openModal} />
+            <ModalCreatePost
+                open={openModal}
+                onToggleModal={handleToggleModal}
+            />
         </HomeContainer>
     );
 };

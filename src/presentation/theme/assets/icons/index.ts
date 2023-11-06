@@ -18,3 +18,10 @@ export { ReactComponent as ChartIcon } from "src/presentation/theme/assets/icons
 export { ReactComponent as CommentIcon } from "src/presentation/theme/assets/icons/comment.svg";
 export { ReactComponent as CloseIcon } from "src/presentation/theme/assets/icons/close.svg";
 export { ReactComponent as ArrowDownIcon } from "src/presentation/theme/assets/icons/arrow-down.svg";
+export { ReactComponent as TextBoldIcon } from "src/presentation/theme/assets/icons/menu/text-bold.svg";
+export { ReactComponent as TextItalicIcon } from "src/presentation/theme/assets/icons/menu/text-italic.svg";
+export { ReactComponent as TextUnderlineIcon } from "src/presentation/theme/assets/icons/menu/text-underline.svg";
+export { ReactComponent as TextsStrikethroughIcon } from "src/presentation/theme/assets/icons/menu/text-strikethrough.svg";
+export { ReactComponent as PictureIcon } from "src/presentation/theme/assets/icons/menu/picture.svg";
+export { ReactComponent as PaperClipIcon } from "src/presentation/theme/assets/icons/menu/paper-clip.svg";
+export { ReactComponent as TagUserIcon } from "src/presentation/theme/assets/icons/menu/tag-user.svg";
