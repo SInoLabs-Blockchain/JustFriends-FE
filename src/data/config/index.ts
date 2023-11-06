@@ -3,31 +3,31 @@ export interface AppConfig {
 }
 
 const Environment = {
-  Integration: 'Integration',
-  Staging: 'Staging',
-  Production: 'Production',
-  Auto: 'None',
+  Integration: "Integration",
+  Staging: "Staging",
+  Production: "Production",
+  Auto: "None",
 };
 
-const environment = Environment.Auto;
+const environment = Environment.Integration;
 
 const getConfig = (env: string): AppConfig => {
   switch (env) {
     case Environment.Integration:
       return {
-        endpoint: '',
+        endpoint: process.env.REACT_APP_BE_ENDPOINT || "",
       };
     case Environment.Staging:
       return {
-        endpoint: '',
+        endpoint: "",
       };
     case Environment.Production:
       return {
-        endpoint: '',
+        endpoint: "",
       };
     default:
       return {
-        endpoint: '',
+        endpoint: "",
       };
   }
 };

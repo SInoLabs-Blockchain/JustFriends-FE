@@ -1,6 +1,8 @@
 // Define functions/classes that perform common or generic operations that are not tied to any specific part of the program
 // Example: String manipulation functions, math libraries
 
+import BigNumber from "bignumber.js";
+
 const getMonthInText = (month: number) => {
   switch (month) {
     case 0:
@@ -32,13 +34,14 @@ const getMonthInText = (month: number) => {
   }
 };
 
-const shortenAddress = (address: string) => {
-  const prefix = '0x';
+const shortenAddress = (address: string | null) => {
+  if (!address) return "";
+  const prefix = "0x";
   const [, content] = address.split(prefix);
 
   return `${prefix}${content.substring(0, 7)}...${content.substring(
-    content.length - 8,
-    content.length - 1
+    content.length - 7,
+    content.length
   )}`;
 };
 
@@ -50,4 +53,9 @@ const formatDate = (timestamp: number) => {
   return `${month} ${date} ${year}`;
 };
 
-export { shortenAddress, formatDate };
+const formatBalance = (balance: string) => {
+  if (!balance) return "0";
+  return new BigNumber(balance).toFixed(6);
+};
+
+export { shortenAddress, formatDate, formatBalance };
