@@ -6,16 +6,16 @@ import {
   CardHeader,
   IconButton,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
   CommentIcon,
   DownvoteIcon,
   MoreIcon,
   ShareIcon,
   UpvoteIcon,
-} from 'src/presentation/theme/assets/icons';
-import CustomButton from '../button';
-import { PostContainer, PostSection, PriceContainer } from './styles';
+} from "src/presentation/theme/assets/icons";
+import CustomButton from "../button";
+import { PostContainer, PostSection, PriceContainer } from "./styles";
 
 interface PropTypes {
   data: any;
@@ -45,7 +45,7 @@ const Post = ({ data }: PropTypes) => {
       return (
         <IconButton>
           <CommentIcon />
-          <Typography className='post__interactions-votes'>
+          <Typography className="post__interactions-votes">
             {data.downvote} downvotes
           </Typography>
         </IconButton>
@@ -55,13 +55,13 @@ const Post = ({ data }: PropTypes) => {
   const renderPaidPostActions = () => {
     if (!isFreeZone) {
       return (
-        <Box className='post__interactions-container'>
-          <Typography className='post__interactions-holders'>
+        <Box className="post__interactions-container">
+          <Typography className="post__interactions-holders">
             {data.holder} holders
           </Typography>
           <CustomButton
-            title='Buy Share'
-            variant={'contained'}
+            title="Buy Share"
+            variant={"contained"}
             startIcon={<ShareIcon />}
           />
         </Box>
@@ -75,30 +75,30 @@ const Post = ({ data }: PropTypes) => {
         <CardHeader
           avatar={
             <Avatar>
-              <img src={data.creator.avatar} alt='avatar' />
+              <img src={data.creator.avatar} alt="avatar" />
             </Avatar>
           }
           title={data.creator.name}
-          subheader='8 hours ago'
+          subheader="8 hours ago"
           action={renderRightContent()}
         />
         <CardContent>
-          <Typography className='content'>{data.content}</Typography>
+          <Typography className="content">{data.content}</Typography>
         </CardContent>
-        <Box className='separator'>
+        <Box className="separator">
           <hr />
         </Box>
         <CardActions>
           <Box>
             <IconButton>
               <UpvoteIcon />
-              <Typography className='post__interactions-votes'>
+              <Typography className="post__interactions-votes">
                 {data.upvote} upvotes
               </Typography>
             </IconButton>
             <IconButton>
               <DownvoteIcon />
-              <Typography className='post__interactions-votes'>
+              <Typography className="post__interactions-votes">
                 {data.downvote} downvotes
               </Typography>
             </IconButton>

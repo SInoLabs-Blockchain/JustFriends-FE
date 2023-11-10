@@ -131,8 +131,6 @@ export class CustomW3mConnector extends Connector<
 
   async connect({ chainId, pairingTopic }: ConnectConfig = {}) {
     try {
-      console.log({ chainId, pairingTopic });
-
       let targetChainId = chainId;
       if (!targetChainId) {
         const store = this.storage?.getItem<StorageStoreData>(STORE_KEY);

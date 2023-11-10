@@ -1,129 +1,129 @@
-import styled from '@emotion/styled';
-import COLOR from 'src/presentation/theme/Color';
+import styled from "@emotion/styled";
+import COLOR from "src/presentation/theme/Color";
 
-const PostSection = styled('div')(() => ({
+const PostSection = styled("div")(() => ({
   borderRadius: 16,
   backgroundColor: COLOR.white,
-  boxShadow: '0 5px 40px -8px rgba(86, 107, 135, 0.08)',
+  boxShadow: "0 5px 40px -8px rgba(86, 107, 135, 0.08)",
 }));
 
-const PostContainer = styled('div')(() => ({
-  padding: '0 30px',
-  height: 'fit-content',
+const PostContainer = styled("div")(() => ({
+  padding: "0 30px",
+  height: "fit-content",
 
-  '.MuiPaper-root': {
-    borderRadius: '16px',
-    height: 'fit-content',
+  ".MuiPaper-root": {
+    borderRadius: "16px",
+    height: "fit-content",
   },
 
-  '.MuiAvatar-root': {
-    width: '44px',
-    height: '44px',
-    borderRadius: '10px',
+  ".MuiAvatar-root": {
+    width: "44px",
+    height: "44px",
+    borderRadius: "10px",
     img: {
-      width: '44px',
-      height: '44px',
+      width: "44px",
+      height: "44px",
     },
   },
 
-  '.MuiCardHeader-root': {
-    padding: '30px 0 12px 0',
+  ".MuiCardHeader-root": {
+    padding: "30px 0 12px 0",
   },
 
-  '.MuiCardContent-root': {
-    padding: '12px 0 16px 0',
+  ".MuiCardContent-root": {
+    padding: "12px 0 16px 0",
   },
 
-  '.MuiCardHeader-content': {
-    '.MuiCardHeader-title': {
+  ".MuiCardHeader-content": {
+    ".MuiCardHeader-title": {
       color: COLOR.neutral.neutral_1,
       fontSize: 16,
-      fontFamily: 'Bold',
-      lineHeight: '20px',
+      fontFamily: "Bold",
+      lineHeight: "20px",
     },
-    '.MuiCardHeader-subheader': {
-      fontFamily: 'Regular',
-      lineHeight: '18px',
+    ".MuiCardHeader-subheader": {
+      fontFamily: "Regular",
+      lineHeight: "18px",
       color: COLOR.neutral.neutral_2,
       marginTop: 4,
     },
   },
 
-  '.content': {
-    fontFamily: 'Gilroy',
-    lineHeight: '24px',
+  ".content": {
+    fontFamily: "Gilroy",
+    lineHeight: "24px",
     fontSize: 14,
     color: COLOR.neutral.neutral_4,
   },
 
-  '.MuiCardActions-root': {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '14px 0 28px 0',
+  ".MuiCardActions-root": {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "14px 0 28px 0",
     div: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '15px',
+      display: "flex",
+      alignItems: "center",
+      gap: "15px",
     },
 
-    '.post__interactions-container': {
+    ".post__interactions-container": {
       gap: 27,
     },
 
-    '.post__interactions-votes': {
+    ".post__interactions-votes": {
       fontSize: 14,
-      fontFamily: 'Semibold',
-      lineHeight: '18px',
+      fontFamily: "Semibold",
+      lineHeight: "18px",
       color: COLOR.neutral.neutral_4,
     },
-    '.post__interactions-holders': {
-      fontSize: '14px',
-      fontFamily: 'Semibold',
-      lineHeight: '18px',
+    ".post__interactions-holders": {
+      fontSize: "14px",
+      fontFamily: "Semibold",
+      lineHeight: "18px",
       color: COLOR.neutral.neutral_4,
     },
-    '.MuiButtonBase-root': {
+    ".MuiButtonBase-root": {
       borderRadius: 0,
-      display: 'flex',
-      gap: '8px',
+      display: "flex",
+      gap: "8px",
+      padding: "9px 12px",
 
-      '&.MuiIconButton-root:hover': {
-        padding: '9px 12px',
+      "&.MuiIconButton-root:hover": {
         backgroundColor: COLOR.border,
         borderRadius: 6,
       },
     },
   },
 
-  '.MuiCardHeader-action': {
+  ".MuiCardHeader-action": {
     margin: 0,
-    height: 'inherit',
-    '.MuiButtonBase-root': {
-      borderRadius: '6px',
+    height: "inherit",
+    ".MuiButtonBase-root": {
+      borderRadius: "6px",
       padding: 0,
     },
   },
 
-  '.separator': {
+  ".separator": {
     hr: {
       backgroundColor: COLOR.neutral.neutral_3,
-      border: 'none',
-      height: '1px',
+      border: "none",
+      height: "1px",
       margin: 0,
     },
   },
 }));
 
-const PriceContainer = styled('div')(() => ({
+const PriceContainer = styled("div")(() => ({
   backgroundColor: COLOR.white,
   border: `1px solid ${COLOR.neutral.neutral_3}`,
   borderRadius: 8,
-  padding: '6px 12px',
+  padding: "6px 12px",
 
   p: {
     color: COLOR.neutral.neutral_4,
-    fontFamily: 'Semibold',
-    lineHeight: '18px',
+    fontFamily: "Semibold",
+    lineHeight: "18px",
     fontSize: 14,
     marginTop: 2,
   },

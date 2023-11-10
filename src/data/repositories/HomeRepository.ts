@@ -1,7 +1,7 @@
-import { HomeUseCase } from 'src/domain/useCases/HomeUseCase';
-import { Post } from 'src/domain/models/home/Post';
-import APIGateWay from '../gateway/APIGateway';
-import HomeResource from '../gateway/resource/HomeResource';
+import { HomeUseCase } from "src/domain/useCases/HomeUseCase";
+import { Post } from "src/domain/models/home/Post";
+import APIGateWay from "../gateway/APIGateway";
+import HomeResource from "../gateway/resource/HomeResource";
 
 export class HomeRepository implements HomeUseCase {
   static create(): HomeUseCase {
@@ -10,6 +10,6 @@ export class HomeRepository implements HomeUseCase {
 
   async getPosts(): Promise<Post[]> {
     let api = new APIGateWay();
-    return api.get(HomeResource.GetPosts());
+    return api.get(HomeResource.POST_ROUTES.DEFAULT);
   }
 }

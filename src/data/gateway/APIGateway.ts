@@ -3,9 +3,9 @@ import Axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-} from 'axios';
-import { AppConfig, getAppConfig } from '../config';
-import { NetError } from 'src/domain/models/NetError';
+} from "axios";
+import { AppConfig, getAppConfig } from "../config";
+import { NetError } from "src/domain/models/NetError";
 
 export default class APIGateWay {
   private _timeOut = 60 * 1000;
@@ -16,7 +16,9 @@ export default class APIGateWay {
     this._apiConfig = getAppConfig();
 
     const defaultHeaderOptions = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "http://localhost:3000",
+      "Access-Control-Allow-Credentials": "true",
     };
 
     let config: AxiosRequestConfig = {
@@ -46,8 +48,8 @@ export default class APIGateWay {
           // httpMetric.putAttribute('userId', '12345678');
 
           httpMetric.setHttpResponseCode(response.status);
-          httpMetric.setResponseContentType(response.headers['content-type']);
-          httpMetric.setResponsePayloadSize(response.headers['content-length']);
+          httpMetric.setResponseContentType(response.headers["content-type"]);
+          httpMetric.setResponsePayloadSize(response.headers["content-length"]);
 
           await httpMetric.stop();
         } finally {
@@ -60,7 +62,7 @@ export default class APIGateWay {
 
           httpMetric.setHttpResponseCode(error.response.status);
           httpMetric.setResponseContentType(
-            error.response.headers['content-type']
+            error.response.headers["content-type"]
           );
           await httpMetric.stop();
         } finally {
@@ -82,15 +84,17 @@ export default class APIGateWay {
       return data;
     }
 
-    let error: NetError = { status: status, message: '' };
+    let error: NetError = { status: status, message: "" };
     return Promise.reject(error);
   };
 
   private _handleError = (axiosError: AxiosError) => {
+    console.log({ axiosError });
+
     let error: NetError = {
       status: axiosError.response?.status || 200,
       // @ts-ignore
-      message: axiosError.response?.data?.message || '',
+      message: axiosError.response?.data?.message || "",
       // @ts-ignore
       code: axiosError.response?.data?.code || null,
     };
@@ -99,7 +103,7 @@ export default class APIGateWay {
   };
 
   get = (path: string) => {
-    this._interceptRequest('GET', path);
+    this._interceptRequest("GET", path);
     return this._axios
       .get(this._makeUrl(path))
       .then(this._handleSuccess)
@@ -107,7 +111,7 @@ export default class APIGateWay {
   };
 
   post = (path: string, body?: any) => {
-    this._interceptRequest('POST', path, body);
+    this._interceptRequest("POST", path, body);
     return this._axios
       .post(this._makeUrl(path), body)
       .then(this._handleSuccess)
@@ -115,7 +119,7 @@ export default class APIGateWay {
   };
 
   put = (path: string, body?: any) => {
-    this._interceptRequest('PUT', path, body);
+    this._interceptRequest("PUT", path, body);
     return this._axios
       .put(this._makeUrl(path), body)
       .then(this._handleSuccess)
@@ -123,7 +127,7 @@ export default class APIGateWay {
   };
 
   delete = (path: string) => {
-    this._interceptRequest('DELETE', path);
+    this._interceptRequest("DELETE", path);
     return this._axios
       .delete(this._makeUrl(path))
       .then(this._handleSuccess)
@@ -132,7 +136,7 @@ export default class APIGateWay {
 
   private _interceptRequest(method: string, path: string, data?: any) {
     console.log(
-      'Request ' + method + ': ' + this._apiConfig.endpoint + '/' + path
+      "Request " + method + ": " + this._apiConfig.endpoint + "/" + path
     );
     if (data) {
       let requestString = JSON.stringify(data, null, 2);
@@ -142,7 +146,7 @@ export default class APIGateWay {
 
   private _interceptResponseSuccess(response: AxiosResponse) {
     console.log(
-      'Response Success ' + response.config.method + ': ' + response.config.url
+      "Response Success " + response.config.method + ": " + response.config.url
     );
     if (response.data) {
       console.log(response.data);
