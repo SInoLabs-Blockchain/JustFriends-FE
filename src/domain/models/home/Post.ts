@@ -1,6 +1,7 @@
 export interface Post {
-  user: string;
-  value: string;
-  price: string;
-  buyTime: string;
+  userId: number;
+  content: string;
+  contentHash?: string;
+  type: number;
+  preview?: string;
 }

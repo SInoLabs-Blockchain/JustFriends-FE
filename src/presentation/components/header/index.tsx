@@ -17,6 +17,8 @@ import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { useBalance } from "wagmi";
 import { formatBalance } from "src/common/utils";
 import { setAuth } from "src/data/redux/auth/AuthReducer";
+import { writeContract } from "@wagmi/core";
+import JustFriendsABI from "src/common/abis/JustFriends.json";
 
 const Header = () => {
   const { address, content, setContent, onSearch, navigateToHome } =
@@ -49,6 +51,11 @@ const Header = () => {
         const res = await authRepository.login(account, signature);
         dispatch(setAuth(res.accessToken));
         localStorage.setItem("accessToken", res.accessToken);
+        await writeContract({
+          address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+          abi: JustFriendsABI,
+          functionName: "register",
+        });
       } catch (error) {
         console.log({ error });
         // TODO: Handle login BE failed

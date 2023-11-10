@@ -1,5 +1,5 @@
 const POST_ROUTES = {
-  DEFAULT: "posts",
+  DEFAULT: "post",
   OWNED: "posts/owned",
   TRENDING: "posts/trending",
   NEW: "posts/new",
