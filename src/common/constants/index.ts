@@ -2,14 +2,19 @@
 const BORDER_RADIUS = 16;
 
 const POST_OPTIONS = [
-    {
-        id: 1,
-        title: "Post for free",
-    },
-    {
-        id: 2,
-        title: "Post for paiz-zone",
-    },
+  {
+    id: 1,
+    title: "Post for free",
+    value: "free",
+  },
+  {
+    id: 0,
+    title: "Post for paid-zone",
+    value: "paid",
+  },
 ];
 
-export { BORDER_RADIUS, POST_OPTIONS };
+const FREE_POSTS = 'free'
+const PAID_POSTS = 'paid'
+
+export { BORDER_RADIUS, POST_OPTIONS, FREE_POSTS, PAID_POSTS };

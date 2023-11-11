@@ -24,6 +24,7 @@ import {
 } from "src/presentation/theme/assets/icons";
 import { POST_OPTIONS } from "src/common/constants";
 import CustomButton from "src/presentation/components/button";
+import COLOR from "src/presentation/theme/Color";
 
 interface IProps {
     open: boolean;
@@ -48,9 +49,7 @@ const ModalCreatePost = (props: IProps) => {
     const renderPostOptions = () => (
         <Box className="relative">
             <StyledSelect className="flex-center" onClick={onToggleSelect}>
-                <Typography className="post-option__name">
-                    {option.title}
-                </Typography>
+                <Typography className="post-option__name">{option.title}</Typography>
                 <ArrowDownIcon />
             </StyledSelect>
             {openOptionSelect && (
@@ -86,12 +85,12 @@ const ModalCreatePost = (props: IProps) => {
             open={open}
             onClose={onToggleModal}
             aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description">
+            aria-describedby="modal-modal-description"
+            style={{ zIndex: 10 }}
+        >
             <ModalContainer>
                 <Box className="modal-header flex-center">
-                    <Typography className="modal-header__title">
-                        Create post
-                    </Typography>
+                    <Typography className="modal-header__title">Create post</Typography>
                     <Box className="modal-header__action">
                         <CloseIcon onClick={onToggleModal} />
                     </Box>
@@ -103,9 +102,7 @@ const ModalCreatePost = (props: IProps) => {
                         className="modal-information__avatar"
                     />
                     <Box>
-                        <Typography className="modal-information__name">
-                            Phong
-                        </Typography>
+                        <Typography className="modal-information__name">Phong</Typography>
                         {renderPostOptions()}
                     </Box>
                 </Box>
@@ -116,9 +113,7 @@ const ModalCreatePost = (props: IProps) => {
                     onChange={handleTextareaChange}
                 />
                 <StyledBottomActions className="flex-center">
-                    <Typography className="action__title">
-                        Add to you post
-                    </Typography>
+                    <Typography className="action__title">Add to you post</Typography>
                     <Box className="bottom__attachs flex-center">
                         <Box className="bottom__attach-item">
                             <TextBoldIcon />
@@ -147,7 +142,7 @@ const ModalCreatePost = (props: IProps) => {
                 <StyledButtonShare>
                     <CustomButton
                         title="Share"
-                        backgroundColor="linear-gradient(95.5deg, #A07AF7 0%, #55A0F0 100.09%)"
+                        backgroundColor={COLOR.linear}
                         variant={"contained"}
                         onClick={handleSharePost}
                     />

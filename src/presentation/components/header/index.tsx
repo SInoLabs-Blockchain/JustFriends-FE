@@ -1,4 +1,4 @@
-import { Box, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography, useMediaQuery } from "@mui/material";
 import { Logo, SearchIcon } from "src/presentation/theme/assets/icons";
 import {
   ButtonContainer,
@@ -10,13 +10,15 @@ import useHeader from "./useHeader";
 import ConnectButton from "../button/ConnectButton";
 import { useLocation } from "react-router-dom";
 import backArrow from "src/presentation/theme/assets/icons/back.svg";
-import { useWeb3ModalEvents } from "@web3modal/react";
+import { useWeb3Modal, useWeb3ModalEvents } from "@web3modal/react";
 import { AuthRepository } from "src/data/repositories/AuthRepository";
 import { getWalletClient } from "@wagmi/core";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { useBalance } from "wagmi";
 import { formatBalance } from "src/common/utils";
 import { setAuth } from "src/data/redux/auth/AuthReducer";
+import { writeContract } from "@wagmi/core";
+import JustFriendsABI from "src/common/abis/JustFriends.json";
 
 const Header = () => {
   const { address, content, setContent, onSearch, navigateToHome } =
@@ -31,6 +33,8 @@ const Header = () => {
     watch: true,
   });
   const dispatch = useAppDispatch();
+  const matches = useMediaQuery('(max-width: 768px)');
+  const { open } = useWeb3Modal();
 
   useWeb3ModalEvents(async (event) => {
     if (event.name === "ACCOUNT_CONNECTED") {
@@ -49,6 +53,11 @@ const Header = () => {
         const res = await authRepository.login(account, signature);
         dispatch(setAuth(res.accessToken));
         localStorage.setItem("accessToken", res.accessToken);
+        await writeContract({
+          address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+          abi: JustFriendsABI,
+          functionName: "register",
+        });
       } catch (error) {
         console.log({ error });
         // TODO: Handle login BE failed
@@ -96,7 +105,18 @@ const Header = () => {
             />
           </>
         ) : (
-          <ConnectButton address={address} title={"Connect Wallet"} />
+          matches ? (
+            <Button onClick={open}>
+              <img
+                src={
+                  "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
+                }
+                alt="avatar"
+              />
+            </Button>
+          ) : (
+            <ConnectButton address={address} openModal={open} title={"Connect Wallet"} />
+          )
         )}
       </ButtonContainer>
     </HeaderContainer>

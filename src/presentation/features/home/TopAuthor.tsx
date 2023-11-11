@@ -1,6 +1,6 @@
 import { Box, IconButton, Typography } from '@mui/material';
 import { MoreIcon } from 'src/presentation/theme/assets/icons';
-import { TopAuthorHeaderContainer, TopAuthorListContainer } from './styles';
+import { TopAuthorContainer, TopAuthorHeaderContainer, TopAuthorListContainer } from './styles';
 
 const TopAuthor = () => {
   const authors = [
@@ -66,14 +66,7 @@ const TopAuthor = () => {
     },
   ];
   return (
-    <Box
-      sx={{
-        width: '25%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-      }}
-    >
+    <TopAuthorContainer>
       <TopAuthorHeaderContainer>
         <Typography className='author__list-label'>TOP AUTHOR</Typography>
         <Typography className='author__list-pagination'>10</Typography>
@@ -104,7 +97,7 @@ const TopAuthor = () => {
           </Box>
         ))}
       </TopAuthorListContainer>
-    </Box>
+    </TopAuthorContainer>
   );
 };
 

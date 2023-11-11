@@ -1,9 +1,9 @@
 const POST_ROUTES = {
-  DEFAULT: "posts",
+  DEFAULT: "post",
   OWNED: "posts/owned",
   TRENDING: "posts/trending",
   NEW: "posts/new",
-  FREE_POSTS: "posts/free",
+  LIST_OF_POSTS: "posts",
 };
 
 export default {

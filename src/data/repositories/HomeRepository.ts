@@ -8,8 +8,30 @@ export class HomeRepository implements HomeUseCase {
     return new HomeRepository();
   }
 
-  async getPosts(): Promise<Post[]> {
+  async getPosts({
+    type,
+    page,
+    limit,
+  }: any): Promise<Post[]> {
     let api = new APIGateWay();
-    return api.get(HomeResource.POST_ROUTES.DEFAULT);
+    return api.get(HomeResource.POST_ROUTES.LIST_OF_POSTS, {
+      type,
+      page,
+      limit,
+    });
+  }
+
+  async createPost({
+    content,
+    type,
+    preview,
+    accessToken,
+  }: any): Promise<Post> {
+    let api = new APIGateWay({ Authorization: `Bearer ${accessToken}` });
+    return api.post(HomeResource.POST_ROUTES.DEFAULT, {
+      content,
+      type,
+      preview,
+    });
   }
 }

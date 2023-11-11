@@ -3,7 +3,7 @@ import Menu from "src/presentation/components/layout/menu";
 import Post from "src/presentation/components/post";
 import PostInput from "./PostInput";
 import TopAuthor from "./TopAuthor";
-import { HomeContainer } from "./styles";
+import { HomeContainer, PostsContainer } from "./styles";
 import useHome from "./useHome";
 import ModalCreatePost from "./components/ModalCreatePost";
 
@@ -26,13 +26,13 @@ const Home = () => {
   return (
     <HomeContainer>
       <Menu />
-      <Box display={"flex"} flexDirection={"column"} width={"50%"} gap={"24px"}>
+      <PostsContainer>
         <PostInput onToggleModal={handleToggleModal} />
         <Post data={data} />
         <Post data={data} />
         <Post data={data} />
         <Post data={data} />
-      </Box>
+      </PostsContainer>
       <TopAuthor />
       <ModalCreatePost open={openModal} onToggleModal={handleToggleModal} />
     </HomeContainer>

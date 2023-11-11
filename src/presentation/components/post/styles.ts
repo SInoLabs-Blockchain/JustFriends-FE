@@ -7,7 +7,7 @@ const PostSection = styled("div")(() => ({
   boxShadow: "0 5px 40px -8px rgba(86, 107, 135, 0.08)",
 }));
 
-const PostContainer = styled("div")(() => ({
+const PostContainer = styled("div")(({ theme }: any) => ({
   padding: "0 30px",
   height: "fit-content",
 
@@ -60,10 +60,11 @@ const PostContainer = styled("div")(() => ({
     display: "flex",
     justifyContent: "space-between",
     padding: "14px 0 28px 0",
+
     div: {
       display: "flex",
       alignItems: "center",
-      gap: "15px",
+      gap: 15,
     },
 
     ".post__interactions-container": {
@@ -111,6 +112,20 @@ const PostContainer = styled("div")(() => ({
       height: "1px",
       margin: 0,
     },
+  },
+
+  [theme.breakpoints.down('xl')]: {
+    padding: "0 20px",
+
+    ".MuiCardActions-root": {
+      div: {
+        gap: 0,
+      },
+
+      ".post__interactions-container": {
+        gap: 24,
+      },
+    }
   },
 }));
 
