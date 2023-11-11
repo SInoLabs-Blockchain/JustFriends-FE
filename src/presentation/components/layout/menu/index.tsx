@@ -1,16 +1,16 @@
-import { Box } from '@mui/material';
 import ProfileCard from 'src/presentation/features/home/ProfileCard';
 import Filter from 'src/presentation/features/home/components/Filter';
-import useMenu from './useMenu';
+import { MenuContainer } from 'src/presentation/features/home/styles';
+import useHome from 'src/presentation/features/home/useHome';
 
 const Menu = () => {
-  const { checked, setChecked } = useMenu();
+  const { isFreePosts, setIsFreePosts } = useHome();
 
   return (
-    <Box display={'flex'} flexDirection={'column'} gap={3.75}>
+    <MenuContainer>
       <ProfileCard />
-      <Filter checked={checked} setChecked={setChecked} />
-    </Box>
+      <Filter checked={isFreePosts} setChecked={setIsFreePosts} />
+    </MenuContainer>
   );
 };
 

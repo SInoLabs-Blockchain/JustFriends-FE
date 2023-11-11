@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OptionState } from "./types";
-import { POST_OPTIONS } from "src/common/constants";
+import { FREE_POSTS, PAID_POSTS, POST_OPTIONS } from "src/common/constants";
 import { writeContract } from "@wagmi/core";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
+import { useWeb3Modal } from "@web3modal/react";
 
 const useHome = () => {
+  const { open } = useWeb3Modal();
+
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
     id: POST_OPTIONS[0].id,
@@ -18,7 +21,11 @@ const useHome = () => {
   const [textareaValue, setTextareaValue] = useState("");
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [baseFee, setBaseFee] = useState<string>("");
+  const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
+  const [posts, setPosts] = useState([])
+
   const homeRepository = HomeRepository.create();
+
   const { accessToken } = useAppSelector((state) => state.auth);
 
   const copyAddress = async () => {
@@ -48,22 +55,42 @@ const useHome = () => {
   };
 
   const handleSharePost = async () => {
-    try {
-      const { contentHash } = await homeRepository.createPost({
-        content: textareaValue,
-        type: option.value,
-        accessToken,
-      });
-      await writeContract({
-        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-        abi: JustFriendsABI,
-        functionName: "postContent",
-        args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
-      });
-    } catch (error) {
-      console.log({ error });
+    if (!accessToken) {
+      open()
+    } else {
+      try {
+        const { contentHash } = await homeRepository.createPost({
+          content: textareaValue,
+          type: option.value,
+          accessToken,
+        });
+        await writeContract({
+          address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+          abi: JustFriendsABI,
+          functionName: "postContent",
+          args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
+        });
+      } catch (error) {
+        console.log({ error });
+      }
     }
+
   };
+
+  const getListOfPostsByType = async () => {
+    const response = await homeRepository.getPosts({
+      type: isFreePosts ? FREE_POSTS : PAID_POSTS,
+      page: 1,
+      limit: 10,
+    });
+    console.log(response);
+
+  }
+
+  useEffect(() => {
+    // getListOfPostsByType()
+  }, [isFreePosts])
+
 
   return {
     openModal,
@@ -72,12 +99,14 @@ const useHome = () => {
     textareaValue,
     textareaHeight,
     baseFee,
+    isFreePosts,
+    setBaseFee,
+    setIsFreePosts,
     copyAddress,
     onToggleSelect,
     handleToggleModal,
     onSelectMenu,
     handleTextareaChange,
-    setBaseFee,
     handleSharePost,
   };
 };

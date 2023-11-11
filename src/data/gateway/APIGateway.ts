@@ -102,8 +102,8 @@ export default class APIGateWay {
     return Promise.reject(error);
   };
 
-  get = (path: string) => {
-    this._interceptRequest("GET", path);
+  get = (path: string, parameters?: any) => {
+    this._interceptRequest("GET", path, parameters);
     return this._axios
       .get(this._makeUrl(path))
       .then(this._handleSuccess)

@@ -6,12 +6,16 @@ type InputProps = {
     isSelected: boolean;
 };
 
-const Container = styled("div")({
+const Container = styled("div")(({ theme }: any) => ({
     padding: 30,
     backgroundColor: COLOR.white,
     boxShadow: "0 0 10px rgba(86, 107, 135, 0.08)",
     borderRadius: 16,
-});
+
+    [theme.breakpoints.down('xl')]: {
+        padding: 20,
+    },
+}));
 
 const StyledSwitch = styled(Switch)({
     width: 202,

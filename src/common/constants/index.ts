@@ -14,4 +14,7 @@ const POST_OPTIONS = [
   },
 ];
 
-export { BORDER_RADIUS, POST_OPTIONS };
+const FREE_POSTS = 'free'
+const PAID_POSTS = 'paid'
+
+export { BORDER_RADIUS, POST_OPTIONS, FREE_POSTS, PAID_POSTS };

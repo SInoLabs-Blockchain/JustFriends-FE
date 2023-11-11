@@ -60,6 +60,7 @@ const Post = ({ data }: PropTypes) => {
             {data.holder} holders
           </Typography>
           <CustomButton
+            sm
             title="Buy Share"
             variant={"contained"}
             startIcon={<ShareIcon />}

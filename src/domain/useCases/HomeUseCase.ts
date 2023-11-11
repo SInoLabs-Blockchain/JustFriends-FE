@@ -1,6 +1,6 @@
 import { Post } from "src/domain/models/home/Post";
 
 export interface HomeUseCase {
-  getPosts(): Promise<Post[]>;
+  getPosts(prop: object): Promise<Post[]>;
   createPost(prop: object): Promise<Post>;
 }

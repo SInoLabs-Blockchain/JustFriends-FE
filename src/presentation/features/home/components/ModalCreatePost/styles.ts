@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import COLOR from "src/presentation/theme/Color";
 
-const ModalContainer = styled("div")({
+const ModalContainer = styled("div")(({ theme }: any) => ({
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -71,8 +71,15 @@ const ModalContainer = styled("div")({
         color: COLOR.neutral.neutral_1,
         width: "30%",
     },
-});
 
+    [theme.breakpoints.down('lg')]: {
+        width: '60%',
+    },
+
+    [theme.breakpoints.down('md')]: {
+        width: '76%',
+    },
+}));
 const StyledSelect = styled("div")({
     padding: "3px 6px 3px 10px",
     backgroundColor: COLOR.border,

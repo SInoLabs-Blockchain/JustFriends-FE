@@ -1,19 +1,59 @@
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { Box, Paper } from "@mui/material";
 import COLOR from "src/presentation/theme/Color";
 
-const HomeContainer = styled("div")({
+const HomeContainer = styled("div")(({ theme }: any) => ({
     display: "flex",
     justifyContent: "space-between",
     padding: "30px 30px 200px",
-});
 
-const ProfileContainer = styled("div")(() => ({
+    [theme.breakpoints.down('md')]: {
+        flexDirection: 'column'
+    },
+}));
+
+const MenuContainer = styled("div")(({ theme }: any) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 30,
+
+    [theme.breakpoints.down('md')]: {
+        flexDirection: 'row-reverse',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 40
+    },
+}));
+
+const PostsContainer = styled("div")(({ theme }: any) => ({
+    display: 'flex',
+    flexDirection: "column",
+    width: "50%",
+    gap: 24,
+
+    [theme.breakpoints.down('xl')]: {
+        marginLeft: 24,
+        marginRight: 24,
+    },
+
+    [theme.breakpoints.down('lg')]: {
+        width: "100%",
+        marginLeft: 35,
+        marginRight: 0,
+    },
+
+    [theme.breakpoints.down('md')]: {
+        marginLeft: 0,
+    },
+}));
+
+const ProfileContainer = styled("div")(({ theme }: any) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: "16px",
-    padding: "30px",
+    padding: 30,
     height: "fit-content",
     boxShadow: "0 0 10px rgba(86, 107, 135, 0.08)",
     borderRadius: 16,
@@ -77,6 +117,33 @@ const ProfileContainer = styled("div")(() => ({
             color: COLOR.neutral.neutral_2,
         },
     },
+
+    [theme.breakpoints.down('xl')]: {
+        padding: 20,
+    },
+
+    [theme.breakpoints.down('md')]: {
+        width: '50%',
+
+        ".profile__card-avatar": {
+            display: 'none'
+        },
+
+        ".profile__statistic": {
+            gap: 40
+        }
+    },
+}));
+
+const TopAuthorContainer = styled(Box)(({ theme }: any) => ({
+    width: '25%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+
+    [theme.breakpoints.down('lg')]: {
+        display: 'none'
+    },
 }));
 
 const TopAuthorHeaderContainer = styled(Box)(() => ({
@@ -104,11 +171,15 @@ const TopAuthorHeaderContainer = styled(Box)(() => ({
     },
 }));
 
-const TopAuthorListContainer = styled(Paper)(() => ({
-    padding: "30px",
+const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
+    backgroundColor: COLOR.white,
+    padding: 30,
     display: "flex",
     flexDirection: "column",
     gap: "24px",
+    borderRadius: 16,
+    boxShadow: '0px 5px 40px -8px #566B8714',
+
     ".author__list-item": {
         display: "flex",
         justifyContent: "space-between",
@@ -140,6 +211,10 @@ const TopAuthorListContainer = styled(Paper)(() => ({
         lineHeight: "24px",
         letterSpacing: "0px",
         color: COLOR.neutral.neutral_4,
+    },
+
+    [theme.breakpoints.down('xl')]: {
+        padding: 20
     },
 }));
 
@@ -198,8 +273,11 @@ const PostInputContainer = styled("div")(() => ({
 
 export {
     HomeContainer,
+    MenuContainer,
+    TopAuthorContainer,
     TopAuthorHeaderContainer,
     TopAuthorListContainer,
+    PostsContainer,
     ProfileContainer,
     PostInputContainer,
 };

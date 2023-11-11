@@ -1,17 +1,27 @@
 import { styled } from "@mui/material/styles";
 import COLOR from "src/presentation/theme/Color";
 
-const HeaderContainer = styled("div")({
+const HeaderContainer = styled("div")(({ theme }: any) => ({
   width: "100%",
   padding: "25px 30px",
   borderBottom: `1px solid ${COLOR.border}`,
   display: "flex",
   alignItems: "center",
-});
 
-const LogoWrapper = styled("div")({
+  [theme.breakpoints.down('md')]: {
+    padding: "20px 24px",
+  }
+}));
+
+const LogoWrapper = styled("div")(({ theme }: any) => ({
   cursor: "pointer",
-});
+
+  [theme.breakpoints.down('md')]: {
+    svg: {
+      height: 34,
+    }
+  }
+}));
 
 const SearchContainer = styled("div")({
   width: 300,
