@@ -1,8 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { OptionState } from "./types";
 import { POST_OPTIONS } from "src/common/constants";
+import { ROUTE } from "src/common/constants/route";
 
 const useHome = () => {
+  const navigate = useNavigate();
+
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
     id: POST_OPTIONS[0].id,
@@ -43,6 +48,10 @@ const useHome = () => {
     console.log("shares");
   };
 
+  const navigateToProfile = () => {
+    navigate(ROUTE.PROFILE);
+  };
+
   return {
     openModal,
     option,
@@ -57,6 +66,7 @@ const useHome = () => {
     handleTextareaChange,
     setBaseFee,
     handleSharePost,
+    navigateToProfile,
   };
 };
 
