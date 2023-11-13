@@ -22,9 +22,9 @@ const useProfile = () => {
 
   const dispatch = useAppDispatch();
 
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, profile } = useAppSelector((state) => state.auth);
 
-  const [username, setUsername] = useState("Trump");
+  const [username, setUsername] = useState(profile?.username || "");
   const [avatarUrl, setAvatarUrl] = useState(
     "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
   );
