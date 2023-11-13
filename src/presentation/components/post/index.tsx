@@ -16,6 +16,8 @@ import {
 } from "src/presentation/theme/assets/icons";
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
+import usePost from "./usePost";
+import { VOTE } from "src/common/constants";
 
 interface PropTypes {
   data: any;
@@ -24,6 +26,7 @@ interface PropTypes {
 const Post = ({ data }: PropTypes) => {
   const isConnectedWallet = true;
   const isFreeZone = false;
+  const { handleVote, handleBuyAccess } = usePost();
 
   const renderRightContent = () => {
     if (isConnectedWallet) {
@@ -63,6 +66,7 @@ const Post = ({ data }: PropTypes) => {
             sm
             title="Buy Share"
             variant={"contained"}
+            onClick={handleBuyAccess}
             startIcon={<ShareIcon />}
           />
         </Box>
@@ -91,13 +95,29 @@ const Post = ({ data }: PropTypes) => {
         </Box>
         <CardActions>
           <Box>
-            <IconButton>
+            <IconButton
+              onClick={() =>
+                handleVote({
+                  contentHash: data.contentHash,
+                  voteType: VOTE.DOWNVOTE,
+                  periodTimestamp: 10000000000,
+                })
+              }
+            >
               <UpvoteIcon />
               <Typography className="post__interactions-votes">
                 {data.upvote} upvotes
               </Typography>
             </IconButton>
-            <IconButton>
+            <IconButton
+              onClick={() =>
+                handleVote({
+                  contentHash: data.contentHash,
+                  voteType: VOTE.DOWNVOTE,
+                  periodTimestamp: 10000000000,
+                })
+              }
+            >
               <DownvoteIcon />
               <Typography className="post__interactions-votes">
                 {data.downvote} downvotes

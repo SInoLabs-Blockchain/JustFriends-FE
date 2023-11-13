@@ -14,7 +14,12 @@ const POST_OPTIONS = [
   },
 ];
 
-const FREE_POSTS = 'free'
-const PAID_POSTS = 'paid'
+const FREE_POSTS = "free";
+const PAID_POSTS = "paid";
 
-export { BORDER_RADIUS, POST_OPTIONS, FREE_POSTS, PAID_POSTS };
+const VOTE = {
+  UPVOTE: 1,
+  DOWNVOTE: 2,
+};
+
+export { BORDER_RADIUS, POST_OPTIONS, FREE_POSTS, PAID_POSTS, VOTE };

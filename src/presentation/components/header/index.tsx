@@ -1,4 +1,11 @@
-import { Box, Button, IconButton, TextField, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { Logo, SearchIcon } from "src/presentation/theme/assets/icons";
 import {
   ButtonContainer,
@@ -33,7 +40,7 @@ const Header = () => {
     watch: true,
   });
   const dispatch = useAppDispatch();
-  const matches = useMediaQuery('(max-width: 768px)');
+  const matches = useMediaQuery("(max-width: 768px)");
   const { open } = useWeb3Modal();
 
   useWeb3ModalEvents(async (event) => {
@@ -104,19 +111,21 @@ const Header = () => {
               alt="avatar"
             />
           </>
+        ) : matches ? (
+          <Button onClick={open}>
+            <img
+              src={
+                "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
+              }
+              alt="avatar"
+            />
+          </Button>
         ) : (
-          matches ? (
-            <Button onClick={open}>
-              <img
-                src={
-                  "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-                }
-                alt="avatar"
-              />
-            </Button>
-          ) : (
-            <ConnectButton address={address} openModal={open} title={"Connect Wallet"} />
-          )
+          <ConnectButton
+            address={address}
+            openModal={open}
+            title={"Connect Wallet"}
+          />
         )}
       </ButtonContainer>
     </HeaderContainer>
