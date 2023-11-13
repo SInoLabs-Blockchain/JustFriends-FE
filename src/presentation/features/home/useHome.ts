@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { OptionState } from "./types";
 import { FREE_POSTS, PAID_POSTS, POST_OPTIONS } from "src/common/constants";
 import { writeContract } from "@wagmi/core";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
@@ -7,9 +6,14 @@ import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
+import { ROUTE } from "src/common/constants/route";
+import { useNavigate } from "react-router-dom";
+
+import { OptionState } from "./types";
 
 const useHome = () => {
   const { open } = useWeb3Modal();
+  const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
@@ -22,7 +26,7 @@ const useHome = () => {
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [baseFee, setBaseFee] = useState<string>("");
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState([]);
 
   const homeRepository = HomeRepository.create();
 
@@ -56,7 +60,7 @@ const useHome = () => {
 
   const handleSharePost = async () => {
     if (!accessToken) {
-      open()
+      open();
     } else {
       try {
         const { contentHash } = await homeRepository.createPost({
@@ -74,7 +78,10 @@ const useHome = () => {
         console.log({ error });
       }
     }
+  };
 
+  const navigateToProfile = () => {
+    navigate(ROUTE.PROFILE);
   };
 
   const getListOfPostsByType = async () => {
@@ -84,13 +91,11 @@ const useHome = () => {
       limit: 10,
     });
     console.log(response);
-
-  }
+  };
 
   useEffect(() => {
     // getListOfPostsByType()
-  }, [isFreePosts])
-
+  }, [isFreePosts]);
 
   return {
     openModal,
@@ -108,6 +113,7 @@ const useHome = () => {
     onSelectMenu,
     handleTextareaChange,
     handleSharePost,
+    navigateToProfile,
   };
 };
 

@@ -6,7 +6,7 @@ import useHome from "./useHome";
 import { useAppSelector } from "src/data/redux/Hooks";
 
 const ProfileCard = () => {
-  const { copyAddress } = useHome();
+  const { copyAddress, navigateToProfile } = useHome();
   const { profile } = useAppSelector((state) => state.auth);
 
   const data = {
@@ -23,6 +23,7 @@ const ProfileCard = () => {
         src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
         alt="avatar"
         className="profile__card-avatar"
+        onClick={navigateToProfile}
       />
       <Box className="profile__info">
         <Typography className="profile__card-name">
