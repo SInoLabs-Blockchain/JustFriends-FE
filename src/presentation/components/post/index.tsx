@@ -16,6 +16,7 @@ import {
 } from "src/presentation/theme/assets/icons";
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
+import { useAppSelector } from "src/data/redux/Hooks";
 
 interface PropTypes {
   data: any;
@@ -23,13 +24,14 @@ interface PropTypes {
 
 const Post = ({ data }: PropTypes) => {
   const isConnectedWallet = true;
-  const isFreeZone = false;
+  const isFreeZone = true;
+  const { profile } = useAppSelector((state) => state.auth);
 
   const renderRightContent = () => {
-    if (isConnectedWallet) {
+    if (isConnectedWallet && !isFreeZone) {
       return (
         <PriceContainer>
-          <Typography>100 KLAY</Typography>
+          <Typography>{Number(data.startedPrice)} KLAY</Typography>
         </PriceContainer>
       );
     }
@@ -40,15 +42,29 @@ const Post = ({ data }: PropTypes) => {
     );
   };
 
-  const renderCommentAction = () => {
+  const renderFreePostAction = () => {
     if (isFreeZone)
       return (
-        <IconButton>
-          <CommentIcon />
-          <Typography className="post__interactions-votes">
-            {data.downvote} downvotes
-          </Typography>
-        </IconButton>
+        <Box>
+          <IconButton>
+            <UpvoteIcon />
+            <Typography className="post__interactions-votes">
+              {Number(data.totalUpvote)} upvotes
+            </Typography>
+          </IconButton>
+          <IconButton>
+            <DownvoteIcon />
+            <Typography className="post__interactions-votes">
+              {Number(data.totalDownvote)} downvotes
+            </Typography>
+          </IconButton>
+          <IconButton>
+            <CommentIcon />
+            <Typography className="post__interactions-votes">
+              {Number(data.comments) || 0} comments
+            </Typography>
+          </IconButton>
+        </Box>
       );
   };
 
@@ -57,7 +73,7 @@ const Post = ({ data }: PropTypes) => {
       return (
         <Box className="post__interactions-container">
           <Typography className="post__interactions-holders">
-            {data.holder} holders
+            {Number(data.totalSupply)} holders
           </Typography>
           <CustomButton
             sm
@@ -70,16 +86,18 @@ const Post = ({ data }: PropTypes) => {
     }
   };
 
+  if (!data) return null;
+
   return (
     <PostSection>
-      <PostContainer>
+      <PostContainer type={isFreeZone}>
         <CardHeader
           avatar={
             <Avatar>
-              <img src={data.creator.avatar} alt="avatar" />
+              <img src={profile?.avatarUrl} alt="avatar" />
             </Avatar>
           }
-          title={data.creator.name}
+          title={profile?.username}
           subheader="8 hours ago"
           action={renderRightContent()}
         />
@@ -90,21 +108,7 @@ const Post = ({ data }: PropTypes) => {
           <hr />
         </Box>
         <CardActions>
-          <Box>
-            <IconButton>
-              <UpvoteIcon />
-              <Typography className="post__interactions-votes">
-                {data.upvote} upvotes
-              </Typography>
-            </IconButton>
-            <IconButton>
-              <DownvoteIcon />
-              <Typography className="post__interactions-votes">
-                {data.downvote} downvotes
-              </Typography>
-            </IconButton>
-            {renderCommentAction()}
-          </Box>
+          {renderFreePostAction()}
           {renderPaidPostActions()}
         </CardActions>
       </PostContainer>

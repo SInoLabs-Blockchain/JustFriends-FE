@@ -17,8 +17,9 @@ export default class APIGateWay {
 
     const defaultHeaderOptions = {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "http://localhost:3000",
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": "true",
+      "ngrok-skip-browser-warning": "skip-browser-warning",
     };
 
     let config: AxiosRequestConfig = {
@@ -102,8 +103,8 @@ export default class APIGateWay {
     return Promise.reject(error);
   };
 
-  get = (path: string, parameters?: any) => {
-    this._interceptRequest("GET", path, parameters);
+  get = (path: string) => {
+    this._interceptRequest("GET", path);
     return this._axios
       .get(this._makeUrl(path))
       .then(this._handleSuccess)
