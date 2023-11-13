@@ -8,6 +8,7 @@ import { parseEther } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { OptionState } from "./types";
 
@@ -58,7 +59,12 @@ const useHome = () => {
     else setTextareaHeight(0);
   };
 
-  const handleSharePost = async () => {
+  const handleRemoveText = () => {
+    setTextareaValue("");
+    setTextareaHeight(0);
+  };
+
+  const handleSharePost = async (onToggleModal: any, onRemoveText: any) => {
     if (!accessToken) {
       open();
     } else {
@@ -70,10 +76,13 @@ const useHome = () => {
         });
         await writeContract({
           address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-          abi: JustFriendsABI,
+                    abi: JustFriendsABI,
           functionName: "postContent",
           args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
         });
+        onToggleModal();
+        onRemoveText();
+        toast.success("Your post has been created successfully!");
       } catch (error) {
         console.log({ error });
       }
@@ -114,6 +123,7 @@ const useHome = () => {
     handleTextareaChange,
     handleSharePost,
     navigateToProfile,
+    handleRemoveText,
   };
 };
 

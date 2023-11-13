@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 import { setProfile } from "src/data/redux/auth/AuthReducer";
-
+import { toast } from "react-toastify";
 import { ROUTE } from "src/common/constants/route";
 
 const TABS = [
@@ -59,8 +59,8 @@ const useProfile = () => {
         username,
         coverUrl
       );
-
       dispatch(setProfile(res));
+      toast.success("Your profile has been saved successfully!");
     } catch (error) {
       console.log({ error });
     }

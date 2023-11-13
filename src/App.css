@@ -1,40 +1,101 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* Fonts */
 @font-face {
-    font-family: "Semibold";
-    src: local("Gilroy-Semibold"),
-        url("./presentation/theme/assets/fonts/Gilroy-Semibold.ttf")
-            format("truetype");
-    font-weight: 600;
-    font-style: normal;
+  font-family: "Semibold";
+  src: local("Gilroy-Semibold"),
+    url("./presentation/theme/assets/fonts/Gilroy-Semibold.ttf")
+      format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "Bold";
-    src: local("Gilroy-Bold"),
-        url("./presentation/theme/assets/fonts/Gilroy-Bold.ttf")
-            format("truetype");
-    font-weight: bold;
-    font-style: normal;
+  font-family: "Bold";
+  src: local("Gilroy-Bold"),
+    url("./presentation/theme/assets/fonts/Gilroy-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "Regular";
-    src: local("Gilroy-Regular"),
-        url("./presentation/theme/assets/fonts/Gilroy-Regular.ttf")
-            format("truetype");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Regular";
+  src: local("Gilroy-Regular"),
+    url("./presentation/theme/assets/fonts/Gilroy-Regular.ttf")
+      format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "Gilroy";
-    src: local("Gilroy-Medium"),
-        url("./presentation/theme/assets/fonts/Gilroy-Medium.ttf")
-            format("truetype");
-    font-weight: 500;
-    font-style: normal;
+  font-family: "Gilroy";
+  src: local("Gilroy-Medium"),
+    url("./presentation/theme/assets/fonts/Gilroy-Medium.ttf")
+      format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Custom toast */
+.Toastify .Toastify__toast-container {
+  width: 420px;
+}
+
+.Toastify__toast-container--top-right {
+  top: 98px;
+  right: 0;
+}
+
+.custom_toast {
+  --toastify-color-light: #fdefee;
+  --toastify-text-color-light: #1e2430;
+  --toastify-toast-min-height: 0;
+  --toastify-color-progress-error: rgba(255, 255, 255, 0.5);
+}
+
+.custom_toast.Toastify__toast {
+  margin: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 25px;
+  padding: 16px;
+  font-family: inherit;
+  border-radius: 16px;
+  box-shadow: none;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 600px) {
+  .Toastify .Toastify__toast-container {
+    width: 375px;
+    left: unset;
+  }
+
+  .custom_toast.Toastify__toast {
+    margin: 0;
+  }
+}
+
+.custom_toast .Toastify__close-button--light {
+  color: #9aa5ba;
+  align-self: center;
+  padding-left: 16px;
+  opacity: 1;
+}
+
+.Toastify__close-button > svg {
+  width: 14px;
+  height: auto;
+}
+
+.custom_toast .Toastify__toast-body {
+  padding: 0;
+}
+
+.custom_toast.Toastify__toast--success {
+  background: #eefae8;
+  color: #1e2430;
 }

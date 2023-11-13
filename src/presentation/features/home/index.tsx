@@ -8,7 +8,7 @@ import useHome from "./useHome";
 import ModalCreatePost from "./components/ModalCreatePost";
 
 const Home = () => {
-  const { openModal, handleToggleModal } = useHome();
+  const { openModal, handleToggleModal, handleRemoveText } = useHome();
 
   const data = {
     creator: {
@@ -34,7 +34,11 @@ const Home = () => {
         <Post data={data} />
       </PostsContainer>
       <TopAuthor />
-      <ModalCreatePost open={openModal} onToggleModal={handleToggleModal} />
+      <ModalCreatePost
+        open={openModal}
+        onToggleModal={handleToggleModal}
+        onRemoveText={handleRemoveText}
+      />
     </HomeContainer>
   );
 };
