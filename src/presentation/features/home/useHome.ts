@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FREE_POSTS, PAID_POSTS, POST_OPTIONS } from "src/common/constants";
-import { writeContract } from "@wagmi/core";
+import { writeContract, readContract } from "@wagmi/core";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
@@ -27,7 +27,7 @@ const useHome = () => {
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [baseFee, setBaseFee] = useState<string>("");
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<any>([]);
 
   const homeRepository = HomeRepository.create();
 
@@ -76,7 +76,7 @@ const useHome = () => {
         });
         await writeContract({
           address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-                    abi: JustFriendsABI,
+          abi: JustFriendsABI,
           functionName: "postContent",
           args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
         });
@@ -89,24 +89,39 @@ const useHome = () => {
     }
   };
 
-  const navigateToProfile = () => {
-    navigate(ROUTE.PROFILE);
-  };
-
   const getListOfPostsByType = async () => {
-    const response = await homeRepository.getPosts({
-      type: isFreePosts ? FREE_POSTS : PAID_POSTS,
-      page: 1,
-      limit: 10,
-    });
-    console.log(response);
+    try {
+      const res = await homeRepository.getPosts({
+        type: isFreePosts ? FREE_POSTS : PAID_POSTS,
+        page: 1,
+        limit: 10,
+      });
+
+      const data = await readContract({
+        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
+        abi: JustFriendsABI,
+        functionName: "getContentsInfo",
+        args: [res.map((content) => `0x${content.contentHash}`)],
+      });
+
+      const posts = res.map((post: object, index: number) => {
+        console.log({ index });
+        // @ts-ignore
+        return { ...post, ...data[index] };
+      });
+
+      setPosts(posts);
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   useEffect(() => {
-    // getListOfPostsByType()
+    getListOfPostsByType();
   }, [isFreePosts]);
 
   return {
+    posts,
     openModal,
     option,
     openOptionSelect,

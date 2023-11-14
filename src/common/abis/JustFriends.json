@@ -178,21 +178,6 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "protocolFee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "creatorFee",
-        "type": "uint256"
       }
     ],
     "name": "InsufficientPayment",
@@ -231,11 +216,6 @@
         "internalType": "bytes32",
         "name": "contentHash",
         "type": "bytes32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalSupply",
-        "type": "uint256"
       }
     ],
     "name": "InvalidFirstPurchase",
@@ -616,40 +596,6 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "_contentHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getContentInfo",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_basePrice",
         "type": "uint256"
@@ -674,6 +620,62 @@
       }
     ],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "_contentHashes",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "getContentsInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "contentHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "accessTokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startedPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalUpvote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalDownvote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalSupply",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct JustFriendsInterface.Content[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -765,13 +767,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "register",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
