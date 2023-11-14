@@ -17,24 +17,40 @@ import useHeader from "./useHeader";
 import ConnectButton from "../button/ConnectButton";
 import { useLocation } from "react-router-dom";
 import backArrow from "src/presentation/theme/assets/icons/back.svg";
-import { useWeb3Modal } from "@web3modal/react";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { useBalance } from "wagmi";
 import { formatBalance } from "src/common/utils";
+import ConnectModal from "./ConnectModal";
 
 const Header = () => {
-  const { loading, address, content, setContent, onSearch, navigateToHome } =
-    useHeader();
+  const {
+    openModal,
+    loginStep,
+    address,
+    content,
+    loading,
+    otp,
+    setOtp,
+    setContent,
+    onSearch,
+    nextStep,
+    onToggleModal,
+    navigateToHome,
+    connectMetamask,
+    connectWalletConnect,
+    connectSelfDeployWallet,
+  } = useHeader();
   const location = useLocation();
   const page = location.pathname.split("/")[1];
   const isSearching = page === "search";
   const { accessToken } = useAppSelector((state) => state.auth);
+  console.log({ address });
+
   const { data: balance } = useBalance({
     address,
     watch: true,
   });
   const matches = useMediaQuery("(max-width: 768px)");
-  const { open } = useWeb3Modal();
 
   return (
     <HeaderContainer>
@@ -77,7 +93,7 @@ const Header = () => {
             />
           </>
         ) : matches ? (
-          <Button onClick={open}>
+          <Button>
             <img
               src={
                 "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
@@ -86,20 +102,25 @@ const Header = () => {
             />
           </Button>
         ) : (
-          <>
-            {/* <ConnectButton
-              address={address}
-              openModal={open}
-              title={"Connect As A Guest"}
-            /> */}
-            <ConnectButton
-              loading={loading}
-              openModal={open}
-              title={"Connect Wallet"}
-            />
-          </>
+          <ConnectButton
+            address={address}
+            openModal={onToggleModal}
+            title={"Connect"}
+          />
         )}
       </ButtonContainer>
+      <ConnectModal
+        otp={otp}
+        step={loginStep}
+        loading={loading}
+        setOtp={setOtp}
+        isOpen={openModal}
+        onToggleModal={onToggleModal}
+        nextStep={nextStep}
+        connectMetamask={connectMetamask}
+        connectWalletConnect={connectWalletConnect}
+        connectSelfDeployWallet={connectSelfDeployWallet}
+      />
     </HeaderContainer>
   );
 };

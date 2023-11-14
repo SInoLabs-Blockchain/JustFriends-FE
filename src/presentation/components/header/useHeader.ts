@@ -4,18 +4,39 @@ import { ROUTE } from "src/common/constants/route";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { setAuth, setProfile } from "src/data/redux/auth/AuthReducer";
 import { AuthRepository } from "src/data/repositories/AuthRepository";
-import { useAccount } from "wagmi";
-import { useWeb3ModalEvents } from "@web3modal/react";
+import entryPointAbi from "src/common/abis/IEntryPoint.json";
+import { ethers } from "ethers";
+import {
+  fillUserOp,
+  getAccountInitCode,
+  getCallDataAddSession,
+  signUserOp,
+} from "src/common/utils/wallet";
+import { randomNumber } from "src/common/utils";
+import Web3 from "web3";
+import { BAOBAB_CONFIG } from "src/data/config/chains";
+import { requestToRelayer } from "src/presentation/services";
+import factoryAbi from "src/common/abis/SimpleAccountFactory.json";
+import { readContract } from "@wagmi/core";
+import { useWeb3Modal, useWeb3ModalEvents } from "@web3modal/react";
 import { getWalletClient } from "@wagmi/core";
+import { toast } from "react-toastify";
+import { address } from "src/common/constants/solidityTypes";
+import { LOGIN_STEPS } from "src/common/constants";
+import { parseEther } from "viem";
 
 const useHeader = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [content, setContent] = useState("");
+  const [loginStep, setLoginStep] = useState(LOGIN_STEPS.CREATE_WALLET);
   const navigate = useNavigate();
-  const { address } = useAccount();
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, profile } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const authRepository = AuthRepository.create();
-  const [content, setContent] = useState<string>('');
+  const { open: walletConnect } = useWeb3Modal();
   const [loading, setLoading] = useState(false);
+  const [timeOut, setTimeOut] = useState(0);
 
   const onSearch = (e: any) => {
     if (e.keyCode === 13) {
@@ -24,10 +45,18 @@ const useHeader = () => {
     }
   };
 
+  const onToggleModal = () => {
+    setOpenModal((prev) => !prev);
+    setLoginStep(LOGIN_STEPS.CREATE_WALLET);
+    setOtp("");
+  };
+
   const navigateToHome = (e: any) => {
     setContent("");
     navigate(ROUTE.HOME);
   };
+
+  const nextStep = () => setLoginStep(LOGIN_STEPS.CREATE_PASSWORD);
 
   const reAuth = () => {
     if (!accessToken) {
@@ -43,6 +72,260 @@ const useHeader = () => {
       console.log({ error });
     }
   };
+
+  const connectMetamask = async () => {
+    try {
+      const accounts = (await window.ethereum
+        ?.request({ method: "eth_requestAccounts" })
+        .catch((err) => {
+          if (err.code === 4001) {
+            // EIP-1193 userRejectedRequest error
+            // If this happens, the user rejected the connection request.
+            console.log("Please connect to MetaMask.");
+          } else {
+            console.error(err);
+          }
+        })) as Array<string>;
+      if (!accounts) {
+        throw new Error("Error");
+      }
+      const account = new Web3().utils.toChecksumAddress(accounts[0]);
+      const { challenge } = await authRepository.connectWallet(account);
+      const signature = await window.ethereum?.request({
+        method: "personal_sign",
+        params: [challenge, account],
+      });
+      const res = await authRepository.login(account, signature);
+      dispatch(setAuth(res.accessToken));
+      localStorage.setItem("accessToken", res.accessToken);
+      onToggleModal();
+      toast.success("Connect Successfully");
+    } catch (error) {
+      onToggleModal();
+      toast.error("Connect Failed");
+      console.log({ error });
+    }
+  };
+
+  const connectWalletConnect = async () => {
+    try {
+      onToggleModal();
+      walletConnect();
+    } catch (error) {
+      onToggleModal();
+      console.log({ error });
+    }
+  };
+
+  const deployWallet = async (
+    ownerAddress: string,
+    accountAddress: string,
+    privateKey: string,
+    randNum: any
+  ) => {
+    try {
+      const web3 = new Web3(process.env.REACT_APP_RPC);
+      const abiEntrypoint = entryPointAbi.abi;
+      const entryPointContract = new web3.eth.Contract(
+        abiEntrypoint,
+        `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`
+      );
+      const initCode = await getAccountInitCode(
+        ownerAddress,
+        `0x${process.env.REACT_APP_FACTORY_ADDRESS}`,
+        randNum
+      );
+      const startFrom = Math.floor(Date.now() / 1e3);
+      const validUntil = startFrom + 86400;
+      console.log({ startFrom, validUntil });
+
+      const sessionAccount = ethers.Wallet.createRandom();
+      const totalAmount = web3.utils.toBigInt("1000000000000000000");
+      const callData = getCallDataAddSession({
+        sessionUser: sessionAccount.address,
+        startFrom,
+        validUntil,
+        totalAmount,
+      });
+      const userOp = await fillUserOp(
+        {
+          sender: accountAddress,
+          initCode,
+          callData,
+          nonce: 1000,
+          maxFeePerGas: 0,
+          maxPriorityFeePerGas: 0,
+        },
+        entryPointContract
+      );
+      const signedUserOp = await signUserOp({
+        op: {
+          ...userOp,
+          nonce: 1000,
+        },
+        privateKey,
+        entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
+        chainId: BAOBAB_CONFIG.id,
+      });
+      console.log({ signedUserOp });
+
+      await requestToRelayer(signedUserOp);
+      return {
+        sessionAddress: sessionAccount.address,
+        sessionPrivateKey: sessionAccount.privateKey,
+        startFrom,
+        validUntil,
+        totalAmount,
+      };
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const connectSelfDeployWallet = async () => {
+    setLoading(true);
+    const web3 = new Web3(process.env.REACT_APP_RPC);
+    const account = localStorage.getItem("account");
+    const passCode = otp;
+    try {
+      if (account) {
+        const { contractAddress, encryptedPrivateKey } = JSON.parse(account);
+        const decryptedData = await web3.eth.accounts.decrypt(
+          encryptedPrivateKey,
+          passCode
+        );
+        if (!decryptedData) {
+          throw new Error("Decrypt private key failed");
+        }
+        const { challenge } = await authRepository.connectWallet(
+          contractAddress
+        );
+        const signature = web3.eth.accounts.sign(
+          challenge,
+          decryptedData.privateKey
+        );
+        const res = await authRepository.login(
+          contractAddress,
+          signature.signature
+        );
+        dispatch(setAuth(res.accessToken));
+        localStorage.setItem("accessToken", res.accessToken);
+        onToggleModal();
+        toast.success("Connect Successfully");
+      } else {
+        const owner = ethers.Wallet.createRandom();
+        console.log({ ownerPrivateKey: owner.privateKey });
+
+        const encryptedOwnerPrivateKey = await web3.eth.accounts.encrypt(
+          owner.privateKey,
+          passCode
+        );
+        const randNum = randomNumber();
+        const abiFactory = factoryAbi.abi;
+        const accountAddress = (await readContract({
+          address: `0x${process.env.REACT_APP_FACTORY_ADDRESS}`,
+          abi: abiFactory,
+          functionName: "getAddress",
+          args: [owner.address, randNum],
+        })) as address;
+        const {
+          sessionAddress,
+          sessionPrivateKey,
+          startFrom,
+          validUntil,
+          totalAmount,
+        }: any = await deployWallet(
+          owner.address,
+          // @ts-ignore
+          accountAddress,
+          owner.privateKey,
+          randNum
+        );
+        console.log({ sessionAddress });
+
+        const encryptedSessionPrivateKey = await web3.eth.accounts.encrypt(
+          sessionPrivateKey,
+          passCode
+        );
+        const interval = setInterval(async () => {
+          const code = await web3.eth.getCode(accountAddress);
+          if (code !== "0x") clearInterval(interval);
+          else {
+            if (timeOut > 20) clearInterval(interval);
+            setTimeOut((prev) => prev + 2);
+          }
+        }, 2000);
+        const { challenge } = await authRepository.connectWallet(
+          accountAddress
+        );
+        const signature = web3.eth.accounts.sign(challenge, owner.privateKey);
+        const res = await authRepository.login(
+          accountAddress,
+          signature.signature
+        );
+        dispatch(setAuth(res.accessToken));
+        localStorage.setItem("accessToken", res.accessToken);
+        localStorage.setItem(
+          "account",
+          JSON.stringify({
+            ownerAddress: owner.address,
+            contractAddress: accountAddress,
+            salt: 1000,
+            randNum,
+            encryptedPrivateKey: encryptedOwnerPrivateKey,
+          })
+        );
+        localStorage.setItem(
+          "sessionAccount",
+          JSON.stringify({
+            address: sessionAddress,
+            encryptedPrivateKey: encryptedSessionPrivateKey,
+            startFrom,
+            validUntil,
+            totalAmount: totalAmount.toString(),
+          })
+        );
+        onToggleModal();
+        toast.success("Connect Successfully");
+      }
+      setLoginStep(LOGIN_STEPS.CREATE_WALLET);
+      setOtp("");
+      setLoading(false);
+    } catch (error) {
+      console.log({ error });
+      onToggleModal();
+      toast.error("Connect Failed");
+      setOtp("");
+      setLoginStep(LOGIN_STEPS.CREATE_WALLET);
+      setLoading(false);
+    }
+  };
+
+  useWeb3ModalEvents(async (event) => {
+    if (event.name === "ACCOUNT_CONNECTED") {
+      try {
+        const walletClient = await getWalletClient();
+        // @ts-ignore: Unreachable code error
+        const accounts = await walletClient?.getAddresses();
+        // @ts-ignore: Unreachable code error
+        const account = accounts[0];
+        const { challenge } = await authRepository.connectWallet(account);
+        // @ts-ignore: Unreachable code error
+        const signature = await walletClient?.signMessage({
+          account,
+          message: challenge,
+        });
+        const res = await authRepository.login(account, signature);
+        dispatch(setAuth(res.accessToken));
+        localStorage.setItem("accessToken", res.accessToken);
+        toast.success("Connect Successfully");
+      } catch (error) {
+        toast.error("Connect Failed");
+        console.log({ error });
+        // TODO: Handle login BE failed
+      }
+    }
+  });
 
   useEffect(() => {
     reAuth();
@@ -80,12 +363,21 @@ const useHeader = () => {
   });
 
   return {
-    loading,
-    address,
+    loginStep,
+    openModal,
+    address: profile?.walletAddress as `0x${string}`,
     content,
+    otp,
+    loading,
+    setOtp,
     setContent,
+    nextStep,
     navigateToHome,
     onSearch,
+    onToggleModal,
+    connectMetamask,
+    connectWalletConnect,
+    connectSelfDeployWallet,
   };
 };
 

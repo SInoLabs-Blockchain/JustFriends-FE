@@ -18,6 +18,7 @@ import {
 import uniq from "lodash/uniq";
 
 import { Connector, ConnectorData } from "@wagmi/connectors";
+import { ethers } from "ethers";
 
 export type StorageStoreData = {
   state: { data?: ConnectorData };
@@ -168,6 +169,7 @@ export class CustomW3mConnector extends Connector<
 
       // If session exists and chains are authorized, enable provider for required chain
       const accounts = await provider.enable();
+
       const account = getAddress(accounts[0]!);
       const id = await this.getChainId();
       const unsupported = this.isChainUnsupported(id);

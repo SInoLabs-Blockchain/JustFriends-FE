@@ -58,4 +58,19 @@ const formatBalance = (balance: string) => {
   return new BigNumber(balance).toFixed(6);
 };
 
-export { shortenAddress, formatDate, formatBalance };
+const randomNumber = () => {
+  // Define the range
+  const min = new BigNumber(10000000);
+  const max = new BigNumber(99999999999999);
+
+  // Generate a random value between 0 and 1
+  const randomValue = Math.random();
+
+  // Scale the random value to the desired range
+  const scaledValue = min.plus(max.minus(min).times(randomValue));
+
+  // Convert the scaled value to a BigNumber
+  return scaledValue.integerValue(BigNumber.ROUND_FLOOR).toString();
+};
+
+export { shortenAddress, formatDate, formatBalance, randomNumber };

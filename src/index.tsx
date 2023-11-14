@@ -9,6 +9,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "@mui/material";
 import theme from "./presentation/theme";
 import CssBaseline from "@mui/material/CssBaseline";
+window.Buffer = require("buffer/").Buffer;
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

@@ -2,11 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface Profile {
-  username: string;
-  avatarUrl: string;
-  walletAddress: string;
-  coverUrl: string;
-  userId: number;
+  username?: string;
+  avatarUrl?: string;
+  walletAddress?: `0x${string}`;
+  coverUrl?: string;
+  userId?: number;
 }
 interface AuthState {
   accessToken: string;
@@ -18,7 +18,7 @@ const initialState: AuthState = {
   profile: {
     username: "",
     avatarUrl: "",
-    walletAddress: "",
+    walletAddress: "0x",
     coverUrl: "",
     userId: -1,
   },

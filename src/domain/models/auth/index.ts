@@ -8,7 +8,7 @@ export interface Auth {
 
 export interface Profile {
   userId: number;
-  walletAddress: string;
+  walletAddress: `0x${string}`;
   username: string;
   avatarUrl: string;
   coverUrl: string;
