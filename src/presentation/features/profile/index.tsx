@@ -7,6 +7,7 @@ import Post from "src/presentation/components/post";
 import { useQuery } from "@apollo/client";
 import { GET_MY_POSTS, GET_PURCHASED_POSTS } from "src/data/graphql/queries";
 import { useAppSelector } from "src/data/redux/Hooks";
+import PostLoading from "src/presentation/components/loading/post";
 
 import useProfile from "./useProfile";
 import {
@@ -83,7 +84,7 @@ const Profile = () => {
       case 1:
         return renderPurchasedPost();
       case 2:
-        return <></>;
+        return null;
       default:
         return null;
     }

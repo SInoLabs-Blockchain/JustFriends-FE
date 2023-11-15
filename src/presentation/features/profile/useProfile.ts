@@ -5,6 +5,8 @@ import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 import { setProfile } from "src/data/redux/auth/AuthReducer";
 import { toast } from "react-toastify";
 import { ROUTE } from "src/common/constants/route";
+import { GET_MY_POSTS, GET_PURCHASED_POSTS } from "src/data/graphql/queries";
+import { useLazyQuery } from "@apollo/client";
 
 const TABS = [
   { id: 0, name: "My posts" },
