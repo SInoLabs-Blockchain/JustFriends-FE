@@ -33,6 +33,10 @@ const useHome = () => {
 
   const { accessToken } = useAppSelector((state) => state.auth);
 
+  const navigateToProfile = () => {
+    navigate(ROUTE.PROFILE);
+  };
+
   const copyAddress = async () => {
     await navigator.clipboard.writeText("This is the text to be");
   };
@@ -76,7 +80,7 @@ const useHome = () => {
         });
         await writeContract({
           address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-          abi: JustFriendsABI,
+          abi: JustFriendsABI.abi,
           functionName: "postContent",
           args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
         });
@@ -99,7 +103,7 @@ const useHome = () => {
 
       const data = await readContract({
         address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
-        abi: JustFriendsABI,
+        abi: JustFriendsABI.abi,
         functionName: "getContentsInfo",
         args: [res.map((content) => `0x${content.contentHash}`)],
       });

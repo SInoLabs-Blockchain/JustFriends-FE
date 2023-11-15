@@ -2,6 +2,7 @@ import Home from "src/presentation/features/home";
 import Profile from "src/presentation/features/profile";
 import PostDetails from "src/presentation/features/postDetails";
 import EditProfile from "src/presentation/features/profile/editProfile";
+import CreatorProfile from "src/presentation/features/creatorProfile";
 import Search from "../features/search";
 import ErrorPage from "../features/error";
 import { ROUTE } from "src/common/constants/route";
@@ -31,6 +32,11 @@ export const appRoutes = [
   {
     path: ROUTE.EDIT_PROFILE,
     component: EditProfile,
+    isPrivate: true,
+  },
+  {
+    path: ROUTE.CREATOR_PROFILE,
+    component: CreatorProfile,
     isPrivate: true,
   },
 ];

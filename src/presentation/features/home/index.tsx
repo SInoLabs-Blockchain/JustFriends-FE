@@ -8,7 +8,7 @@ import useHome from "./useHome";
 
 const Home = () => {
   const { posts, openModal, handleToggleModal, handleRemoveText } = useHome();
-
+  
   return (
     <HomeContainer>
       <Menu />
