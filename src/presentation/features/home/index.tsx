@@ -1,4 +1,4 @@
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "src/presentation/components/layout/menu";
 import Post from "src/presentation/components/post";
 import ModalCreatePost from "./components/ModalCreatePost";
@@ -8,20 +8,21 @@ import { HomeContainer, PostsContainer, LoadingWrapper } from "./styles";
 import useHome from "./useHome";
 
 const Home = () => {
-  const { posts, openModal, loading, handleToggleModal, handleRemoveText } = useHome();
+  const { posts, openModal, loading, handleToggleModal, handleRemoveText } =
+    useHome();
 
   const renderPostSection = () => (
     <PostsContainer>
       <PostInput onToggleModal={handleToggleModal} />
-      {loading ?
+      {loading ? (
         <LoadingWrapper>
           <CircularProgress size={30} thickness={5} />
         </LoadingWrapper>
-        : posts.map((post: any) => (
-          <Post key={post.contentHash} data={post} />
-        ))}
+      ) : (
+        posts.map((post: any) => <Post key={post.contentHash} data={post} />)
+      )}
     </PostsContainer>
-  )
+  );
 
   return (
     <HomeContainer>

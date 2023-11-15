@@ -1,14 +1,15 @@
-import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
-import COLOR from "src/presentation/theme/Color";
-import { DollarIcon, EducationIcon } from "src/presentation/theme/assets/icons";
 import Post from "src/presentation/components/post";
-import { useQuery } from "@apollo/client";
-import { GET_MY_POSTS, GET_PURCHASED_POSTS } from "src/data/graphql/queries";
-import { useAppSelector } from "src/data/redux/Hooks";
+import COLOR from "src/presentation/theme/Color";
+import {
+  Share2Icon,
+  FanIcon,
+  WalletIcon,
+} from "src/presentation/theme/assets/icons";
+import { shortenAddress } from "src/common/utils";
 
-import useProfile from "./useProfile";
+import useCreatorProfile from "./useCreatorProfile";
 import {
   BackgroundProfileImg,
   Container,
@@ -31,18 +32,8 @@ const data = {
   holder: 312,
 };
 
-const Profile = () => {
-  const { profile } = useAppSelector((state) => state.auth);
-  const { tab, TABS, onChangeTab, navigateToEditProfile, getPosts } =
-    useProfile();
-
-  const { data: contentMyPosts } = useQuery(GET_MY_POSTS, {
-    variables: { creator: profile?.walletAddress.toLocaleLowerCase() },
-  });
-
-  const { data: contentpurchasedPosts } = useQuery(GET_PURCHASED_POSTS, {
-    variables: { buyer: profile?.walletAddress.toLocaleLowerCase() },
-  });
+const CreatorProfile = () => {
+  const { tab, TABS, onChangeTab } = useCreatorProfile();
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -93,17 +84,19 @@ const Profile = () => {
     <LeftContent>
       <Box className="user-information-container">
         <Box className="user-information__content">
-          <Typography className="user-information__name">Jerry Kane</Typography>
+          <Typography className="user-information__name">
+            Jerry Kane <FanIcon />
+          </Typography>
           <Box className="user-information__content-container flex-center">
-            <EducationIcon />
+            <WalletIcon />
             <Typography className="user-information__content-title">
-              Credit score: <span>1900</span>
+              {shortenAddress("0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028")}
             </Typography>
           </Box>
           <Box className="user-information__content-container flex-center">
-            <DollarIcon />
+            <Share2Icon />
             <Typography className="user-information__content-title">
-              Total earn: <span>100 KLAY</span>
+              Number of share: <span> 151825</span>
             </Typography>
           </Box>
         </Box>
@@ -139,11 +132,7 @@ const Profile = () => {
         </Box>
       </Box>
       <Box className="user-information__button">
-        <CustomButton
-          title="Edit Profile"
-          backgroundColor={COLOR.linear}
-          onClick={navigateToEditProfile}
-        />
+        <CustomButton title="Subscribe" backgroundColor={COLOR.linear} />
       </Box>
     </LeftContent>
   );
@@ -161,20 +150,6 @@ const Profile = () => {
       {renderRightContent()}
     </Box>
   );
-
-  useEffect(() => {
-    switch (tab.name) {
-      case TABS[0].name:
-        getPosts(contentMyPosts);
-        break;
-      case TABS[1].name:
-        getPosts(contentpurchasedPosts);
-        break;
-      default:
-        getPosts(contentMyPosts);
-        break;
-    }
-  }, [tab]);
 
   return (
     <Container>
@@ -198,4 +173,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default CreatorProfile;

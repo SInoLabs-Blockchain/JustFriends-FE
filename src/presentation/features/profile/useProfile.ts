@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
@@ -31,6 +31,8 @@ const useProfile = () => {
   const [coverUrl, setCoverUrl] = useState(
     "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
   );
+  const [myPosts, setMyPosts] = useState<any>([]);
+  const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
 
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
@@ -66,14 +68,29 @@ const useProfile = () => {
     }
   };
 
+  const getPosts = async (contentPosts: any) => {
+    const posts = contentPosts?.contentEntities;
+
+    if (tab.name === TABS[0].name) {
+      setMyPosts(posts);
+    } else if (tab.name === TABS[1].name) {
+      setPurchasedPosts(posts);
+    }
+
+    console.log(posts);
+  };
+
   return {
     tab,
     TABS,
     username,
+    myPosts,
+    purchasedPosts,
     onChangeTab,
     navigateToEditProfile,
     onEditProfile,
     onChangeUsername,
+    getPosts,
   };
 };
 
