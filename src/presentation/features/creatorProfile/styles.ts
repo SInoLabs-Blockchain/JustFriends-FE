@@ -65,13 +65,16 @@ const LeftContent = styled("div")({
         fontSize: 24,
         lineHeight: "32px",
         color: COLOR.neutral.neutral_1,
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
       },
 
       ".user-information__content-container": {
         gap: 8,
 
         ".user-information__content-title": {
-          fontFamily: "Bold",
+          fontFamily: "Semibold",
           fontSize: 14,
           color: COLOR.neutral.neutral_4,
           lineHeight: "18px",
@@ -133,17 +136,6 @@ const LeftContent = styled("div")({
 
 const RightContent = styled("div")({
   width: "70%",
-
-  ".no-data-container": {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    svg: {
-      height: 100,
-      width: 100,
-    },
-  },
 });
 
 const TabMenuContainer = styled("div")({
