@@ -19,7 +19,7 @@ const GET_MY_POSTS = gql`
 
 const GET_PURCHASED_POSTS = gql`
   query GetPurchasedPosts($account: String!) {
-    userPostEntities(where: { account: $account }) {
+    userPostEntities(where: { isOwner: false, account: $account }) {
       content
     }
   }

@@ -2,6 +2,7 @@ import { ProfileUseCase } from "../../domain/useCases/ProfileUseCase";
 import APIGateWay from "../gateway/APIGateway";
 import ProfileResource from "../gateway/resource/ProfileResource";
 import { Profile } from "src/domain/models/auth";
+import { Post } from "src/domain/models/home/Post";
 
 export class ProfileRepository implements ProfileUseCase {
   static create(): ProfileUseCase {
@@ -23,6 +24,13 @@ export class ProfileRepository implements ProfileUseCase {
       avatarUrl,
       username,
       coverUrl,
+    });
+  }
+
+  async getPosts(accessToken: string, contentHashes: any): Promise<Post[]> {
+    let api = new APIGateWay({ Authorization: `Bearer ${accessToken}` });
+    return api.post(ProfileResource.PROFILE_ROUTES.LIST_OF_POSTS, {
+      contentHashes,
     });
   }
 }

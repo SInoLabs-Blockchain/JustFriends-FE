@@ -4,6 +4,7 @@ import COLOR from "src/presentation/theme/Color";
 import { DollarIcon, EducationIcon } from "src/presentation/theme/assets/icons";
 import Post from "src/presentation/components/post";
 import PostLoading from "src/presentation/components/loading/post";
+import { useAppSelector } from "src/data/redux/Hooks";
 
 import useProfile from "./useProfile";
 import {
@@ -16,25 +17,22 @@ import {
   PostsContainer,
 } from "./styles";
 
-const data = {
-  creator: {
-    name: "Donald Trump",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png",
-  },
-  content:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  upvote: 125,
-  downvote: 18,
-  holder: 312,
-};
-
 const Profile = () => {
-  const { tab, TABS, onChangeTab, navigateToEditProfile, getPosts } =
-    useProfile();
+  const {
+    tab,
+    TABS,
+    myPosts,
+    purchasedPosts,
+    loadingContentMyPosts,
+    loadinContentPurchasedPosts,
+    onChangeTab,
+    navigateToEditProfile,
+  } = useProfile();
+
+  const { profile } = useAppSelector((state) => state.auth);
 
   const renderNoData = () => (
     <Box className="no-data-container">
-      {/* <NoDataIcon /> */}
       <Typography>No Posts</Typography>
     </Box>
   );
@@ -55,19 +53,21 @@ const Profile = () => {
 
   const renderMyPosts = () => (
     <PostsContainer>
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
+      {loadingContentMyPosts ? (
+        <PostLoading />
+      ) : (
+        myPosts?.map((post: any) => <Post data={post} />)
+      )}
     </PostsContainer>
   );
 
   const renderPurchasedPost = () => (
     <PostsContainer>
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
+      {loadinContentPurchasedPosts ? (
+        <PostLoading />
+      ) : (
+        purchasedPosts?.map((post: any) => <Post data={post} />)
+      )}
     </PostsContainer>
   );
 
@@ -78,7 +78,7 @@ const Profile = () => {
       case 1:
         return renderPurchasedPost();
       case 2:
-        return renderNoData();
+        return <></>;
       default:
         return null;
     }
@@ -88,7 +88,9 @@ const Profile = () => {
     <LeftContent>
       <Box className="user-information-container">
         <Box className="user-information__content">
-          <Typography className="user-information__name">Jerry Kane</Typography>
+          <Typography className="user-information__name">
+            {profile?.username}
+          </Typography>
           <Box className="user-information__content-container flex-center">
             <EducationIcon />
             <Typography className="user-information__content-title">

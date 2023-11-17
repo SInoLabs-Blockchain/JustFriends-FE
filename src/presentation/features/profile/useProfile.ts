@@ -6,7 +6,9 @@ import { setProfile } from "src/data/redux/auth/AuthReducer";
 import { toast } from "react-toastify";
 import { ROUTE } from "src/common/constants/route";
 import { GET_MY_POSTS, GET_PURCHASED_POSTS } from "src/data/graphql/queries";
-import { useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { readContract } from "@wagmi/core";
+import JustFriendsABI from "src/common/abis/JustFriends.json";
 
 const TABS = [
   { id: 0, name: "My posts" },
@@ -36,10 +38,16 @@ const useProfile = () => {
   const [myPosts, setMyPosts] = useState<any>([]);
   const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
 
-  const [getContentMyPosts, { data: contentMyPosts }] =
-    useLazyQuery(GET_MY_POSTS);
-  const [getContentPurchasedPosts, { data: contentPurchasedPosts }] =
-    useLazyQuery(GET_PURCHASED_POSTS);
+  const { loading: loadingContentMyPosts, data: contentMyPosts } = useQuery(
+    GET_MY_POSTS,
+    {
+      variables: { creator: profile?.walletAddress.toLocaleLowerCase() },
+    }
+  );
+  const { loading: loadinContentPurchasedPosts, data: contentPurchasedPosts } =
+    useQuery(GET_PURCHASED_POSTS, {
+      variables: { account: profile?.walletAddress.toLocaleLowerCase() },
+    });
 
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
@@ -75,23 +83,56 @@ const useProfile = () => {
     }
   };
 
+  const getContentPosts = async (hashes: any) => {
+    const profileRepository = ProfileRepository.create();
+
+    try {
+      const res = await profileRepository.getPosts(accessToken, hashes);
+
+      const data = await readContract({
+        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
+        abi: JustFriendsABI.abi,
+        functionName: "getContentsInfo",
+        args: [hashes],
+      });
+
+      const posts = res.map((post: object, index: number) => {
+        // @ts-ignore
+        return { ...post, ...data[index] };
+      });
+
+      return posts;
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
   const getPosts = async () => {
     if (tab.id === 0) {
-      getContentMyPosts({
-        variables: { creator: profile?.walletAddress.toLocaleLowerCase() },
-      });
-      setMyPosts(contentMyPosts);
+      if (!loadingContentMyPosts && contentMyPosts?.contentEntities) {
+        const contentPosts = await getContentPosts(
+          contentMyPosts?.contentEntities.map((content: any) => content.hash)
+        );
+        setMyPosts(contentPosts);
+      }
     } else if (tab.id === 1) {
-      getContentPurchasedPosts({
-        variables: { account: profile?.walletAddress.toLocaleLowerCase() },
-      });
-      setPurchasedPosts(contentPurchasedPosts);
+      if (
+        !loadinContentPurchasedPosts &&
+        contentPurchasedPosts?.userPostEntities
+      ) {
+        const contentPosts = await getContentPosts(
+          contentPurchasedPosts?.userPostEntities.map(
+            (content: any) => content.content
+          )
+        );
+        setPurchasedPosts(contentPosts);
+      }
     }
   };
 
   useEffect(() => {
     getPosts();
-  }, [tab]);
+  }, [tab, contentMyPosts, contentPurchasedPosts]);
 
   return {
     tab,
@@ -99,6 +140,8 @@ const useProfile = () => {
     username,
     myPosts,
     purchasedPosts,
+    loadingContentMyPosts,
+    loadinContentPurchasedPosts,
     onChangeTab,
     navigateToEditProfile,
     onEditProfile,
