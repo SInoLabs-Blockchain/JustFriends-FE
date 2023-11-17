@@ -25,11 +25,6 @@ export const requestToRelayer = async (params: Params) => {
     params: [params, process.env.REACT_APP_ENTRY_POINT_ADDRESS],
   };
 
-  console.log({
-    params: params,
-    entrypoint: process.env.REACT_APP_ENTRY_POINT_ADDRESS,
-  });
-
   try {
     const relayer_url = process.env.REACT_APP_RELAYER_URL || "";
     const res = await axios.post(relayer_url, jsonData);

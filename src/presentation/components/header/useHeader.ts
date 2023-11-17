@@ -137,16 +137,16 @@ const useHeader = () => {
       );
       const startFrom = Math.floor(Date.now() / 1e3);
       const validUntil = startFrom + 86400;
-      console.log({ startFrom, validUntil });
-
       const sessionAccount = ethers.Wallet.createRandom();
       const totalAmount = web3.utils.toBigInt("1000000000000000000");
+
       const callData = getCallDataAddSession({
         sessionUser: sessionAccount.address,
         startFrom,
         validUntil,
         totalAmount,
       });
+
       const userOp = await fillUserOp(
         {
           sender: accountAddress,
@@ -158,6 +158,7 @@ const useHeader = () => {
         },
         entryPointContract
       );
+
       const signedUserOp = await signUserOp({
         op: {
           ...userOp,
@@ -167,7 +168,6 @@ const useHeader = () => {
         entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
         chainId: BAOBAB_CONFIG.id,
       });
-      console.log({ signedUserOp });
 
       await requestToRelayer(signedUserOp);
       return {
@@ -214,7 +214,6 @@ const useHeader = () => {
         toast.success("Connect Successfully");
       } else {
         const owner = ethers.Wallet.createRandom();
-        console.log({ ownerPrivateKey: owner.privateKey });
 
         const encryptedOwnerPrivateKey = await web3.eth.accounts.encrypt(
           owner.privateKey,
@@ -241,7 +240,6 @@ const useHeader = () => {
           owner.privateKey,
           randNum
         );
-        console.log({ sessionAddress });
 
         const encryptedSessionPrivateKey = await web3.eth.accounts.encrypt(
           sessionPrivateKey,
@@ -300,32 +298,6 @@ const useHeader = () => {
       setLoading(false);
     }
   };
-
-  useWeb3ModalEvents(async (event) => {
-    if (event.name === "ACCOUNT_CONNECTED") {
-      try {
-        const walletClient = await getWalletClient();
-        // @ts-ignore: Unreachable code error
-        const accounts = await walletClient?.getAddresses();
-        // @ts-ignore: Unreachable code error
-        const account = accounts[0];
-        const { challenge } = await authRepository.connectWallet(account);
-        // @ts-ignore: Unreachable code error
-        const signature = await walletClient?.signMessage({
-          account,
-          message: challenge,
-        });
-        const res = await authRepository.login(account, signature);
-        dispatch(setAuth(res.accessToken));
-        localStorage.setItem("accessToken", res.accessToken);
-        toast.success("Connect Successfully");
-      } catch (error) {
-        toast.error("Connect Failed");
-        console.log({ error });
-        // TODO: Handle login BE failed
-      }
-    }
-  });
 
   useEffect(() => {
     reAuth();

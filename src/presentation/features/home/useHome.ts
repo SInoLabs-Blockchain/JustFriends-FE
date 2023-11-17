@@ -107,20 +107,12 @@ const useHome = () => {
             contentHash: `0x${contentHash}`,
             startedPrice: parseEther(option.id ? "0" : "0.01"),
           });
-          console.log({ msgCallData });
-          console.log({
-            value: parseEther("0"),
-            target: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-            msgDataEncode: msgCallData,
-          });
 
           const callData = getCallDataEntryPoint({
             value: parseEther("0"),
             target: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             msgDataEncode: msgCallData,
           });
-          console.log({ callData });
-          console.log({ sender: account.contractAddress });
           const op = await fillUserOp(
             {
               sender: account.contractAddress,
@@ -132,7 +124,6 @@ const useHome = () => {
             },
             entryPointContract
           );
-          console.log({ op });
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
             "111111"
@@ -147,8 +138,7 @@ const useHome = () => {
             chainId: BAOBAB_CONFIG.id,
             sessionUser: sessionAccount.address,
           });
-          const res = await requestToRelayer(signedUserOp);
-          console.log(res);
+          await requestToRelayer(signedUserOp);
         }
         onToggleModal();
         onRemoveText();
@@ -179,7 +169,6 @@ const useHome = () => {
       });
 
       const posts = res.map((post: object, index: number) => {
-        console.log({ index });
         // @ts-ignore
         return { ...post, ...data[index] };
       });

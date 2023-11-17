@@ -44,8 +44,6 @@ const Header = () => {
   const page = location.pathname.split("/")[1];
   const isSearching = page === "search";
   const { accessToken } = useAppSelector((state) => state.auth);
-  console.log({ address });
-
   const { data: balance } = useBalance({
     address,
     watch: true,

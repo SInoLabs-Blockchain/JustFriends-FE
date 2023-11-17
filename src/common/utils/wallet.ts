@@ -199,7 +199,6 @@ export async function fillUserOp(
   if (op1.callGasLimit == null && op.callData != null) {
     if (provider == null)
       throw new Error("must have entryPoint for callGasLimit estimate");
-    console.log({ op1 });
 
     const gasEtimated = await provider.eth.estimateGas({
       from: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
@@ -350,7 +349,10 @@ export async function signUserOp({
     Buffer.from(arrayify(privateKey))
   );
   const signedMessage = ethereumjs.toRpcSig(sig.v, sig.r, sig.s);
-  const res = hexConcat([sessionUser, signedMessage]);
+  let res = signedMessage;
+  if (sessionUser) {
+    res = hexConcat([sessionUser, signedMessage]);
+  }
   return {
     ...newOp,
     signature: sessionUser ? res : signedMessage,
@@ -373,8 +375,6 @@ export const getCallDataAddSession = ({
 };
 
 export const getCallDataCreatePost = ({ contentHash, startedPrice }: any) => {
-  console.log({ contentHash, startedPrice });
-
   const msgData = web3.eth.abi.encodeFunctionCall(ABI_FUNCTION.POST_CONTENT, [
     contentHash,
     startedPrice,
