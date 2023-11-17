@@ -1,8 +1,19 @@
-import { CustomizedButton } from './styles';
+import { CustomizedButton } from "./styles";
 
-const CustomButton = ({ title, sm, backgroundColor, ...props }: any) => {
+const CustomButton = ({
+  title,
+  disabled,
+  sm,
+  backgroundColor,
+  ...props
+}: any) => {
   return (
-    <CustomizedButton sm={sm} backgroundColor={backgroundColor} {...props}>
+    <CustomizedButton
+      sm={sm}
+      disabled={disabled}
+      backgroundColor={backgroundColor}
+      {...props}
+    >
       {title}
     </CustomizedButton>
   );

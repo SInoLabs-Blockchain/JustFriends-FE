@@ -10,6 +10,7 @@ import { store } from "./data/redux/Store";
 import useWagmi from "./presentation/hooks/useWagmi";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { appRoutes } from "./presentation/router/appRoutes";
+import { MetaMaskProvider } from "@metamask/sdk-react";
 
 // fonts
 import "./presentation/theme/assets/fonts/Gilroy-Bold.ttf";
@@ -24,7 +25,18 @@ const App = () => {
   const router = createBrowserRouter(appRoutes);
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <MetaMaskProvider
+        debug={false}
+        sdkOptions={{
+          checkInstallationImmediately: false,
+          dappMetadata: {
+            name: "JustFriends",
+            url: window.location.host,
+          },
+        }}
+      >
+        <RouterProvider router={router} />
+      </MetaMaskProvider>
       <WagmiConfig config={wagmiConfig}>
         <RootContainer />
       </WagmiConfig>
