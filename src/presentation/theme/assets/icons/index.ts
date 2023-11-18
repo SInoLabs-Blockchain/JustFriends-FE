@@ -29,3 +29,5 @@ export { ReactComponent as EducationIcon } from "src/presentation/theme/assets/i
 export { ReactComponent as DollarIcon } from "src/presentation/theme/assets/icons/dollar.svg";
 export { ReactComponent as InfoIcon } from "src/presentation/theme/assets/icons/info-circle.svg";
 export { ReactComponent as UploadIcon } from "src/presentation/theme/assets/icons/upload.svg";
+export { ReactComponent as Share2Icon } from "src/presentation/theme/assets/icons/share2.svg";
+export { ReactComponent as FanIcon } from "src/presentation/theme/assets/icons/fan.svg";

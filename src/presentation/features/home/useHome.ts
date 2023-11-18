@@ -8,7 +8,7 @@ import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useQuery } from '@apollo/client';
+import { useQuery } from "@apollo/client";
 import { GET_NEW_POSTS } from "src/data/graphql/queries";
 import { OptionState } from "./types";
 import { useAccount } from "wagmi";
@@ -97,7 +97,11 @@ const useHome = () => {
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
             functionName: "postContent",
-            args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
+            args: [
+              `0x${contentHash}`,
+              parseEther(option.id ? "0" : "0.01"),
+              option.value === FREE_POSTS ? false : true,
+            ],
             account: profile?.walletAddress,
           });
         } else {
@@ -162,12 +166,16 @@ const useHome = () => {
 
   const getListOfPostsByType = async () => {
     if (data && !loading) {
-      const contentHashes = data?.contentEntities.map((content: any) => content.hash)
+      const contentHashes = data?.contentEntities.map(
+        (content: any) => content.hash
+      );
 
       try {
         const result = await homeRepository.getPosts(contentHashes);
-        const filteredArray = result.filter(item => item.type === (isFreePosts ? FREE_POSTS : PAID_POSTS))
-        const orderedPosts = orderByTimeCreated(filteredArray)
+        const filteredArray = result.filter(
+          (item) => item.type === (isFreePosts ? FREE_POSTS : PAID_POSTS)
+        );
+        const orderedPosts = orderByTimeCreated(filteredArray);
         setPosts(orderedPosts);
       } catch (error) {
         console.log({ error });
@@ -179,8 +187,8 @@ const useHome = () => {
     getListOfPostsByType();
 
     return () => {
-      setPosts([])
-    }
+      setPosts([]);
+    };
   }, [isFreePosts, data, loading]);
 
   return {
@@ -205,7 +213,7 @@ const useHome = () => {
     handleSharePost,
     navigateToProfile,
     handleRemoveText,
-    getListOfPostsByType
+    getListOfPostsByType,
   };
 };
 

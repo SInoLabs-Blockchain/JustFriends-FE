@@ -1,12 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
-import COLOR from "src/presentation/theme/Color";
-import { DollarIcon, EducationIcon } from "src/presentation/theme/assets/icons";
 import Post from "src/presentation/components/post";
+import COLOR from "src/presentation/theme/Color";
+import {
+  Share2Icon,
+  FanIcon,
+  WalletIcon,
+} from "src/presentation/theme/assets/icons";
+import { shortenAddress } from "src/common/utils";
 import PostLoading from "src/presentation/components/loading/post";
-import { useAppSelector } from "src/data/redux/Hooks";
 
-import useProfile from "./useProfile";
+import useCreatorProfile from "./useCreatorProfile";
 import {
   BackgroundProfileImg,
   Container,
@@ -17,19 +21,29 @@ import {
   PostsContainer,
 } from "./styles";
 
-const Profile = () => {
+const data = {
+  creator: {
+    name: "Donald Trump",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png",
+  },
+  content:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  upvote: 125,
+  downvote: 18,
+  holder: 312,
+};
+
+const CreatorProfile = () => {
   const {
     tab,
     TABS,
-    myPosts,
     purchasedPosts,
-    loadingContentMyPosts,
-    loadinContentPurchasedPosts,
+    unpurchasedPosts,
+    freePosts,
+    loadingContentFreePosts,
+    loadingContentPaidPosts,
     onChangeTab,
-    navigateToEditProfile,
-  } = useProfile();
-
-  const { profile } = useAppSelector((state) => state.auth);
+  } = useCreatorProfile();
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -45,19 +59,9 @@ const Profile = () => {
     </TabMenuContainer>
   );
 
-  const renderMyPosts = () => (
+  const renderPurchasedPosts = () => (
     <PostsContainer>
-      {loadingContentMyPosts ? (
-        <PostLoading />
-      ) : (
-        myPosts?.map((post: any) => <Post key={post.contentHash} data={post} />)
-      )}
-    </PostsContainer>
-  );
-
-  const renderPurchasedPost = () => (
-    <PostsContainer>
-      {loadinContentPurchasedPosts ? (
+      {loadingContentPaidPosts ? (
         <PostLoading />
       ) : (
         purchasedPosts?.map((post: any) => (
@@ -67,14 +71,38 @@ const Profile = () => {
     </PostsContainer>
   );
 
+  const renderUnpurchasedPost = () => (
+    <PostsContainer>
+      {loadingContentPaidPosts ? (
+        <PostLoading />
+      ) : (
+        unpurchasedPosts?.map((post: any) => (
+          <Post key={post.contentHash} data={post} />
+        ))
+      )}
+    </PostsContainer>
+  );
+
+  const renderFreePosts = () => (
+    <PostsContainer>
+      {loadingContentFreePosts ? (
+        <PostLoading />
+      ) : (
+        freePosts?.map((post: any) => (
+          <Post key={post.contentHash} data={post} />
+        ))
+      )}
+    </PostsContainer>
+  );
+
   const renderTabContent = () => {
     switch (tab.id) {
       case 0:
-        return renderMyPosts();
+        return renderPurchasedPosts();
       case 1:
-        return renderPurchasedPost();
+        return renderUnpurchasedPost();
       case 2:
-        return <></>;
+        return renderFreePosts();
       default:
         return null;
     }
@@ -85,18 +113,18 @@ const Profile = () => {
       <Box className="user-information-container">
         <Box className="user-information__content">
           <Typography className="user-information__name">
-            {profile?.username}
+            Jerry Kane <FanIcon />
           </Typography>
           <Box className="user-information__content-container flex-center">
-            <EducationIcon />
+            <WalletIcon />
             <Typography className="user-information__content-title">
-              Credit score: <span>1900</span>
+              {shortenAddress("0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028")}
             </Typography>
           </Box>
           <Box className="user-information__content-container flex-center">
-            <DollarIcon />
+            <Share2Icon />
             <Typography className="user-information__content-title">
-              Total earn: <span>100 KLAY</span>
+              Number of share: <span> 151825</span>
             </Typography>
           </Box>
         </Box>
@@ -132,11 +160,7 @@ const Profile = () => {
         </Box>
       </Box>
       <Box className="user-information__button">
-        <CustomButton
-          title="Edit Profile"
-          backgroundColor={COLOR.linear}
-          onClick={navigateToEditProfile}
-        />
+        <CustomButton title="Subscribe" backgroundColor={COLOR.linear} />
       </Box>
     </LeftContent>
   );
@@ -177,4 +201,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default CreatorProfile;
