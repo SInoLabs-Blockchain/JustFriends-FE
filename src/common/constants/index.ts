@@ -1,6 +1,4 @@
 // Generic constants can be used many places in the application
-const BORDER_RADIUS = 16;
-
 const POST_OPTIONS = [
   {
     id: 1,
@@ -22,4 +20,4 @@ const LOGIN_STEPS = {
   CREATE_PASSWORD: 2,
 };
 
-export { BORDER_RADIUS, POST_OPTIONS, FREE_POSTS, PAID_POSTS, LOGIN_STEPS };
+export { POST_OPTIONS, FREE_POSTS, PAID_POSTS, LOGIN_STEPS };

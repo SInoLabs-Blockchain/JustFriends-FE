@@ -2,6 +2,7 @@
 // Example: String manipulation functions, math libraries
 
 import BigNumber from "bignumber.js";
+import { Post } from "src/domain/models/home/Post";
 
 const getMonthInText = (month: number) => {
   switch (month) {
@@ -73,4 +74,37 @@ const randomNumber = () => {
   return scaledValue.integerValue(BigNumber.ROUND_FLOOR).toString();
 };
 
-export { shortenAddress, formatDate, formatBalance, randomNumber };
+const timeAgo = (input: any) => {
+  const date = (input instanceof Date) ? input : new Date(input);
+  const formatter = new Intl.RelativeTimeFormat('en');
+  const ranges = [
+    ['years', 3600 * 24 * 365],
+    ['months', 3600 * 24 * 30],
+    ['weeks', 3600 * 24 * 7],
+    ['days', 3600 * 24],
+    ['hours', 3600],
+    ['minutes', 60],
+    ['seconds', 1],
+  ] as const;
+  const secondsElapsed = (date.getTime() - Date.now()) / 1000;
+
+  for (const [rangeType, rangeVal] of ranges) {
+    if (rangeVal < Math.abs(secondsElapsed)) {
+      const delta = secondsElapsed / rangeVal;
+      return formatter.format(Math.round(delta), rangeType);
+    }
+  }
+}
+
+const orderByTimeCreated = (posts: Array<Post>) => {
+  if (posts.length === 0) return []
+
+  return posts.sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    // @ts-ignore
+    return dateB - dateA;
+  });
+}
+
+export { shortenAddress, formatDate, formatBalance, randomNumber, timeAgo, orderByTimeCreated };

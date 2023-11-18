@@ -8,6 +8,8 @@ import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useQuery } from '@apollo/client';
+import { GET_NEW_POSTS } from "src/data/graphql/queries";
 import { OptionState } from "./types";
 import { useAccount } from "wagmi";
 import Web3 from "web3";
@@ -21,10 +23,13 @@ import entryPointAbi from "src/common/abis/IEntryPoint.json";
 import justFriendAbi from "src/common/abis/JustFriends.json";
 import { BAOBAB_CONFIG } from "src/data/config/chains";
 import { requestToRelayer } from "src/presentation/services";
+import { orderByTimeCreated } from "src/common/utils";
+import { Post } from "src/domain/models/home/Post";
 
 const useHome = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
+  const { loading, error, data } = useQuery(GET_NEW_POSTS);
 
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
@@ -37,7 +42,7 @@ const useHome = () => {
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [baseFee, setBaseFee] = useState<string>("");
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
-  const [posts, setPosts] = useState<any>([]);
+  const [posts, setPosts] = useState<Array<Post>>([]);
 
   const homeRepository = HomeRepository.create();
 
@@ -45,7 +50,9 @@ const useHome = () => {
   const { isConnected } = useAccount();
 
   const copyAddress = async () => {
-    await navigator.clipboard.writeText("This is the text to be");
+    if (profile?.walletAddress) {
+      await navigator.clipboard.writeText(profile.walletAddress);
+    }
   };
 
   const handleToggleModal = () => {
@@ -150,38 +157,31 @@ const useHome = () => {
   };
 
   const navigateToProfile = () => {
-      navigate(ROUTE.PROFILE);
+    navigate(ROUTE.PROFILE);
   };
-  
+
   const getListOfPostsByType = async () => {
-    try {
-      const res = await homeRepository.getPosts({
-        type: isFreePosts ? FREE_POSTS : PAID_POSTS,
-        page: 1,
-        limit: 10,
-      });
+    if (data && !loading) {
+      const contentHashes = data?.contentEntities.map((content: any) => content.hash)
 
-      const data = await readContract({
-        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
-        abi: justFriendAbi.abi,
-        functionName: "getContentsInfo",
-        args: [res.map((content) => `0x${content.contentHash}`)],
-      });
-
-      const posts = res.map((post: object, index: number) => {
-        // @ts-ignore
-        return { ...post, ...data[index] };
-      });
-
-      setPosts(posts);
-    } catch (error) {
-      console.log({ error });
+      try {
+        const result = await homeRepository.getPosts(contentHashes);
+        const filteredArray = result.filter(item => item.type === (isFreePosts ? FREE_POSTS : PAID_POSTS))
+        const orderedPosts = orderByTimeCreated(filteredArray)
+        setPosts(orderedPosts);
+      } catch (error) {
+        console.log({ error });
+      }
     }
   };
 
   useEffect(() => {
     getListOfPostsByType();
-  }, [isFreePosts]);
+
+    return () => {
+      setPosts([])
+    }
+  }, [isFreePosts, data, loading]);
 
   return {
     posts,
@@ -192,6 +192,9 @@ const useHome = () => {
     textareaHeight,
     baseFee,
     isFreePosts,
+    profile,
+    data,
+    loading,
     setBaseFee,
     setIsFreePosts,
     copyAddress,
@@ -202,6 +205,7 @@ const useHome = () => {
     handleSharePost,
     navigateToProfile,
     handleRemoveText,
+    getListOfPostsByType
   };
 };
 

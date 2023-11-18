@@ -4,7 +4,7 @@ const urlsToCache = ['index.html', 'offline.html'];
 this.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Opend Cache');
+      // console.log('Opend Cache');
       return cache.addAll(urlsToCache);
     })
   );

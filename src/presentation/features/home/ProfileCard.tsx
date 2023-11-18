@@ -3,11 +3,9 @@ import { shortenAddress } from "src/common/utils";
 import { WalletIcon } from "src/presentation/theme/assets/icons";
 import { ProfileContainer } from "./styles";
 import useHome from "./useHome";
-import { useAppSelector } from "src/data/redux/Hooks";
 
 const ProfileCard = () => {
-  const { copyAddress, navigateToProfile } = useHome();
-  const { profile } = useAppSelector((state) => state.auth);
+  const { profile, copyAddress, navigateToProfile } = useHome();
 
   const data = {
     name: "Donald J.Trump",

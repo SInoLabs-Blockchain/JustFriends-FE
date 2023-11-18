@@ -9,4 +9,13 @@ const GET_UPVOTES = gql`
   }
 `;
 
-export { GET_UPVOTES };
+const GET_NEW_POSTS = gql`
+  query GetNewPosts {
+    contentEntities {
+      id
+      hash
+    }
+  }
+`;
+
+export { GET_UPVOTES, GET_NEW_POSTS };

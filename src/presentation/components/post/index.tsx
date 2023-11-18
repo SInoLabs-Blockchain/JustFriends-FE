@@ -17,6 +17,7 @@ import {
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
 import { useAppSelector } from "src/data/redux/Hooks";
+import { timeAgo } from "src/common/utils";
 
 interface PropTypes {
   data: any;
@@ -98,7 +99,7 @@ const Post = ({ data }: PropTypes) => {
             </Avatar>
           }
           title={profile?.username}
-          subheader="8 hours ago"
+          subheader={timeAgo(data.createdAt)}
           action={renderRightContent()}
         />
         <CardContent>

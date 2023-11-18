@@ -153,11 +153,11 @@ const TopAuthorHeaderContainer = styled(Box)(() => ({
   justifyContent: "space-between",
 
   ".author__list-label": {
-    fontSize: "14px",
-    fontWeight: 400,
+    fontSize: 14,
     lineHeight: "24px",
     letterSpacing: "0px",
     color: COLOR.neutral.neutral_4,
+    fontFamily: 'Bold'
   },
 
   ".author__list-pagination": {
@@ -272,6 +272,12 @@ const PostInputContainer = styled("div")(() => ({
   },
 }));
 
+const LoadingWrapper = styled("div")(() => ({
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center'
+}));
+
 export {
   HomeContainer,
   MenuContainer,
@@ -281,4 +287,5 @@ export {
   PostsContainer,
   ProfileContainer,
   PostInputContainer,
+  LoadingWrapper
 };

@@ -5,12 +5,11 @@ import { MenuContainer } from "src/presentation/features/home/styles";
 import useHome from "src/presentation/features/home/useHome";
 
 const Menu = () => {
-  const { isFreePosts, setIsFreePosts } = useHome();
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { profile, isFreePosts, setIsFreePosts } = useHome();
 
   return (
     <MenuContainer>
-      {accessToken ? <ProfileCard /> : null}
+      {profile && <ProfileCard />}
       <Filter checked={isFreePosts} setChecked={setIsFreePosts} />
     </MenuContainer>
   );

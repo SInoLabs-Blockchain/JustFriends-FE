@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import COLOR from "src/presentation/theme/Color";
 
 type InputProps = {
-  isselected: boolean;
+  isselected: string;
 };
 
 const Container = styled("div")(({ theme }: any) => ({
@@ -94,7 +94,7 @@ const MenuSection = styled("div")({
   marginTop: 8,
 });
 
-const MenuWrapper = styled("div")<InputProps>(() => ({
+const MenuWrapper = styled("div")<InputProps>(({ isselected }) => ({
   display: "flex",
   alignItems: "center",
   gap: 18,
@@ -107,13 +107,13 @@ const MenuWrapper = styled("div")<InputProps>(() => ({
   },
 
   path: {
-    fill: COLOR.primary,
+    fill: isselected === 'true' ? COLOR.primary : COLOR.neutral.neutral_2,
   },
 }));
 
 const MenuTitle = styled(Typography)<InputProps>(({ isselected }) => ({
   fontFamily: "Bold",
-  color: isselected ? COLOR.primary : COLOR.neutral.neutral_4,
+  color: isselected === 'true' ? COLOR.primary : COLOR.neutral.neutral_4,
 }));
 
 export { Container, StyledSwitch, MenuSection, MenuWrapper, MenuTitle };
