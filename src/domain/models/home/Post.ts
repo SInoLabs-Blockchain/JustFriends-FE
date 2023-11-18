@@ -2,6 +2,7 @@ export interface Post {
   userId: number;
   content: string;
   contentHash?: string;
-  type: number;
+  type: string;
   preview?: string;
+  createdAt: string
 }

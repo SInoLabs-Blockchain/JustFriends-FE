@@ -8,9 +8,11 @@ export class HomeRepository implements HomeUseCase {
     return new HomeRepository();
   }
 
-  async getPosts({ type, page, limit }: any): Promise<Post[]> {
+  async getPosts(contentHashes: string[]): Promise<Post[]> {
     let api = new APIGateWay();
-    return api.get(`${HomeResource.POST_ROUTES.LIST_OF_POSTS}?type=${type}&page=${page}&limit=${limit}`);
+    return api.post(HomeResource.POST_ROUTES.LIST_OF_POSTS, {
+      contentHashes
+    });
   }
 
   async createPost({

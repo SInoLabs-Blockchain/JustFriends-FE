@@ -54,11 +54,11 @@ const Filter = (props: IProps) => {
         {menuItems.map((item: any, index: number) => (
           <MenuWrapper
             key={item.title}
-            isselected={selectedMenuIndex === index}
+            isselected={(selectedMenuIndex === index).toString()}
             onClick={() => _onSelectMenu(index)}
           >
             {item.icon}
-            <MenuTitle isselected={selectedMenuIndex === index}>
+            <MenuTitle isselected={(selectedMenuIndex === index).toString()}>
               {item.title}
             </MenuTitle>
           </MenuWrapper>
