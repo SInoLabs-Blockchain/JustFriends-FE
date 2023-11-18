@@ -1,4 +1,5 @@
 import { Profile } from "../models/auth";
+import { Post } from "src/domain/models/home/Post";
 
 export interface ProfileUseCase {
   editProfile(
@@ -7,4 +8,6 @@ export interface ProfileUseCase {
     username: string,
     coverUrl: string
   ): Promise<Profile | null>;
+
+  getPosts(contentHashes: any): Promise<Post[]>;
 }

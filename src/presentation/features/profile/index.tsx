@@ -1,13 +1,10 @@
-import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import COLOR from "src/presentation/theme/Color";
 import { DollarIcon, EducationIcon } from "src/presentation/theme/assets/icons";
 import Post from "src/presentation/components/post";
-import { useQuery } from "@apollo/client";
-import { GET_MY_POSTS, GET_PURCHASED_POSTS } from "src/data/graphql/queries";
-import { useAppSelector } from "src/data/redux/Hooks";
 import PostLoading from "src/presentation/components/loading/post";
+import { useAppSelector } from "src/data/redux/Hooks";
 
 import useProfile from "./useProfile";
 import {
@@ -20,30 +17,19 @@ import {
   PostsContainer,
 } from "./styles";
 
-const data = {
-  creator: {
-    name: "Donald Trump",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png",
-  },
-  content:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  upvote: 125,
-  downvote: 18,
-  holder: 312,
-};
-
 const Profile = () => {
+  const {
+    tab,
+    TABS,
+    myPosts,
+    purchasedPosts,
+    loadingContentMyPosts,
+    loadinContentPurchasedPosts,
+    onChangeTab,
+    navigateToEditProfile,
+  } = useProfile();
+
   const { profile } = useAppSelector((state) => state.auth);
-  const { tab, TABS, onChangeTab, navigateToEditProfile, getPosts } =
-    useProfile();
-
-  const { data: contentMyPosts } = useQuery(GET_MY_POSTS, {
-    variables: { creator: profile?.walletAddress.toLocaleLowerCase() },
-  });
-
-  const { data: contentpurchasedPosts } = useQuery(GET_PURCHASED_POSTS, {
-    variables: { buyer: profile?.walletAddress.toLocaleLowerCase() },
-  });
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -61,19 +47,21 @@ const Profile = () => {
 
   const renderMyPosts = () => (
     <PostsContainer>
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
+      {loadingContentMyPosts ? (
+        <PostLoading />
+      ) : (
+        myPosts?.map((post: any) => <Post data={post} />)
+      )}
     </PostsContainer>
   );
 
   const renderPurchasedPost = () => (
     <PostsContainer>
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
+      {loadinContentPurchasedPosts ? (
+        <PostLoading />
+      ) : (
+        purchasedPosts?.map((post: any) => <Post data={post} />)
+      )}
     </PostsContainer>
   );
 
@@ -84,7 +72,7 @@ const Profile = () => {
       case 1:
         return renderPurchasedPost();
       case 2:
-        return null;
+        return <></>;
       default:
         return null;
     }
@@ -94,7 +82,9 @@ const Profile = () => {
     <LeftContent>
       <Box className="user-information-container">
         <Box className="user-information__content">
-          <Typography className="user-information__name">Jerry Kane</Typography>
+          <Typography className="user-information__name">
+            {profile?.username}
+          </Typography>
           <Box className="user-information__content-container flex-center">
             <EducationIcon />
             <Typography className="user-information__content-title">
@@ -162,20 +152,6 @@ const Profile = () => {
       {renderRightContent()}
     </Box>
   );
-
-  useEffect(() => {
-    switch (tab.name) {
-      case TABS[0].name:
-        getPosts(contentMyPosts);
-        break;
-      case TABS[1].name:
-        getPosts(contentpurchasedPosts);
-        break;
-      default:
-        getPosts(contentMyPosts);
-        break;
-    }
-  }, [tab]);
 
   return (
     <Container>

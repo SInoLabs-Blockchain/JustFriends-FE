@@ -97,7 +97,11 @@ const useHome = () => {
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
             functionName: "postContent",
-            args: [`0x${contentHash}`, parseEther(option.id ? "0" : "0.01")],
+            args: [
+              `0x${contentHash}`,
+              parseEther(option.id ? "0" : "0.01"),
+              option.value === FREE_POSTS ? false : true,
+            ],
             account: profile?.walletAddress,
           });
         } else {

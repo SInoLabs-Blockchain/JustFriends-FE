@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { GET_FREE_POSTS, GET_PAID_POSTS } from "src/data/graphql/queries";
-import { useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { useAppSelector } from "src/data/redux/Hooks";
+import { readContract } from "@wagmi/core";
+import JustFriendsABI from "src/common/abis/JustFriends.json";
+import { orderByTimeCreated } from "src/common/utils";
+import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 
 const TABS = [
   { id: 0, name: "Purchased posts" },
@@ -22,48 +27,95 @@ const useCreatorProfile = () => {
   const [unpurchasedPosts, setUnpurchasedPosts] = useState<any>([]);
   const [freePosts, setFreePosts] = useState<any>([]);
 
-  const walletAddress = "0x0bc68d7a06259006ae4cb3b8eff737a46bf5912e";
-  const userAddress = "0xc97db9086e854f727db2b2c1462401eaf1eb9028";
+  const { profile } = useAppSelector((state) => state.auth);
 
-  const [getContentFreePosts, { data: contentFreePosts }] =
-    useLazyQuery(GET_FREE_POSTS);
+  const walletAddress = "0xc97db9086e854f727db2b2c1462401eaf1eb9028";
 
-  const [getContentPaidPosts, { data: contentPaidPosts }] =
-    useLazyQuery(GET_PAID_POSTS);
+  const { loading: loadingContentFreePosts, data: contentFreePosts } = useQuery(
+    GET_FREE_POSTS,
+    {
+      variables: { creator: walletAddress.toLocaleLowerCase() },
+    }
+  );
+  const { loading: loadingContentPaidPosts, data: contentPaidPosts } = useQuery(
+    GET_PAID_POSTS,
+    {
+      variables: {
+        creator: walletAddress.toLocaleLowerCase(),
+        account: profile?.walletAddress?.toLocaleLowerCase(),
+      },
+    }
+  );
+
+  const getContentPosts = async (hashes: any) => {
+    const profileRepository = ProfileRepository.create();
+
+    try {
+      const res = await profileRepository.getPosts(hashes);
+
+      const data = await readContract({
+        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
+        abi: JustFriendsABI.abi,
+        functionName: "getContentsInfo",
+        args: [hashes],
+      });
+
+      const posts = res.map((post: object, index: number) => {
+        // @ts-ignore
+        return { ...post, ...data[index] };
+      });
+
+      return orderByTimeCreated(posts);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   const getPosts = async () => {
     if (tab.id === 0) {
-      getContentPaidPosts({
-        variables: {
-          creator: walletAddress.toLocaleLowerCase(),
-          account: userAddress,
-        },
-      });
-      const posts = contentPaidPosts?.contentEntities.filter((paidPost: any) =>
-        contentPaidPosts?.userPostEntities.some(
-          (purchasedPost: any) => paidPost.hash === purchasedPost.hash
-        )
-      );
-      setPurchasedPosts(posts);
+      if (
+        !loadingContentPaidPosts &&
+        contentPaidPosts?.contentEntities &&
+        contentPaidPosts?.userPostEntities
+      ) {
+        const contentPurchasedPosts = contentPaidPosts?.contentEntities.filter(
+          (paidPost: any) =>
+            contentPaidPosts?.userPostEntities.some(
+              (purchasedPost: any) => paidPost.hash === purchasedPost.hash
+            )
+        );
+
+        const contentPosts = await getContentPosts(
+          contentPurchasedPosts?.map((content: any) => content.hash)
+        );
+        setPurchasedPosts(contentPosts);
+      }
     } else if (tab.id === 1) {
-      getContentPaidPosts({
-        variables: {
-          creator: walletAddress.toLocaleLowerCase(),
-          account: userAddress,
-        },
-      });
-      const posts = contentPaidPosts?.contentEntities.filter(
-        (paidPost: any) =>
-          !contentPaidPosts?.userPostEntities.some(
-            (purchasedPost: any) => paidPost.hash === purchasedPost.hash
-          )
-      );
-      setUnpurchasedPosts(posts);
+      if (
+        !loadingContentPaidPosts &&
+        contentPaidPosts?.contentEntities &&
+        contentPaidPosts?.userPostEntities
+      ) {
+        const contentUnpurchasedPosts =
+          contentPaidPosts?.contentEntities.filter(
+            (paidPost: any) =>
+              !contentPaidPosts?.userPostEntities.some(
+                (purchasedPost: any) => paidPost.hash === purchasedPost.hash
+              )
+          );
+
+        const contentPosts = await getContentPosts(
+          contentUnpurchasedPosts?.map((content: any) => content.hash)
+        );
+        setUnpurchasedPosts(contentPosts);
+      }
     } else if (tab.id === 2) {
-      getContentFreePosts({
-        variables: { creator: walletAddress.toLocaleLowerCase() },
-      });
-      setFreePosts(contentFreePosts?.contentEntities);
+      if (!loadingContentFreePosts && contentFreePosts?.contentEntities) {
+        const contentPosts = await getContentPosts(
+          contentFreePosts?.contentEntities.map((content: any) => content.hash)
+        );
+        setFreePosts(contentPosts);
+      }
     }
   };
 
@@ -81,6 +133,8 @@ const useCreatorProfile = () => {
     purchasedPosts,
     unpurchasedPosts,
     freePosts,
+    loadingContentFreePosts,
+    loadingContentPaidPosts,
     onChangeTab,
     getPosts,
   };

@@ -8,6 +8,7 @@ import {
   WalletIcon,
 } from "src/presentation/theme/assets/icons";
 import { shortenAddress } from "src/common/utils";
+import PostLoading from "src/presentation/components/loading/post";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -33,7 +34,16 @@ const data = {
 };
 
 const CreatorProfile = () => {
-  const { tab, TABS, onChangeTab } = useCreatorProfile();
+  const {
+    tab,
+    TABS,
+    purchasedPosts,
+    unpurchasedPosts,
+    freePosts,
+    loadingContentFreePosts,
+    loadingContentPaidPosts,
+    onChangeTab,
+  } = useCreatorProfile();
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -49,32 +59,44 @@ const CreatorProfile = () => {
     </TabMenuContainer>
   );
 
-  const renderMyPosts = () => (
+  const renderPurchasedPosts = () => (
     <PostsContainer>
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
+      {loadingContentPaidPosts ? (
+        <PostLoading />
+      ) : (
+        purchasedPosts?.map((post: any) => <Post data={post} />)
+      )}
     </PostsContainer>
   );
 
-  const renderPurchasedPost = () => (
+  const renderUnpurchasedPost = () => (
     <PostsContainer>
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
-      <Post data={data} />
+      {loadingContentPaidPosts ? (
+        <PostLoading />
+      ) : (
+        unpurchasedPosts?.map((post: any) => <Post data={post} />)
+      )}
+    </PostsContainer>
+  );
+
+  const renderFreePosts = () => (
+    <PostsContainer>
+      {loadingContentFreePosts ? (
+        <PostLoading />
+      ) : (
+        freePosts?.map((post: any) => <Post data={post} />)
+      )}
     </PostsContainer>
   );
 
   const renderTabContent = () => {
     switch (tab.id) {
       case 0:
-        return renderMyPosts();
+        return renderPurchasedPosts();
       case 1:
-        return renderPurchasedPost();
+        return renderUnpurchasedPost();
       case 2:
-        return <></>;
+        return renderFreePosts();
       default:
         return null;
     }
