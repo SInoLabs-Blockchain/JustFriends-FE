@@ -50,7 +50,7 @@ const Profile = () => {
       {loadingContentMyPosts ? (
         <PostLoading />
       ) : (
-        myPosts?.map((post: any) => <Post data={post} />)
+        myPosts?.map((post: any) => <Post key={post.contentHash} data={post} />)
       )}
     </PostsContainer>
   );
@@ -60,7 +60,9 @@ const Profile = () => {
       {loadinContentPurchasedPosts ? (
         <PostLoading />
       ) : (
-        purchasedPosts?.map((post: any) => <Post data={post} />)
+        purchasedPosts?.map((post: any) => (
+          <Post key={post.contentHash} data={post} />
+        ))
       )}
     </PostsContainer>
   );

@@ -64,7 +64,9 @@ const CreatorProfile = () => {
       {loadingContentPaidPosts ? (
         <PostLoading />
       ) : (
-        purchasedPosts?.map((post: any) => <Post data={post} />)
+        purchasedPosts?.map((post: any) => (
+          <Post key={post.contentHash} data={post} />
+        ))
       )}
     </PostsContainer>
   );
@@ -74,7 +76,9 @@ const CreatorProfile = () => {
       {loadingContentPaidPosts ? (
         <PostLoading />
       ) : (
-        unpurchasedPosts?.map((post: any) => <Post data={post} />)
+        unpurchasedPosts?.map((post: any) => (
+          <Post key={post.contentHash} data={post} />
+        ))
       )}
     </PostsContainer>
   );
@@ -84,7 +88,9 @@ const CreatorProfile = () => {
       {loadingContentFreePosts ? (
         <PostLoading />
       ) : (
-        freePosts?.map((post: any) => <Post data={post} />)
+        freePosts?.map((post: any) => (
+          <Post key={post.contentHash} data={post} />
+        ))
       )}
     </PostsContainer>
   );
