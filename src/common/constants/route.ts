@@ -3,7 +3,7 @@ const PROFILE = "/profile";
 const POST_DETAILS = "/post/:id";
 const SEARCH = "/search/:filter";
 const EDIT_PROFILE = "/profile/edit";
-const CREATOR_PROFILE = "/creator";
+const CREATOR_PROFILE = "/profile/:id";
 
 export const ROUTE = {
   HOME,

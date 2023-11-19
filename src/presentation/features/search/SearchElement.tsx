@@ -1,42 +1,46 @@
 import React from "react";
 import { SearchElementContainer } from "./styles";
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import WalletIcon from "src/presentation/theme/assets/icons/wallet.svg";
-import { shortenAddress } from "src/common/utils";
+import { shortenAddress, stringAvatar } from "src/common/utils";
 import { CustomizedButton } from "src/presentation/components/button/styles";
+import useSearch from "./useSearch";
 
-const SearchElement = () => {
-  const creatorData = {
-    name: "Donald Trump",
-    posts: 100,
-    creditScore: 50,
-    address: "0x0bc68d7a06259006ae4cb3B8eFF737a46bF5912e",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png",
-    isSubcribed: false,
-  };
+const SearchElement = ({ data }: any) => {
+  const { navigateUserProfile } = useSearch();
+
+  if (!data) return null;
+
   return (
     <SearchElementContainer>
       <Box>
-        <img
-          src={creatorData.avatar}
-          className="search__element-avatar"
-          alt="avatar"
-        />
+        {data.avatarUrl ? (
+          <img
+            src={data.avatarUrl}
+            className="search__element-avatar"
+            alt="avatar"
+          />
+        ) : (
+          <Avatar {...stringAvatar(data.username)} />
+        )}
         <Box className="search__element-info">
           <Box>
-            <Typography className="search__element-name">
-              {creatorData.name}
+            <Typography
+              className="search__element-name"
+              onClick={() => navigateUserProfile(data.userId)}
+            >
+              {data.username}
             </Typography>
             <Typography className="search__element-post">
-              {creatorData.posts} posts
+              {data?.posts || 0} posts
             </Typography>
             <Typography className="search__element-credit">
-              Credit score: {creatorData.creditScore}
+              Credit score: {data?.creditScore || 0}
             </Typography>
           </Box>
           <Box>
             <img src={WalletIcon} alt="wallet" />
-            <Typography>{shortenAddress(creatorData.address)}</Typography>
+            <Typography>{shortenAddress(data.walletAddress)}</Typography>
           </Box>
         </Box>
       </Box>
