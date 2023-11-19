@@ -1,14 +1,9 @@
-import { useEffect, useState } from "react";
-import {
-  FREE_POSTS,
-  POST_OPTIONS,
-  VOTE_TYPES,
-  ZERO_ADDRESS,
-} from "src/common/constants";
+import { useState } from "react";
+import { FREE_POSTS, POST_OPTIONS, VOTE_TYPES } from "src/common/constants";
 import { writeContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
-import { parseEther, zeroAddress } from "viem";
+import { parseEther } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
@@ -184,8 +179,6 @@ const useHome = () => {
             (vote: any) =>
               vote.account === profile?.walletAddress?.toLowerCase()
           );
-          console.log({ isVoted });
-
           return {
             ...content,
             ...detailContent,
@@ -209,7 +202,6 @@ const useHome = () => {
     onCompleted: getListOfPostsByType,
     skip: false && profile,
   });
-  console.log({ error });
 
   return {
     posts,

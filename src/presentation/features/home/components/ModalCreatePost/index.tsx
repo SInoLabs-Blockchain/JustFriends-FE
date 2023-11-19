@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Avatar, Box, TextField, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import useHome from "../../useHome";
 import {
@@ -25,6 +25,8 @@ import {
 import { POST_OPTIONS } from "src/common/constants";
 import CustomButton from "src/presentation/components/button";
 import COLOR from "src/presentation/theme/Color";
+import { useAppSelector } from "src/data/redux/Hooks";
+import { stringAvatar } from "src/common/utils";
 
 interface IProps {
   open: boolean;
@@ -33,7 +35,7 @@ interface IProps {
 }
 
 const ModalCreatePost = (props: IProps) => {
-  const { open, onToggleModal, onRemoveText } = props;
+  const { open, onToggleModal } = props;
   const {
     option,
     openOptionSelect,
@@ -46,17 +48,24 @@ const ModalCreatePost = (props: IProps) => {
     setBaseFee,
     handleSharePost,
   } = useHome();
+  const { profile } = useAppSelector((state) => state.auth);
 
   const renderPostOptions = () => (
     <Box className="relative">
-      <StyledSelect className="flex-center" onClick={onToggleSelect}>
+      <StyledSelect
+        className="post-option__dropdown flex-center"
+        onClick={onToggleSelect}
+      >
         <Typography className="post-option__name">{option.title}</Typography>
         <ArrowDownIcon />
       </StyledSelect>
       {openOptionSelect && (
         <StyledSelectMenu>
           {POST_OPTIONS.map((option) => (
-            <StyledSelectItem onClick={() => onSelectMenu(option)}>
+            <StyledSelectItem
+              className="post-option__dropdown"
+              onClick={() => onSelectMenu(option)}
+            >
               <Typography className="post-title__title">
                 {option.title}
               </Typography>
@@ -97,13 +106,22 @@ const ModalCreatePost = (props: IProps) => {
           </Box>
         </Box>
         <Box className="modal-information flex-center">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-            alt="avatar"
-            className="modal-information__avatar"
-          />
-          <Box>
-            <Typography className="modal-information__name">Phong</Typography>
+          {profile?.avatarUrl ? (
+            <img
+              src={profile?.avatarUrl}
+              alt="avatar"
+              className="modal-information__avatar"
+            />
+          ) : (
+            <Avatar
+              {...stringAvatar(profile?.username)}
+              className="modal-information__avatar"
+            />
+          )}
+          <Box className="modal-information__create">
+            <Typography className="modal-information__name">
+              {profile?.username}
+            </Typography>
             {renderPostOptions()}
           </Box>
         </Box>

@@ -1,5 +1,5 @@
-import { Box, Tooltip, Typography } from "@mui/material";
-import { shortenAddress } from "src/common/utils";
+import { Avatar, Box, Tooltip, Typography } from "@mui/material";
+import { shortenAddress, stringAvatar } from "src/common/utils";
 import { WalletIcon } from "src/presentation/theme/assets/icons";
 import { ProfileContainer } from "./styles";
 import useHome from "./useHome";
@@ -17,12 +17,16 @@ const ProfileCard = () => {
 
   return (
     <ProfileContainer>
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-        alt="avatar"
-        className="profile__card-avatar"
-        onClick={navigateToProfile}
-      />
+      {profile?.avatarUrl ? (
+        <img
+          src={profile?.avatarUrl}
+          alt="avatar"
+          className="profile__card-avatar"
+          onClick={navigateToProfile}
+        />
+      ) : (
+        <Avatar {...stringAvatar(profile?.username)} />
+      )}
       <Box className="profile__info">
         <Typography className="profile__card-name">
           {profile?.username}

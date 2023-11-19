@@ -65,6 +65,14 @@ const ProfileContainer = styled("div")(({ theme }: any) => ({
     borderRadius: "12px",
     cursor: "pointer",
   },
+  ".MuiAvatar-root": {
+    width: "120px",
+    height: "120px",
+    aspectRatio: 1 / 1,
+    borderRadius: "12px",
+    cursor: "pointer",
+    fontSize: "48px",
+  },
   ".profile__info": {
     display: "flex",
     flexDirection: "column",
@@ -157,7 +165,7 @@ const TopAuthorHeaderContainer = styled(Box)(() => ({
     lineHeight: "24px",
     letterSpacing: "0px",
     color: COLOR.neutral.neutral_4,
-    fontFamily: 'Bold'
+    fontFamily: "Bold",
   },
 
   ".author__list-pagination": {
@@ -245,6 +253,12 @@ const PostInputContainer = styled("div")(() => ({
       aspectRatio: 1 / 1,
       borderRadius: "10px",
     },
+
+    ".MuiAvatar-root": {
+      width: "44px",
+      aspectRatio: 1 / 1,
+      borderRadius: "10px",
+    },
   },
   ".post__input-extra": {
     flexDirection: "row",
@@ -273,9 +287,9 @@ const PostInputContainer = styled("div")(() => ({
 }));
 
 const LoadingWrapper = styled("div")(() => ({
-  width: '100%',
-  display: 'flex',
-  justifyContent: 'center'
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
 }));
 
 export {
@@ -287,5 +301,5 @@ export {
   PostsContainer,
   ProfileContainer,
   PostInputContainer,
-  LoadingWrapper
+  LoadingWrapper,
 };

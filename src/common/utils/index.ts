@@ -75,16 +75,16 @@ const randomNumber = () => {
 };
 
 const timeAgo = (input: any) => {
-  const date = (input instanceof Date) ? input : new Date(input);
-  const formatter = new Intl.RelativeTimeFormat('en');
+  const date = input instanceof Date ? input : new Date(input);
+  const formatter = new Intl.RelativeTimeFormat("en");
   const ranges = [
-    ['years', 3600 * 24 * 365],
-    ['months', 3600 * 24 * 30],
-    ['weeks', 3600 * 24 * 7],
-    ['days', 3600 * 24],
-    ['hours', 3600],
-    ['minutes', 60],
-    ['seconds', 1],
+    ["years", 3600 * 24 * 365],
+    ["months", 3600 * 24 * 30],
+    ["weeks", 3600 * 24 * 7],
+    ["days", 3600 * 24],
+    ["hours", 3600],
+    ["minutes", 60],
+    ["seconds", 1],
   ] as const;
   const secondsElapsed = (date.getTime() - Date.now()) / 1000;
 
@@ -94,10 +94,10 @@ const timeAgo = (input: any) => {
       return formatter.format(Math.round(delta), rangeType);
     }
   }
-}
+};
 
 const orderByTimeCreated = (posts: Array<Post>) => {
-  if (posts.length === 0) return []
+  if (posts.length === 0) return [];
 
   return posts.sort((a, b) => {
     const dateA = new Date(a.createdAt);
@@ -105,6 +105,46 @@ const orderByTimeCreated = (posts: Array<Post>) => {
     // @ts-ignore
     return dateB - dateA;
   });
-}
+};
 
-export { shortenAddress, formatDate, formatBalance, randomNumber, timeAgo, orderByTimeCreated };
+const stringToColor = (string: string) => {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+};
+
+const stringAvatar = (name?: string) => {
+  if (!name) name = "default-name-1";
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children: `${name.split("-")[0][0].toUpperCase()}${name
+      .split("-")[1][0]
+      .toUpperCase()}`,
+  };
+};
+
+export {
+  shortenAddress,
+  formatDate,
+  formatBalance,
+  randomNumber,
+  timeAgo,
+  orderByTimeCreated,
+  stringAvatar,
+};
