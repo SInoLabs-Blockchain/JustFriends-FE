@@ -4,6 +4,7 @@ import Post from 'src/presentation/components/post';
 import TopAuthor from '../home/TopAuthor';
 import { Container } from './styles';
 import usePostDetails from './usePostDetails';
+import useHome from '../home/useHome';
 
 const data = {
   creator: {
@@ -18,11 +19,12 @@ const data = {
 };
 
 const PostDetails = () => {
-  const {} = usePostDetails();
+  const { } = usePostDetails();
+  const { isFreePosts, setIsFreePosts } = useHome();
 
   return (
     <Container>
-      <Menu />
+      <Menu isFreePosts={isFreePosts} setIsFreePosts={setIsFreePosts} />
 
       <Box display={'flex'} flexDirection={'column'} width={'50%'} gap={'24px'}>
         <Post data={data} />

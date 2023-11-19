@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const GET_NEW_POSTS = gql`
-  query GetNewPosts {
-    contentEntities {
+  query GetNewPosts($isPaid: Boolean!) {
+    contentEntities(where: {isPaid: $isPaid}) {
       id
       hash
     }

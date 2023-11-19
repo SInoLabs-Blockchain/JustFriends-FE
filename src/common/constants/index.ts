@@ -12,12 +12,11 @@ const POST_OPTIONS = [
   },
 ];
 
-const FREE_POSTS = "free";
-const PAID_POSTS = "paid";
-
 const LOGIN_STEPS = {
   CREATE_WALLET: 1,
   CREATE_PASSWORD: 2,
 };
 
-export { POST_OPTIONS, FREE_POSTS, PAID_POSTS, LOGIN_STEPS };
+const FREE_POSTS = 'free'
+
+export { POST_OPTIONS, LOGIN_STEPS, FREE_POSTS };

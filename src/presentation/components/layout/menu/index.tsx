@@ -1,11 +1,17 @@
-import { useAppSelector } from "src/data/redux/Hooks";
 import ProfileCard from "src/presentation/features/home/ProfileCard";
 import Filter from "src/presentation/features/home/components/Filter";
 import { MenuContainer } from "src/presentation/features/home/styles";
 import useHome from "src/presentation/features/home/useHome";
 
-const Menu = () => {
-  const { profile, isFreePosts, setIsFreePosts } = useHome();
+interface IProps {
+  isFreePosts: boolean;
+  setIsFreePosts: (value: boolean) => void;
+}
+
+const Menu = (props: IProps) => {
+  const { isFreePosts, setIsFreePosts } = props;
+
+  const { profile } = useHome();
 
   return (
     <MenuContainer>

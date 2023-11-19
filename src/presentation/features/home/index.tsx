@@ -8,8 +8,7 @@ import { HomeContainer, PostsContainer, LoadingWrapper } from "./styles";
 import useHome from "./useHome";
 
 const Home = () => {
-  const { posts, openModal, loading, handleToggleModal, handleRemoveText } =
-    useHome();
+  const { posts, openModal, loading, isFreePosts, setIsFreePosts, handleToggleModal, handleRemoveText } = useHome();
 
   const renderPostSection = () => (
     <PostsContainer>
@@ -26,7 +25,7 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <Menu />
+      <Menu isFreePosts={isFreePosts} setIsFreePosts={setIsFreePosts} />
       {renderPostSection()}
       <TopAuthor />
       <ModalCreatePost
