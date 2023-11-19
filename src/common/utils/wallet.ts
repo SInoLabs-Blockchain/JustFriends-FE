@@ -382,6 +382,30 @@ export const getCallDataCreatePost = ({ contentHash, startedPrice }: any) => {
   return msgData;
 };
 
+export const getCallDataVotePost = ({ contentHash, voteType }: any) => {
+  const msgData = web3.eth.abi.encodeFunctionCall(ABI_FUNCTION.VOTE_CONTENT, [
+    contentHash,
+    voteType,
+  ]);
+  return msgData;
+};
+
+export const getCallDataPurchasePost = ({ contentHash, amount }: any) => {
+  const msgData = web3.eth.abi.encodeFunctionCall(ABI_FUNCTION.BUY_CONTENT, [
+    contentHash,
+    amount,
+  ]);
+  return msgData;
+};
+
+export const getCallDataSellPost = ({ contentHash, amount }: any) => {
+  const msgData = web3.eth.abi.encodeFunctionCall(ABI_FUNCTION.SELL_CONTENT, [
+    contentHash,
+    amount,
+  ]);
+  return msgData;
+};
+
 export const getCallDataEntryPoint = ({
   value,
   target,

@@ -145,7 +145,7 @@ const ModalCreatePost = (props: IProps) => {
             title="Share"
             backgroundColor={COLOR.linear}
             variant={"contained"}
-            onClick={() => handleSharePost(onToggleModal, onRemoveText)}
+            onClick={handleSharePost}
           />
         </StyledButtonShare>
       </ModalContainer>

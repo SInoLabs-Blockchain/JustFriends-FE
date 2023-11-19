@@ -64,6 +64,60 @@ export const ABI_FUNCTION = {
     stateMutability: "nonpayable",
     type: "function",
   },
+  VOTE_CONTENT: {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_contentHash",
+        type: "bytes32",
+      },
+      {
+        internalType: "enum JustFriendsInterface.VoteType",
+        name: "_voteType",
+        type: "uint8",
+      },
+    ],
+    name: "vote",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  BUY_CONTENT: {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_contentHash",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "buyContentAccess",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  SELL_CONTENT: {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_contentHash",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "sellContentAccess",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
   ADD_SESSION: {
     inputs: [
       {

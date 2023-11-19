@@ -7,7 +7,7 @@ const PostSection = styled("div")(() => ({
   boxShadow: "0 5px 40px -8px rgba(86, 107, 135, 0.08)",
 }));
 
-const PostContainer = styled("div")(({ theme, type }: any) => ({
+const PostContainer = styled("div")(({ theme, type, voteType }: any) => ({
   padding: "0 30px",
   height: "fit-content",
 
@@ -20,7 +20,7 @@ const PostContainer = styled("div")(({ theme, type }: any) => ({
     width: "44px",
     height: "44px",
     borderRadius: "10px",
-    cursor: 'pointer',
+    cursor: "pointer",
 
     img: {
       width: "44px",

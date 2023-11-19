@@ -126,7 +126,10 @@ const ConnectModal = (props: IProps) => {
                 title={loading ? <CircularProgress size={"20px"} /> : "Confirm"}
                 sx={{ width: "100%" }}
                 onClick={connectSelfDeployWallet}
-                disabled={loading}
+                disabled={
+                  loading ||
+                  (otp.length < 6 && step === LOGIN_STEPS.CREATE_PASSWORD)
+                }
               />
             </>
           )}

@@ -18,6 +18,8 @@ import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { timeAgo } from "src/common/utils";
+import { VOTE_TYPES } from "src/common/constants";
+import usePost from "./usePost";
 
 interface PropTypes {
   data: any;
@@ -26,7 +28,7 @@ interface PropTypes {
 const Post = ({ data }: PropTypes) => {
   const isConnectedWallet = true;
   const isFreeZone = true;
-  const { profile } = useAppSelector((state) => state.auth);
+  const { handleVotePost } = usePost();
 
   const renderRightContent = () => {
     if (isConnectedWallet && !isFreeZone) {
@@ -43,20 +45,34 @@ const Post = ({ data }: PropTypes) => {
     );
   };
 
+  console.log({ data });
+
   const renderFreePostAction = () => {
     if (isFreeZone)
       return (
         <Box>
-          <IconButton>
+          <IconButton
+            className="post__interactions-button"
+            onClick={() => handleVotePost(data.contentHash, VOTE_TYPES.UPVOTE)}
+          >
             <UpvoteIcon />
             <Typography className="post__interactions-votes">
-              {Number(data.totalUpvote)} upvotes
+              {data?.isVoted && data?.voteType === VOTE_TYPES.UPVOTE
+                ? `You and ${data.totalUpvote - 1} upvoted`
+                : `${Number(data.totalUpvote)} upvotes`}
             </Typography>
           </IconButton>
-          <IconButton>
+          <IconButton
+            className="post__interactions-button"
+            onClick={() =>
+              handleVotePost(data.contentHash, VOTE_TYPES.DOWNVOTE)
+            }
+          >
             <DownvoteIcon />
             <Typography className="post__interactions-votes">
-              {Number(data.totalDownvote)} downvotes
+              {data?.isVoted && data?.voteType === VOTE_TYPES.DOWNVOTE
+                ? `You and ${data.totalUpvote - 1} downvoted`
+                : `${Number(data.totalDownvote)} downvotes`}
             </Typography>
           </IconButton>
           <IconButton>
@@ -91,14 +107,14 @@ const Post = ({ data }: PropTypes) => {
 
   return (
     <PostSection>
-      <PostContainer type={isFreeZone}>
+      <PostContainer type={isFreeZone} voteType={data?.voteType}>
         <CardHeader
           avatar={
             <Avatar>
-              <img src={profile?.avatarUrl} alt="avatar" />
+              <img src={data?.user.avatarUrl} alt="avatar" />
             </Avatar>
           }
-          title={profile?.username}
+          title={data?.user.username}
           subheader={timeAgo(data.createdAt)}
           action={renderRightContent()}
         />

@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { FREE_POSTS, POST_OPTIONS } from "src/common/constants";
+import {
+  FREE_POSTS,
+  POST_OPTIONS,
+  VOTE_TYPES,
+  ZERO_ADDRESS,
+} from "src/common/constants";
 import { writeContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
-import { parseEther } from "viem";
+import { parseEther, zeroAddress } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
@@ -30,9 +35,6 @@ const useHome = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
-  const { loading, error, data } = useQuery(GET_NEW_POSTS, {
-    variables: { isPaid: !isFreePosts },
-  });
 
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
@@ -84,7 +86,7 @@ const useHome = () => {
     setTextareaHeight(0);
   };
 
-  const handleSharePost = async (onToggleModal: any, onRemoveText: any) => {
+  const handleSharePost = async () => {
     if (!accessToken) {
       open();
     } else {
@@ -153,8 +155,8 @@ const useHome = () => {
           });
           await requestToRelayer(signedUserOp);
         }
-        onToggleModal();
-        onRemoveText();
+        handleToggleModal();
+        handleRemoveText();
         toast.success("Your post has been created successfully!");
       } catch (error) {
         console.log({ error });
@@ -168,13 +170,30 @@ const useHome = () => {
 
   const getListOfPostsByType = async () => {
     if (data && !loading) {
-      const contentHashes = data?.contentEntities.map(
-        (content: any) => content.hash
-      );
-
+      const { contentEntities: contents, postVoteEntities: myVotes } = data;
+      const contentHashes = contents.map((content: any) => content.hash);
+      console.log({ data });
       try {
         const result = await homeRepository.getPosts(contentHashes);
-        const orderedPosts = orderByTimeCreated(result)
+        const detailContentList = contents.map((content: any) => {
+          const contentHash = content.hash;
+          const detailContent = result.find(
+            (detail) => `0x${detail.contentHash}` === contentHash
+          );
+          const isVoted = myVotes?.find(
+            (vote: any) =>
+              vote.account === profile?.walletAddress?.toLowerCase()
+          );
+          console.log({ isVoted });
+
+          return {
+            ...content,
+            ...detailContent,
+            isVoted: isVoted ? true : false,
+            voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
+          };
+        });
+        const orderedPosts = orderByTimeCreated(detailContentList);
         setPosts(orderedPosts);
       } catch (error) {
         console.log({ error });
@@ -182,13 +201,15 @@ const useHome = () => {
     }
   };
 
-  useEffect(() => {
-    getListOfPostsByType();
-
-    return () => {
-      setPosts([]);
-    };
-  }, [isFreePosts, data, loading]);
+  const { loading, error, data } = useQuery(GET_NEW_POSTS, {
+    variables: {
+      address: profile?.walletAddress?.toLowerCase() || "",
+      isPaid: !isFreePosts,
+    },
+    onCompleted: getListOfPostsByType,
+    skip: false && profile,
+  });
+  console.log({ error });
 
   return {
     posts,
@@ -202,6 +223,7 @@ const useHome = () => {
     profile,
     data,
     loading,
+    open,
     setBaseFee,
     setIsFreePosts,
     copyAddress,
