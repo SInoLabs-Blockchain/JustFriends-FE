@@ -1,31 +1,43 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
 import { SearchContainer, SearchResult } from "./styles";
-import SearchCategories from "./SearchCategories";
 import SearchElement from "./SearchElement";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import useSearch from "./useSearch";
+import Loading from "src/presentation/components/loading/general";
+import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
 
 const Search = () => {
-  const { search } = useLocation();
-  const queries = search
-    .substring(1)
-    .split("&&")
-    .map((query) => {
-      const [key, value] = query.split("=");
-      return { key, value };
-    });
-  const keySearch = queries.find((query) => query.key === "keySearch");
+  const { result, loading, keySearch } = useSearch();
+
+  const renderContent = () => {
+    if (!result || result?.length === 0) {
+      return (
+        <Box className="search__result-not-found">
+          <img src={NotFound} alt="not-found" />
+          <Typography>
+            No result found for "
+            <span className="search__result-value">{keySearch?.value}</span>"
+          </Typography>
+        </Box>
+      );
+    } else {
+      return (
+        <>
+          <Typography className="search__result-title">
+            Showing search results for “
+            <span className="search__result-value">{keySearch?.value}</span>”
+          </Typography>
+          {result.map((item) => (
+            <SearchElement key={item.userId} data={item} />
+          ))}
+        </>
+      );
+    }
+  };
 
   return (
     <SearchContainer>
       <SearchResult>
-        <Typography className="search__result-title">
-          Showing search results for “
-          <span className="search__result-value">{keySearch?.value}</span>”
-        </Typography>
-        <SearchElement />
-        <SearchElement />
-        <SearchElement />
+        {loading ? <Loading size={30} thickness={5} /> : renderContent()}
       </SearchResult>
     </SearchContainer>
   );
