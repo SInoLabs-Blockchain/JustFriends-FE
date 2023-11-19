@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { FREE_POSTS, PAID_POSTS, POST_OPTIONS } from "src/common/constants";
-import { writeContract, readContract } from "@wagmi/core";
+import { FREE_POSTS, POST_OPTIONS } from "src/common/constants";
+import { writeContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
@@ -29,7 +29,10 @@ import { Post } from "src/domain/models/home/Post";
 const useHome = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(GET_NEW_POSTS);
+  const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
+  const { loading, error, data } = useQuery(GET_NEW_POSTS, {
+    variables: { isPaid: !isFreePosts },
+  });
 
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
@@ -41,7 +44,6 @@ const useHome = () => {
   const [textareaValue, setTextareaValue] = useState("");
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [baseFee, setBaseFee] = useState<string>("");
-  const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
   const [posts, setPosts] = useState<Array<Post>>([]);
 
   const homeRepository = HomeRepository.create();
@@ -172,10 +174,7 @@ const useHome = () => {
 
       try {
         const result = await homeRepository.getPosts(contentHashes);
-        const filteredArray = result.filter(
-          (item) => item.type === (isFreePosts ? FREE_POSTS : PAID_POSTS)
-        );
-        const orderedPosts = orderByTimeCreated(filteredArray);
+        const orderedPosts = orderByTimeCreated(result)
         setPosts(orderedPosts);
       } catch (error) {
         console.log({ error });
