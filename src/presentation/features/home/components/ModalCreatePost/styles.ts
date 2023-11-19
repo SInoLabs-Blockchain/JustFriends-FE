@@ -54,6 +54,13 @@ const ModalContainer = styled("div")(({ theme }: any) => ({
       width: 70,
       height: 70,
       borderRadius: 9,
+      fontSize: "24px",
+    },
+
+    ".post-option__dropdown": {
+      display: "flex",
+      justifyContent: "space-between",
+      width: "140px",
     },
 
     ".modal-information__name": {

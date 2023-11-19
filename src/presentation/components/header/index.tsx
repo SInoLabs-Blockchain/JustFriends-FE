@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   IconButton,
@@ -19,7 +20,7 @@ import { useLocation } from "react-router-dom";
 import backArrow from "src/presentation/theme/assets/icons/back.svg";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { useBalance } from "wagmi";
-import { formatBalance } from "src/common/utils";
+import { formatBalance, stringAvatar } from "src/common/utils";
 import ConnectModal from "./ConnectModal";
 
 const Header = () => {
@@ -43,7 +44,7 @@ const Header = () => {
   const location = useLocation();
   const page = location.pathname.split("/")[1];
   const isSearching = page === "search";
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, profile } = useAppSelector((state) => state.auth);
   const { data: balance } = useBalance({
     address,
     watch: true,
@@ -68,7 +69,7 @@ const Header = () => {
           onChange={(e) => setContent(e.target.value)}
           placeholder="Search..."
           onKeyDown={onSearch}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         />
       </SearchContainer>
       <ButtonContainer>
@@ -83,12 +84,11 @@ const Header = () => {
               />
               <Typography>{formatBalance(balance?.formatted || "")}</Typography>
             </Box>
-            <img
-              src={
-                "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-              }
-              alt="avatar"
-            />
+            {profile?.avatarUrl ? (
+              <img src={profile?.avatarUrl} alt="avatar" />
+            ) : (
+              <Avatar {...stringAvatar(profile?.username)} />
+            )}
           </>
         ) : matches ? (
           <Button>

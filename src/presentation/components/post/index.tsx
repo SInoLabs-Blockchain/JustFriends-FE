@@ -16,8 +16,7 @@ import {
 } from "src/presentation/theme/assets/icons";
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
-import { useAppSelector } from "src/data/redux/Hooks";
-import { timeAgo } from "src/common/utils";
+import { stringAvatar, timeAgo } from "src/common/utils";
 import { VOTE_TYPES } from "src/common/constants";
 import usePost from "./usePost";
 
@@ -44,8 +43,6 @@ const Post = ({ data }: PropTypes) => {
       </IconButton>
     );
   };
-
-  console.log({ data });
 
   const renderFreePostAction = () => {
     if (isFreeZone)
@@ -107,12 +104,14 @@ const Post = ({ data }: PropTypes) => {
 
   return (
     <PostSection>
-      <PostContainer type={isFreeZone} voteType={data?.voteType}>
+      <PostContainer type={isFreeZone} voteType={data.voteType}>
         <CardHeader
           avatar={
-            <Avatar>
-              <img src={data?.user.avatarUrl} alt="avatar" />
-            </Avatar>
+            data?.user?.avatarUrl ? (
+              <img src={data?.user?.avatarUrl} alt="avatar" />
+            ) : (
+              <Avatar {...stringAvatar(data?.user?.username)} />
+            )
           }
           title={data?.user.username}
           subheader={timeAgo(data.createdAt)}

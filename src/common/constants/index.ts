@@ -2,12 +2,12 @@
 const POST_OPTIONS = [
   {
     id: 1,
-    title: "Post for free",
+    title: "Post for free zone",
     value: "free",
   },
   {
     id: 0,
-    title: "Post for paid-zone",
+    title: "Post for paid zone",
     value: "paid",
   },
 ];

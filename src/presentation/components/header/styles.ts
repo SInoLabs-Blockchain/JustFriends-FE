@@ -55,6 +55,11 @@ const ButtonContainer = styled("div")({
     height: "44px",
     borderRadius: "10px",
   },
+  ".MuiAvatar-root": {
+    width: "44px",
+    height: "44px",
+    borderRadius: "10px",
+  },
   ".header__account-info": {
     border: `1px solid ${COLOR.neutral.neutral_3}`,
     borderRadius: "10px",
