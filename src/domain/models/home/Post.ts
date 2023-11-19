@@ -4,5 +4,10 @@ export interface Post {
   contentHash?: string;
   type: string;
   preview?: string;
-  createdAt: string
+  createdAt: string;
+  totalDownvote?: number;
+  totalUpvote?: number;
+  totalSupply?: number;
+  isVoted?: boolean;
+  voteType?: boolean;
 }

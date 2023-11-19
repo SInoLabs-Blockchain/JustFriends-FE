@@ -4,6 +4,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  CircularProgress,
   IconButton,
   Typography,
 } from "@mui/material";
@@ -22,12 +23,13 @@ import usePost from "./usePost";
 
 interface PropTypes {
   data: any;
+  setPosts?: any;
 }
 
-const Post = ({ data }: PropTypes) => {
+const Post = ({ data, setPosts }: PropTypes) => {
   const isConnectedWallet = true;
   const isFreeZone = true;
-  const { handleVotePost } = usePost();
+  const { handleVotePost, isUpvoting, isDownvoting } = usePost(setPosts);
 
   const renderRightContent = () => {
     if (isConnectedWallet && !isFreeZone) {
@@ -45,31 +47,80 @@ const Post = ({ data }: PropTypes) => {
   };
 
   const renderFreePostAction = () => {
-    if (isFreeZone)
+    if (isFreeZone) {
+      let upvoteLabel, downvoteLabel;
+      const isUpvoted = data?.isVoted && data?.voteType ? true : false;
+      const isDownvoted = data?.isVoted && !data?.voteType ? true : false;
+
+      if (data?.isVoted) {
+        if (data?.voteType) {
+          const otherVoteCount = Number(data.totalUpvote) - 1;
+          switch (otherVoteCount) {
+            case -1:
+              upvoteLabel = `0 upvote`;
+              break;
+            case 0:
+              upvoteLabel = `You upvoted`;
+              break;
+            default:
+              upvoteLabel = `You and ${otherVoteCount} people upvoted`;
+              break;
+          }
+          downvoteLabel = `${Number(data.totalDownvote)} ${
+            Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
+          }`;
+        } else {
+          const otherVoteCount = Number(data.totalDownvote) - 1;
+          switch (otherVoteCount) {
+            case -1:
+              downvoteLabel = `0 downvote`;
+              break;
+            case 0:
+              downvoteLabel = `You downvoted`;
+              break;
+            default:
+              downvoteLabel = `You and ${otherVoteCount} people downvoted`;
+              break;
+          }
+          upvoteLabel = `${Number(data.totalUpvote)} ${
+            Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+          }`;
+        }
+      } else {
+        upvoteLabel = `${Number(data.totalUpvote)} ${
+          Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+        }`;
+        downvoteLabel = `${Number(data.totalDownvote)} ${
+          Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
+        }`;
+      }
       return (
         <Box>
           <IconButton
-            className="post__interactions-button"
-            onClick={() => handleVotePost(data.contentHash, VOTE_TYPES.UPVOTE)}
+            className={`post__interactions-button ${
+              isUpvoted ? "post__interactions_button-upvoted" : ""
+            }`}
+            onClick={() =>
+              !isUpvoted && handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE)
+            }
           >
-            <UpvoteIcon />
+            {isUpvoting ? <CircularProgress size={12} /> : <UpvoteIcon />}
             <Typography className="post__interactions-votes">
-              {data?.isVoted && data?.voteType === VOTE_TYPES.UPVOTE
-                ? `You and ${data.totalUpvote - 1} upvoted`
-                : `${Number(data.totalUpvote)} upvotes`}
+              {upvoteLabel}
             </Typography>
           </IconButton>
           <IconButton
-            className="post__interactions-button"
+            className={`post__interactions-button ${
+              isDownvoted ? "post__interactions_button-downvoted" : ""
+            }`}
             onClick={() =>
-              handleVotePost(data.contentHash, VOTE_TYPES.DOWNVOTE)
+              !isDownvoted &&
+              handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE)
             }
           >
-            <DownvoteIcon />
+            {isDownvoting ? <CircularProgress size={12} /> : <DownvoteIcon />}
             <Typography className="post__interactions-votes">
-              {data?.isVoted && data?.voteType === VOTE_TYPES.DOWNVOTE
-                ? `You and ${data.totalUpvote - 1} downvoted`
-                : `${Number(data.totalDownvote)} downvotes`}
+              {downvoteLabel}
             </Typography>
           </IconButton>
           <IconButton>
@@ -80,6 +131,7 @@ const Post = ({ data }: PropTypes) => {
           </IconButton>
         </Box>
       );
+    }
   };
 
   const renderPaidPostActions = () => {
@@ -104,7 +156,7 @@ const Post = ({ data }: PropTypes) => {
 
   return (
     <PostSection>
-      <PostContainer type={isFreeZone} voteType={data.voteType}>
+      <PostContainer type={isFreeZone}>
         <CardHeader
           avatar={
             data?.user?.avatarUrl ? (
