@@ -12,21 +12,43 @@ const Home = () => {
     posts,
     openModal,
     loading,
+    getLoading,
     isFreePosts,
+    option,
+    openOptionSelect,
+    textareaValue,
+    textareaHeight,
+    basePrice,
+    navigateToProfile,
+    copyAddress,
+    open,
     setIsFreePosts,
     handleToggleModal,
     handleRemoveText,
     setPosts,
+    onToggleSelect,
+    onSelectMenu,
+    handleTextareaChange,
+    setBasePrice,
+    handleSharePost,
   } = useHome();
 
   const renderPostSection = () => (
     <PostsContainer>
       <PostInput onToggleModal={handleToggleModal} />
-      {loading ? (
+      {getLoading ? (
         <Loading size={30} thickness={5} />
       ) : (
         posts.map((post: any) => (
-          <Post key={post.contentHash} data={post} setPosts={setPosts} />
+          <Post
+            key={post.contentHash}
+            data={post}
+            open={open}
+            isFreePosts={isFreePosts}
+            handleToggleModal={handleToggleModal}
+            handleRemoveText={handleRemoveText}
+            setPosts={setPosts}
+          />
         ))
       )}
     </PostsContainer>
@@ -34,13 +56,29 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <Menu isFreePosts={isFreePosts} setIsFreePosts={setIsFreePosts} />
+      <Menu
+        isFreePosts={isFreePosts}
+        setIsFreePosts={setIsFreePosts}
+        navigateToProfile={navigateToProfile}
+        copyAddress={copyAddress}
+      />
       {renderPostSection()}
       <TopAuthor />
       <ModalCreatePost
+        loading={loading}
         open={openModal}
         onToggleModal={handleToggleModal}
         onRemoveText={handleRemoveText}
+        option={option}
+        openOptionSelect={openOptionSelect}
+        textareaValue={textareaValue}
+        textareaHeight={textareaHeight}
+        basePrice={basePrice}
+        onToggleSelect={onToggleSelect}
+        onSelectMenu={onSelectMenu}
+        handleTextareaChange={handleTextareaChange}
+        setBasePrice={setBasePrice}
+        handleSharePost={handleSharePost}
       />
     </HomeContainer>
   );

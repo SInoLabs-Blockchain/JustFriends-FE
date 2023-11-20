@@ -18,24 +18,40 @@ import {
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
 import { stringAvatar, timeAgo } from "src/common/utils";
-import { VOTE_TYPES } from "src/common/constants";
+import { FREE_POSTS, PAID_POSTS, VOTE_TYPES } from "src/common/constants";
 import usePost from "./usePost";
+import { formatEther } from "viem";
 
 interface PropTypes {
   data: any;
+  open?: any;
+  isFreePosts?: boolean;
+  handleToggleModal?: any;
+  handleRemoveText?: any;
   setPosts?: any;
 }
 
-const Post = ({ data, setPosts }: PropTypes) => {
+const Post = ({
+  data,
+  open,
+  handleToggleModal,
+  handleRemoveText,
+  isFreePosts,
+  setPosts,
+}: PropTypes) => {
   const isConnectedWallet = true;
-  const isFreeZone = true;
-  const { handleVotePost, isUpvoting, isDownvoting } = usePost(setPosts);
+  const { handleVotePost, isUpvoting, isDownvoting } = usePost({
+    open,
+    handleToggleModal,
+    handleRemoveText,
+    setPosts,
+  });
 
   const renderRightContent = () => {
-    if (isConnectedWallet && !isFreeZone) {
+    if (isConnectedWallet && !isFreePosts) {
       return (
         <PriceContainer>
-          <Typography>{Number(data.startedPrice)} KLAY</Typography>
+          <Typography>{formatEther(data.startedPrice)} KLAY</Typography>
         </PriceContainer>
       );
     }
@@ -47,7 +63,7 @@ const Post = ({ data, setPosts }: PropTypes) => {
   };
 
   const renderFreePostAction = () => {
-    if (isFreeZone) {
+    if (isFreePosts) {
       let upvoteLabel, downvoteLabel;
       const isUpvoted = data?.isVoted && data?.voteType ? true : false;
       const isDownvoted = data?.isVoted && !data?.voteType ? true : false;
@@ -135,7 +151,7 @@ const Post = ({ data, setPosts }: PropTypes) => {
   };
 
   const renderPaidPostActions = () => {
-    if (!isFreeZone) {
+    if (!isFreePosts) {
       return (
         <Box className="post__interactions-container">
           <Typography className="post__interactions-holders">
@@ -156,7 +172,7 @@ const Post = ({ data, setPosts }: PropTypes) => {
 
   return (
     <PostSection>
-      <PostContainer type={isFreeZone}>
+      <PostContainer type={isFreePosts}>
         <CardHeader
           avatar={
             data?.user?.avatarUrl ? (
@@ -170,7 +186,15 @@ const Post = ({ data, setPosts }: PropTypes) => {
           action={renderRightContent()}
         />
         <CardContent>
-          <Typography className="content">{data.content}</Typography>
+          <Typography className="content">
+            {data?.type === FREE_POSTS || data?.isOwner
+              ? data?.content
+              : `${data?.preview}...`}
+          </Typography>
+          {data?.type === FREE_POSTS ||
+          (data?.isOwner && data?.type === PAID_POSTS) ? null : (
+            <Typography className="viewmore">View Detail</Typography>
+          )}
         </CardContent>
         <Box className="separator">
           <hr />

@@ -58,6 +58,15 @@ const PostContainer = styled("div")(({ theme, type }: any) => ({
     color: COLOR.neutral.neutral_4,
   },
 
+  ".viewmore": {
+    fontFamily: "Gilroy",
+    lineHeight: "24px",
+    fontSize: 14,
+    fontWeight: 700,
+    color: COLOR.link,
+    cursor: "pointer",
+  },
+
   ".MuiCardActions-root": {
     display: "flex",
     justifyContent: type ? "space-between" : "right",

@@ -4,8 +4,6 @@ import { writeContract } from "@wagmi/core";
 import { parseEther } from "viem";
 import { toast } from "react-toastify";
 import Web3 from "web3";
-
-import useHome from "src/presentation/features/home/useHome";
 import {
   getCallDataVotePost,
   getCallDataEntryPoint,
@@ -22,10 +20,9 @@ import justFriendAbi from "src/common/abis/JustFriends.json";
 import { useState } from "react";
 import { VOTE_TYPES } from "src/common/constants";
 
-function usePost(setPosts: any) {
+function usePost({ open, handleToggleModal, handleRemoveText, setPosts }: any) {
   const { accessToken, profile } = useAppSelector((state) => state.auth);
   const { isConnected } = useAccount();
-  const { handleToggleModal, handleRemoveText, open, refetch } = useHome();
   const [isUpvoting, setUpvoting] = useState(false);
   const [isDownvoting, setDownvoting] = useState(false);
 
@@ -47,7 +44,6 @@ function usePost(setPosts: any) {
             args: [`0x${contentHash}`, voteType],
             account: profile?.walletAddress,
           });
-          await refetch();
         } else {
           const account = JSON.parse(localStorage.getItem("account") || "{}");
           const sessionAccount = JSON.parse(
@@ -94,8 +90,6 @@ function usePost(setPosts: any) {
           });
           await requestToRelayer(signedUserOp);
         }
-        handleToggleModal();
-        handleRemoveText();
         if (voteType === VOTE_TYPES.DOWNVOTE) {
           setDownvoting(false);
           setPosts((prev: any) => {
