@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FREE_POSTS, POST_OPTIONS, VOTE_TYPES } from "src/common/constants";
+import { FREE_POSTS, POST_OPTIONS } from "src/common/constants";
 import { writeContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
@@ -166,8 +166,8 @@ const useHome = () => {
   const getListOfPostsByType = async () => {
     if (data && !loading) {
       const { contentEntities: contents, postVoteEntities: myVotes } = data;
+
       const contentHashes = contents.map((content: any) => content.hash);
-      console.log({ data });
       try {
         const result = await homeRepository.getPosts(contentHashes);
         const detailContentList = contents.map((content: any) => {
@@ -175,15 +175,15 @@ const useHome = () => {
           const detailContent = result.find(
             (detail) => `0x${detail.contentHash}` === contentHash
           );
-          const isVoted = myVotes?.find(
-            (vote: any) =>
-              vote.account === profile?.walletAddress?.toLowerCase()
+          const isVoted = myVotes.find(
+            (vote: any) => contentHash === vote.post
           );
+
           return {
             ...content,
             ...detailContent,
             isVoted: isVoted ? true : false,
-            voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
+            voteType: isVoted?.type,
           };
         });
         const orderedPosts = orderByTimeCreated(detailContentList);
@@ -194,7 +194,7 @@ const useHome = () => {
     }
   };
 
-  const { loading, error, data } = useQuery(GET_NEW_POSTS, {
+  const { loading, data, refetch } = useQuery(GET_NEW_POSTS, {
     variables: {
       address: profile?.walletAddress?.toLowerCase() || "",
       isPaid: !isFreePosts,
@@ -217,6 +217,8 @@ const useHome = () => {
     loading,
     open,
     setBaseFee,
+    setPosts,
+    refetch,
     setIsFreePosts,
     copyAddress,
     onToggleSelect,

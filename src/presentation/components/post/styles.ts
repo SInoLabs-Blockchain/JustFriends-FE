@@ -7,7 +7,7 @@ const PostSection = styled("div")(() => ({
   boxShadow: "0 5px 40px -8px rgba(86, 107, 135, 0.08)",
 }));
 
-const PostContainer = styled("div")(({ theme, type, voteType }: any) => ({
+const PostContainer = styled("div")(({ theme, type }: any) => ({
   padding: "0 30px",
   height: "fit-content",
 
@@ -79,18 +79,41 @@ const PostContainer = styled("div")(({ theme, type, voteType }: any) => ({
       lineHeight: "18px",
       color: COLOR.neutral.neutral_4,
     },
+
+    ".post__interactions_button-downvoted": {
+      p: {
+        color: COLOR.error,
+      },
+      svg: {
+        path: {
+          fill: COLOR.error,
+        },
+      },
+    },
+
+    ".post__interactions_button-upvoted": {
+      p: {
+        color: COLOR.success,
+      },
+      svg: {
+        path: {
+          fill: COLOR.success,
+        },
+      },
+    },
+
     ".post__interactions-holders": {
       fontSize: "14px",
       fontFamily: "Semibold",
       lineHeight: "18px",
       color: COLOR.neutral.neutral_4,
     },
+
     ".MuiButtonBase-root": {
       borderRadius: 0,
       display: "flex",
       gap: "8px",
       padding: "9px 12px",
-
       "&.MuiIconButton-root:hover": {
         backgroundColor: COLOR.border,
         borderRadius: 6,

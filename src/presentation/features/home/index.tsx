@@ -16,6 +16,7 @@ const Home = () => {
     setIsFreePosts,
     handleToggleModal,
     handleRemoveText,
+    setPosts,
   } = useHome();
 
   const renderPostSection = () => (
@@ -24,7 +25,9 @@ const Home = () => {
       {loading ? (
         <Loading size={30} thickness={5} />
       ) : (
-        posts.map((post: any) => <Post key={post.contentHash} data={post} />)
+        posts.map((post: any) => (
+          <Post key={post.contentHash} data={post} setPosts={setPosts} />
+        ))
       )}
     </PostsContainer>
   );
