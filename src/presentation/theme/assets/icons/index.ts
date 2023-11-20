@@ -31,3 +31,6 @@ export { ReactComponent as InfoIcon } from "src/presentation/theme/assets/icons/
 export { ReactComponent as UploadIcon } from "src/presentation/theme/assets/icons/upload.svg";
 export { ReactComponent as Share2Icon } from "src/presentation/theme/assets/icons/share2.svg";
 export { ReactComponent as FanIcon } from "src/presentation/theme/assets/icons/fan.svg";
+export { ReactComponent as KlaytnLogo1 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-1.svg";
+export { ReactComponent as KlaytnLogo2 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-2.svg";
+export { ReactComponent as KlaytnLogo3 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-3.svg";
