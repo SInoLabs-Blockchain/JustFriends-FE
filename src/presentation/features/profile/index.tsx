@@ -1,10 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Avatar } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import COLOR from "src/presentation/theme/Color";
 import { DollarIcon, EducationIcon } from "src/presentation/theme/assets/icons";
 import Post from "src/presentation/components/post";
 import PostLoading from "src/presentation/components/loading/post";
 import { useAppSelector } from "src/data/redux/Hooks";
+import { stringAvatar } from "src/common/utils";
 
 import useProfile from "./useProfile";
 import {
@@ -159,16 +160,18 @@ const Profile = () => {
     <Container>
       <BackgroundProfileImg>
         <img
-          src={require("src/presentation/theme/assets/images/background.png")}
+          src={
+            profile?.coverUrl ||
+            require("src/presentation/theme/assets/images/background.png")
+          }
           alt=""
         />
         <Box className="profile__avatar-container">
-          <img
-            src={
-              "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-            }
-            alt=""
-          />
+          {profile?.avatarUrl ? (
+            <img src={profile?.avatarUrl} alt="avatar" />
+          ) : (
+            <Avatar {...stringAvatar(profile?.username)} />
+          )}
         </Box>
       </BackgroundProfileImg>
 

@@ -10,4 +10,6 @@ export interface ProfileUseCase {
   ): Promise<Profile | null>;
 
   getPosts(contentHashes: any): Promise<Post[]>;
+
+  getUsers(accessToken: string, walletAddresses: any): Promise<Profile[]>;
 }

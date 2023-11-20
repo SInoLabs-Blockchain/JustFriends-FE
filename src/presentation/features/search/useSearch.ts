@@ -45,8 +45,8 @@ function useSearch() {
     }
   }
 
-  function navigateUserProfile(userId: string) {
-    navigate(`/profile/${userId}`);
+  function navigateUserProfile(walletAddress: string) {
+    navigate(`/profile/${walletAddress.slice(2)}`);
   }
 
   useEffect(() => {
