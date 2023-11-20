@@ -1,6 +1,5 @@
 import { Avatar, Box, TextField, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import useHome from "../../useHome";
 import {
   ModalContainer,
   StyledSelect,
@@ -30,41 +29,42 @@ import { stringAvatar } from "src/common/utils";
 
 interface IProps {
   open: boolean;
+  loading: boolean;
   onToggleModal: () => void;
   onRemoveText: () => void;
+  option: any;
+  openOptionSelect: any;
+  textareaValue: any;
+  textareaHeight: any;
+  basePrice: any;
+  onToggleSelect: any;
+  onSelectMenu: any;
+  handleTextareaChange: any;
+  setBasePrice: any;
+  handleSharePost: any;
 }
 
 const ModalCreatePost = (props: IProps) => {
   const { open, onToggleModal } = props;
-  const {
-    option,
-    openOptionSelect,
-    textareaValue,
-    textareaHeight,
-    baseFee,
-    onToggleSelect,
-    onSelectMenu,
-    handleTextareaChange,
-    setBaseFee,
-    handleSharePost,
-  } = useHome();
   const { profile } = useAppSelector((state) => state.auth);
 
   const renderPostOptions = () => (
     <Box className="relative">
       <StyledSelect
         className="post-option__dropdown flex-center"
-        onClick={onToggleSelect}
+        onClick={props.onToggleSelect}
       >
-        <Typography className="post-option__name">{option.title}</Typography>
+        <Typography className="post-option__name">
+          {props.option.title}
+        </Typography>
         <ArrowDownIcon />
       </StyledSelect>
-      {openOptionSelect && (
+      {props.openOptionSelect && (
         <StyledSelectMenu>
           {POST_OPTIONS.map((option) => (
             <StyledSelectItem
               className="post-option__dropdown"
-              onClick={() => onSelectMenu(option)}
+              onClick={() => props.onSelectMenu(option)}
             >
               <Typography className="post-title__title">
                 {option.title}
@@ -78,11 +78,11 @@ const ModalCreatePost = (props: IProps) => {
 
   const renderBaseFeeInput = () => (
     <StyledBaseFeeContainer className="flex-center">
-      <Typography className="action__title">Base fee</Typography>
+      <Typography className="action__title">Base Price</Typography>
       <Box className="action__input-container flex-center">
         <TextField
-          value={baseFee}
-          onChange={(e) => setBaseFee(e.target.value)}
+          value={props.basePrice}
+          onChange={(e) => props.setBasePrice(e.target.value)}
           placeholder="0"
         />
         <Typography className="fee__symbol">KLAY</Typography>
@@ -126,10 +126,10 @@ const ModalCreatePost = (props: IProps) => {
           </Box>
         </Box>
         <StyledTextArea
-          value={textareaValue}
+          value={props.textareaValue}
           placeholder="What is on your mind?"
-          style={{ height: `${textareaHeight}px` }}
-          onChange={handleTextareaChange}
+          style={{ height: `${props.textareaHeight}px` }}
+          onChange={props.handleTextareaChange}
         />
         <StyledBottomActions className="flex-center">
           <Typography className="action__title">Add to you post</Typography>
@@ -157,13 +157,14 @@ const ModalCreatePost = (props: IProps) => {
             </Box>
           </Box>
         </StyledBottomActions>
-        {option.id === 2 && renderBaseFeeInput()}
+        {props.option.id === 0 && renderBaseFeeInput()}
         <StyledButtonShare>
           <CustomButton
             title="Share"
+            loading={props.loading}
             backgroundColor={COLOR.linear}
             variant={"contained"}
-            onClick={handleSharePost}
+            onClick={props.handleSharePost}
           />
         </StyledButtonShare>
       </ModalContainer>

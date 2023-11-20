@@ -2,11 +2,10 @@ import { Avatar, Box, Tooltip, Typography } from "@mui/material";
 import { shortenAddress, stringAvatar } from "src/common/utils";
 import { WalletIcon } from "src/presentation/theme/assets/icons";
 import { ProfileContainer } from "./styles";
-import useHome from "./useHome";
+import { useAppSelector } from "src/data/redux/Hooks";
 
-const ProfileCard = () => {
-  const { profile, copyAddress, navigateToProfile } = useHome();
-
+const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
+  const { profile } = useAppSelector((state) => state.auth);
   const data = {
     name: "Donald J.Trump",
     address: "0x0bc68d7a06259006ae4cb3B8eFF737a46bF5912e",

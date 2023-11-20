@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import { CustomizedButton } from "./styles";
 
 const CustomButton = ({
@@ -5,6 +6,7 @@ const CustomButton = ({
   disabled,
   sm,
   backgroundColor,
+  loading,
   ...props
 }: any) => {
   return (
@@ -14,7 +16,7 @@ const CustomButton = ({
       backgroundColor={backgroundColor}
       {...props}
     >
-      {title}
+      {loading ? <CircularProgress size={18} /> : title}
     </CustomizedButton>
   );
 };

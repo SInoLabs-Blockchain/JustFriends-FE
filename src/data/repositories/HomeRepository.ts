@@ -9,8 +9,8 @@ export class HomeRepository implements HomeUseCase {
     return new HomeRepository();
   }
 
-  async getPosts(contentHashes: string[]): Promise<Post[]> {
-    let api = new APIGateWay();
+  async getPosts({ contentHashes, accessToken }: any): Promise<Post[]> {
+    let api = new APIGateWay({ Authorization: `Bearer ${accessToken}` });
     return api.post(HomeResource.POST_ROUTES.LIST_OF_POSTS, {
       contentHashes,
     });

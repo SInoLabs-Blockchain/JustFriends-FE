@@ -8,11 +8,17 @@ const GET_NEW_POSTS = gql`
       totalUpvote
       totalDownvote
       totalSupply
+      startedPrice
     }
     postVoteEntities(where: { account: $address }) {
       post
       type
       account
+    }
+    userPostEntities(where: { account: $address }) {
+      account
+      isOwner
+      post
     }
   }
 `;

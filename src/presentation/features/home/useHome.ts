@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FREE_POSTS, POST_OPTIONS } from "src/common/constants";
+import { FREE_POSTS, POST_OPTIONS, VOTE_TYPES } from "src/common/constants";
 import { writeContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
@@ -40,12 +40,13 @@ const useHome = () => {
   const [openOptionSelect, setOpenOptionSelect] = useState(false);
   const [textareaValue, setTextareaValue] = useState("");
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
-  const [baseFee, setBaseFee] = useState<string>("");
+  const [basePrice, setBasePrice] = useState<string>("0");
   const [posts, setPosts] = useState<Array<Post>>([]);
 
   const homeRepository = HomeRepository.create();
 
   const { accessToken, profile } = useAppSelector((state) => state.auth);
+  const [loading, setLoading] = useState<boolean>(false);
   const { isConnected } = useAccount();
 
   const copyAddress = async () => {
@@ -64,7 +65,7 @@ const useHome = () => {
 
   const onSelectMenu = (data: OptionState) => {
     setOption(data);
-    setBaseFee("");
+    setBasePrice("");
     onToggleSelect();
   };
 
@@ -91,6 +92,7 @@ const useHome = () => {
           type: option.value,
           accessToken,
         });
+        setLoading(true);
         if (isConnected) {
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -98,7 +100,7 @@ const useHome = () => {
             functionName: "postContent",
             args: [
               `0x${contentHash}`,
-              parseEther(option.id ? "0" : "0.01"),
+              parseEther(basePrice),
               option.value === FREE_POSTS ? false : true,
             ],
             account: profile?.walletAddress,
@@ -115,7 +117,7 @@ const useHome = () => {
           );
           const msgCallData = getCallDataCreatePost({
             contentHash: `0x${contentHash}`,
-            startedPrice: parseEther(option.id ? "0" : "0.01"),
+            startedPrice: parseEther(basePrice),
           });
 
           const callData = getCallDataEntryPoint({
@@ -152,6 +154,7 @@ const useHome = () => {
         }
         handleToggleModal();
         handleRemoveText();
+        setLoading(false);
         toast.success("Your post has been created successfully!");
       } catch (error) {
         console.log({ error });
@@ -165,11 +168,18 @@ const useHome = () => {
 
   const getListOfPostsByType = async () => {
     if (data && !loading) {
-      const { contentEntities: contents, postVoteEntities: myVotes } = data;
+      const {
+        contentEntities: contents,
+        postVoteEntities: myVotes,
+        userPostEntities: myPosts,
+      } = data;
 
       const contentHashes = contents.map((content: any) => content.hash);
       try {
-        const result = await homeRepository.getPosts(contentHashes);
+        const result = await homeRepository.getPosts({
+          contentHashes,
+          accessToken,
+        });
         const detailContentList = contents.map((content: any) => {
           const contentHash = content.hash;
           const detailContent = result.find(
@@ -178,12 +188,17 @@ const useHome = () => {
           const isVoted = myVotes.find(
             (vote: any) => contentHash === vote.post
           );
-
+          const isOwned = myPosts?.find(
+            (post: any) =>
+              post.account === profile?.walletAddress &&
+              post === `0x${contentHash}`
+          )?.isOwner;
           return {
             ...content,
             ...detailContent,
             isVoted: isVoted ? true : false,
-            voteType: isVoted?.type,
+            voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
+            isOwner: !!isOwned,
           };
         });
         const orderedPosts = orderByTimeCreated(detailContentList);
@@ -194,7 +209,7 @@ const useHome = () => {
     }
   };
 
-  const { loading, data, refetch } = useQuery(GET_NEW_POSTS, {
+  const { loading: getLoading, data } = useQuery(GET_NEW_POSTS, {
     variables: {
       address: profile?.walletAddress?.toLowerCase() || "",
       isPaid: !isFreePosts,
@@ -210,15 +225,15 @@ const useHome = () => {
     openOptionSelect,
     textareaValue,
     textareaHeight,
-    baseFee,
+    basePrice,
     isFreePosts,
     profile,
     data,
     loading,
+    getLoading,
     open,
-    setBaseFee,
+    setBasePrice,
     setPosts,
-    refetch,
     setIsFreePosts,
     copyAddress,
     onToggleSelect,
