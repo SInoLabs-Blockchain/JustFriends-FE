@@ -9,6 +9,7 @@ import {
 } from "src/presentation/theme/assets/icons";
 import { shortenAddress } from "src/common/utils";
 import PostLoading from "src/presentation/components/loading/post";
+import { useParams } from "react-router-dom";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -44,6 +45,8 @@ const CreatorProfile = () => {
     loadingContentPaidPosts,
     onChangeTab,
   } = useCreatorProfile();
+
+  const { id } = useParams();
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -118,7 +121,7 @@ const CreatorProfile = () => {
           <Box className="user-information__content-container flex-center">
             <WalletIcon />
             <Typography className="user-information__content-title">
-              {shortenAddress("0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028")}
+              {shortenAddress(`0x${id}`)}
             </Typography>
           </Box>
           <Box className="user-information__content-container flex-center">
