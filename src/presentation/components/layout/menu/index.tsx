@@ -5,25 +5,28 @@ import { MenuContainer } from "src/presentation/features/home/styles";
 
 interface IProps {
   isFreePosts: boolean;
-  setIsFreePosts: (value: boolean) => void;
+  handleSwitchZone: ((value: boolean) => void) | null;
   navigateToProfile?: any;
   copyAddress?: any;
 }
 
 const Menu = (props: IProps) => {
-  const { isFreePosts, setIsFreePosts, navigateToProfile, copyAddress } = props;
+  const { isFreePosts, handleSwitchZone, navigateToProfile, copyAddress } =
+    props;
 
-  const { profile } = useAppSelector((state) => state.auth);
+  const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
     <MenuContainer>
-      {profile && (
+      {accessToken && (
         <ProfileCard
           navigateToProfile={navigateToProfile}
           copyAddress={copyAddress}
         />
       )}
-      <Filter checked={isFreePosts} setChecked={setIsFreePosts} />
+      {handleSwitchZone ? (
+        <Filter checked={isFreePosts} setChecked={handleSwitchZone} />
+      ) : null}
     </MenuContainer>
   );
 };

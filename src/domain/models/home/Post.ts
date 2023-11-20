@@ -10,4 +10,7 @@ export interface Post {
   totalSupply?: number;
   isVoted?: boolean;
   voteType?: boolean;
+  user?: any;
+  price?: string;
+  isOwner?: boolean;
 }

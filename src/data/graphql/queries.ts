@@ -20,6 +20,10 @@ const GET_NEW_POSTS = gql`
       isOwner
       post
     }
+    creatorEntities(orderBy: creditScore, orderDirection: desc) {
+      address
+      creditScore
+    }
   }
 `;
 
@@ -66,6 +70,23 @@ const GET_CREDIT_SCORE = gql`
   }
 `;
 
+const GET_POST_DETAIL_DATA = gql`
+  query GetPostDetailData($contentHash: String!) {
+    creatorEntities(orderBy: creditScore, orderDirection: desc) {
+      address
+      creditScore
+    }
+    contentEntities(where: { hash: $contentHash }) {
+      id
+      hash
+      totalUpvote
+      totalDownvote
+      totalSupply
+      startedPrice
+    }
+  }
+`;
+
 export {
   GET_NEW_POSTS,
   GET_MY_POSTS,
@@ -73,4 +94,5 @@ export {
   GET_FREE_POSTS,
   GET_PAID_POSTS,
   GET_CREDIT_SCORE,
+  GET_POST_DETAIL_DATA,
 };

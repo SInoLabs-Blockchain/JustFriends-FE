@@ -3,8 +3,8 @@ import { Button } from "@mui/material";
 import COLOR from "src/presentation/theme/Color";
 
 type InputProps = {
-  sm?: boolean
-}
+  sm?: boolean;
+};
 
 export const CustomizedButton = styled(Button)<InputProps>(({ sm }) => ({
   padding: "11px 24px",
@@ -17,4 +17,8 @@ export const CustomizedButton = styled(Button)<InputProps>(({ sm }) => ({
   background: COLOR.linear,
   color: COLOR.white,
   boxShadow: "none",
+
+  ".MuiCircularProgress-root": {
+    color: COLOR.white,
+  },
 }));

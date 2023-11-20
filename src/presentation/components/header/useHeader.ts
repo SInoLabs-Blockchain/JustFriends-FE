@@ -67,7 +67,14 @@ const useHeader = () => {
   const getMe = async () => {
     try {
       const res = await authRepository.getMe(accessToken);
-      dispatch(setProfile(res));
+      const friendAccount = localStorage.getItem("account");
+      if (friendAccount) {
+        const friendAccountInfo = JSON.parse(friendAccount);
+        if (res?.walletAddress === friendAccountInfo.contractAddress) {
+          return dispatch(setProfile({ ...res, isFriend: false }));
+        }
+      }
+      dispatch(setProfile({ ...res, isFriend: true }));
     } catch (error) {
       console.log({ error });
     }

@@ -58,6 +58,11 @@ export const ABI_FUNCTION = {
         name: "_startedPrice",
         type: "uint256",
       },
+      {
+        internalType: "bool",
+        name: "isPaid",
+        type: "bool",
+      },
     ],
     name: "postContent",
     outputs: [],
