@@ -179,6 +179,193 @@ const PostsContainer = styled("div")({
   gap: 24,
 });
 
+const RevenueContainer = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  gap: 40,
+
+  ".revenue-box": {
+    borderRadius: 12,
+    padding: 30,
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+    height: "100%",
+  },
+
+  ".profit-container": {
+    background: "linear-gradient(138deg, #A07AF7 13.97%, #55A0F0 91.27%)",
+    ".profit__title": {
+      fontFamily: "Gilroy",
+      fontSize: 18,
+      fontWeight: 600,
+      lineHeight: "24px",
+      color: COLOR.white,
+      opacity: 0.8,
+    },
+    ".profit__value": {
+      fontFamily: "Gilroy",
+      fontSize: 30,
+      fontWeight: 400,
+      lineHeight: "38px",
+      color: COLOR.white,
+    },
+
+    ".profit__content": {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+
+    ".profit__content-item": {
+      display: "flex",
+      flexDirection: "column",
+      gap: 24,
+    },
+
+    ".profit__content-value": {
+      fontFamily: "Gilroy",
+      fontSize: 18,
+      fontWeight: 400,
+      lineHeight: "24px",
+      color: COLOR.white,
+    },
+
+    ".profit__content-title": {
+      fontFamily: "Gilroy",
+      fontSize: 14,
+      fontWeight: 500,
+      lineHeight: "18px",
+      color: COLOR.white,
+      opacity: 0.7,
+    },
+  },
+
+  ".active-income-container": {
+    background: "#F0EAFF",
+    ".active-income__title": {
+      fontFamily: "Gilroy",
+      fontSize: 18,
+      fontWeight: 600,
+      lineHeight: "24px",
+      color: COLOR.neutral.neutral_4,
+    },
+    ".active-income__value": {
+      fontFamily: "Gilroy",
+      fontSize: 30,
+      fontWeight: 400,
+      lineHeight: "38px",
+      color: COLOR.neutral.neutral_1,
+    },
+
+    ".active-income__content": {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+
+    ".active-income__content-value": {
+      fontFamily: "Gilroy",
+      fontSize: 18,
+      fontWeight: 400,
+      lineHeight: "24px",
+      color: COLOR.neutral.neutral_1,
+    },
+
+    ".active-income__content-title": {
+      fontFamily: "Gilroy",
+      fontSize: 14,
+      fontWeight: 500,
+      lineHeight: "18px",
+      color: COLOR.neutral.neutral_4,
+    },
+  },
+
+  ".passive-income-container": {
+    background: "#DEF6FF",
+    ".passive-income__title": {
+      fontFamily: "Gilroy",
+      fontSize: 18,
+      fontWeight: 600,
+      lineHeight: "24px",
+      color: COLOR.neutral.neutral_4,
+    },
+    ".passive-income__value": {
+      fontFamily: "Gilroy",
+      fontSize: 30,
+      fontWeight: 400,
+      lineHeight: "38px",
+      color: COLOR.neutral.neutral_1,
+    },
+
+    ".passive-income__content": {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+
+    ".passive-income__content-value": {
+      fontFamily: "Gilroy",
+      fontSize: 18,
+      fontWeight: 400,
+      lineHeight: "24px",
+      color: COLOR.neutral.neutral_1,
+    },
+
+    ".passive-income__content-title": {
+      fontFamily: "Gilroy",
+      fontSize: 14,
+      fontWeight: 500,
+      lineHeight: "18px",
+      color: COLOR.neutral.neutral_4,
+    },
+  },
+
+  ".profit-chart-container": {
+    borderRadius: 12,
+    border: "1px solid var(--gray-gray-200, #F1F1F2)",
+    background: COLOR.white,
+    padding: 30,
+
+    ".chart-title": {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 30,
+
+      p: {
+        fontFamily: "Gilroy",
+        fontSize: 24,
+        fontWeight: 400,
+        lineHeight: "32px",
+        color: COLOR.neutral.neutral_1,
+      },
+
+      ".time-unit-container": {
+        display: "flex",
+        gap: 10,
+      },
+    },
+  },
+
+  ".flex-center": {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
+
+const TimeUnitItem = styled("div")<InputProps>(({ isSelected }) => ({
+  cursor: "pointer",
+  borderRadius: 6,
+  background: isSelected ? "#F3F4F6" : COLOR.white,
+  padding: "5px 12px",
+
+  p: {
+    fontFamily: "Semibold",
+    fontSize: 16,
+    color: isSelected ? COLOR.neutral.neutral_1 : COLOR.neutral.neutral_4,
+    lineHeight: "20px",
+  },
+}));
+
 export {
   Container,
   BackgroundProfileImg,
@@ -187,4 +374,6 @@ export {
   TabMenuContainer,
   TabMenuItem,
   PostsContainer,
+  RevenueContainer,
+  TimeUnitItem,
 };

@@ -7,6 +7,7 @@ import PostLoading from "src/presentation/components/loading/post";
 import { useAppSelector } from "src/data/redux/Hooks";
 
 import useProfile from "./useProfile";
+import Revenue from "./revenue";
 import {
   BackgroundProfileImg,
   Container,
@@ -74,7 +75,7 @@ const Profile = () => {
       case 1:
         return renderPurchasedPost();
       case 2:
-        return <></>;
+        return <Revenue />;
       default:
         return null;
     }
