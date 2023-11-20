@@ -6,6 +6,8 @@ import { readContract } from "@wagmi/core";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { orderByTimeCreated } from "src/common/utils";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
+import { useParams } from "react-router-dom";
+import { isEmpty } from "lodash";
 
 const TABS = [
   { id: 0, name: "Purchased posts" },
@@ -26,10 +28,17 @@ const useCreatorProfile = () => {
   const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
   const [unpurchasedPosts, setUnpurchasedPosts] = useState<any>([]);
   const [freePosts, setFreePosts] = useState<any>([]);
+  const [creatorInfo, setCreatorInfo] = useState({
+    username: "",
+    walletAddress: "",
+    avatarUrl: "",
+    coverUrl: "",
+  });
 
-  const { profile } = useAppSelector((state) => state.auth);
+  const { profile, accessToken } = useAppSelector((state) => state.auth);
 
-  const walletAddress = "0xc97db9086e854f727db2b2c1462401eaf1eb9028";
+  const { id } = useParams();
+  const walletAddress = `0x${id}`;
 
   const { loading: loadingContentFreePosts, data: contentFreePosts } = useQuery(
     GET_FREE_POSTS,
@@ -123,9 +132,25 @@ const useCreatorProfile = () => {
     setTab(data);
   };
 
+  const getCreatorInfo = async () => {
+    const profileRepository = ProfileRepository.create();
+    try {
+      const res = await profileRepository.getUsers(accessToken, [
+        walletAddress.toLocaleLowerCase(),
+      ]);
+      if (!isEmpty(res)) setCreatorInfo(res[0]);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
   useEffect(() => {
     getPosts();
   }, [tab]);
+
+  useEffect(() => {
+    if (accessToken) getCreatorInfo();
+  }, [accessToken]);
 
   return {
     tab,
@@ -135,6 +160,7 @@ const useCreatorProfile = () => {
     freePosts,
     loadingContentFreePosts,
     loadingContentPaidPosts,
+    creatorInfo,
     onChangeTab,
     getPosts,
   };

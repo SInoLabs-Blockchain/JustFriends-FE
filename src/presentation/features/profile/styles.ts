@@ -19,6 +19,16 @@ const Container = styled("div")({
     display: "flex",
     alignItems: "center",
   },
+
+  ".MuiAvatar-root": {
+    width: "140px",
+    height: "140px",
+    aspectRatio: 1 / 1,
+    borderRadius: "50%",
+    cursor: "pointer",
+    fontSize: "48px",
+    border: `4px solid ${COLOR.neutral.neutral_5}`,
+  },
 });
 
 const BackgroundProfileImg = styled("div")({

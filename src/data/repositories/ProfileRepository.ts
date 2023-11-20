@@ -33,4 +33,14 @@ export class ProfileRepository implements ProfileUseCase {
       contentHashes,
     });
   }
+
+  async getUsers(
+    accessToken: string,
+    walletAddresses: any
+  ): Promise<Profile[]> {
+    let api = new APIGateWay({ Authorization: `Bearer ${accessToken}` });
+    return api.post(ProfileResource.PROFILE_ROUTES.GET_USERS, {
+      walletAddresses,
+    });
+  }
 }

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Avatar } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import Post from "src/presentation/components/post";
 import COLOR from "src/presentation/theme/Color";
@@ -9,6 +9,8 @@ import {
 } from "src/presentation/theme/assets/icons";
 import { shortenAddress } from "src/common/utils";
 import PostLoading from "src/presentation/components/loading/post";
+import { useParams } from "react-router-dom";
+import { stringAvatar } from "src/common/utils";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -21,18 +23,6 @@ import {
   PostsContainer,
 } from "./styles";
 
-const data = {
-  creator: {
-    name: "Donald Trump",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png",
-  },
-  content:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  upvote: 125,
-  downvote: 18,
-  holder: 312,
-};
-
 const CreatorProfile = () => {
   const {
     tab,
@@ -42,8 +32,11 @@ const CreatorProfile = () => {
     freePosts,
     loadingContentFreePosts,
     loadingContentPaidPosts,
+    creatorInfo,
     onChangeTab,
   } = useCreatorProfile();
+
+  const { id } = useParams();
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -113,12 +106,12 @@ const CreatorProfile = () => {
       <Box className="user-information-container">
         <Box className="user-information__content">
           <Typography className="user-information__name">
-            Jerry Kane <FanIcon />
+            {creatorInfo.username} <FanIcon />
           </Typography>
           <Box className="user-information__content-container flex-center">
             <WalletIcon />
             <Typography className="user-information__content-title">
-              {shortenAddress("0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028")}
+              {shortenAddress(`0x${id}`)}
             </Typography>
           </Box>
           <Box className="user-information__content-container flex-center">
@@ -183,16 +176,18 @@ const CreatorProfile = () => {
     <Container>
       <BackgroundProfileImg>
         <img
-          src={require("src/presentation/theme/assets/images/background.png")}
+          src={
+            creatorInfo.coverUrl ||
+            require("src/presentation/theme/assets/images/background.png")
+          }
           alt=""
         />
         <Box className="profile__avatar-container">
-          <img
-            src={
-              "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-            }
-            alt=""
-          />
+          {creatorInfo.avatarUrl ? (
+            <img src={creatorInfo.avatarUrl} alt="avatar" />
+          ) : (
+            <Avatar {...stringAvatar(creatorInfo.username)} />
+          )}
         </Box>
       </BackgroundProfileImg>
 
