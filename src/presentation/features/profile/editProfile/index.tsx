@@ -1,14 +1,18 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Avatar, Box, TextField, Typography } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import COLOR from "src/presentation/theme/Color";
 import Backwall from "src/presentation/theme/assets/images/background.png";
 import { InfoIcon, UploadIcon } from "src/presentation/theme/assets/icons";
-import useProfile from "../useProfile";
+import { stringAvatar } from "src/common/utils";
+import { useAppSelector } from "src/data/redux/Hooks";
 
+import useProfile from "../useProfile";
 import { Container } from "./styles";
 
 const EditProfile = () => {
   const { username, onChangeUsername, onEditProfile } = useProfile();
+
+  const { profile } = useAppSelector((state) => state.auth);
 
   const renderContent = () => (
     <Box className="edit-profile-container">
@@ -19,12 +23,16 @@ const EditProfile = () => {
             <Typography className="user-information____title flex-center">
               Profile Image <InfoIcon />
             </Typography>
-            <Box
-              className="user-information__avatar"
-              sx={{
-                backgroundImage: `url(${"https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"})`,
-              }}
-            />
+            {profile?.avatarUrl ? (
+              <Box
+                className="user-information__avatar"
+                sx={{
+                  backgroundImage: profile?.avatarUrl,
+                }}
+              />
+            ) : (
+              <Avatar {...stringAvatar(profile?.username)} />
+            )}
           </Box>
           <Box className="user-information__backwall-container">
             <Typography className="user-information____title flex-center">

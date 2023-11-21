@@ -28,7 +28,7 @@ const GET_MY_POSTS = gql`
 const GET_PURCHASED_POSTS = gql`
   query GetPurchasedPosts($account: String!) {
     userPostEntities(where: { isOwner: false, account: $account }) {
-      content
+      post
     }
   }
 `;
@@ -47,7 +47,15 @@ const GET_PAID_POSTS = gql`
       hash
     }
     userPostEntities(where: { account: $account }) {
-      content
+      post
+    }
+  }
+`;
+
+const GET_CREDIT_SCORE = gql`
+  query GetCreditScore($address: String!) {
+    creatorEntities(where: { address: $address }) {
+      creditScore
     }
   }
 `;
@@ -58,4 +66,5 @@ export {
   GET_PURCHASED_POSTS,
   GET_FREE_POSTS,
   GET_PAID_POSTS,
+  GET_CREDIT_SCORE,
 };

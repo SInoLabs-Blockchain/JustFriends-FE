@@ -6,6 +6,8 @@ import Post from "src/presentation/components/post";
 import PostLoading from "src/presentation/components/loading/post";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { stringAvatar } from "src/common/utils";
+import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
+import { isEmpty } from "lodash";
 
 import useProfile from "./useProfile";
 import {
@@ -25,12 +27,20 @@ const Profile = () => {
     myPosts,
     purchasedPosts,
     loadingContentMyPosts,
-    loadinContentPurchasedPosts,
+    loadingContentPurchasedPosts,
+    creditScore,
     onChangeTab,
     navigateToEditProfile,
   } = useProfile();
 
   const { profile } = useAppSelector((state) => state.auth);
+
+  const renderNoData = () => (
+    <Box className="no-data-container">
+      <img src={NotFound} alt="not-found" />
+      <Typography>No posts</Typography>
+    </Box>
+  );
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -50,6 +60,8 @@ const Profile = () => {
     <PostsContainer>
       {loadingContentMyPosts ? (
         <PostLoading />
+      ) : isEmpty(myPosts) ? (
+        renderNoData()
       ) : (
         myPosts?.map((post: any) => <Post key={post.contentHash} data={post} />)
       )}
@@ -58,8 +70,10 @@ const Profile = () => {
 
   const renderPurchasedPost = () => (
     <PostsContainer>
-      {loadinContentPurchasedPosts ? (
+      {loadingContentPurchasedPosts ? (
         <PostLoading />
+      ) : isEmpty(purchasedPosts) ? (
+        renderNoData()
       ) : (
         purchasedPosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -88,12 +102,14 @@ const Profile = () => {
           <Typography className="user-information__name">
             {profile?.username}
           </Typography>
-          <Box className="user-information__content-container flex-center">
-            <EducationIcon />
-            <Typography className="user-information__content-title">
-              Credit score: <span>1900</span>
-            </Typography>
-          </Box>
+          {creditScore && (
+            <Box className="user-information__content-container flex-center">
+              <EducationIcon />
+              <Typography className="user-information__content-title">
+                Credit score: <span>{creditScore}</span>
+              </Typography>
+            </Box>
+          )}
           <Box className="user-information__content-container flex-center">
             <DollarIcon />
             <Typography className="user-information__content-title">
@@ -122,9 +138,10 @@ const Profile = () => {
               Follower
             </Typography>
           </Box>
+
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              11
+              {myPosts?.length}
             </Typography>
             <Typography className="user-information__metrics-title">
               Posts
@@ -160,10 +177,7 @@ const Profile = () => {
     <Container>
       <BackgroundProfileImg>
         <img
-          src={
-            profile?.coverUrl ||
-            require("src/presentation/theme/assets/images/background.png")
-          }
+          src={require("src/presentation/theme/assets/images/background.png")}
           alt=""
         />
         <Box className="profile__avatar-container">

@@ -27,7 +27,7 @@ interface PropTypes {
 const Post = ({ data }: PropTypes) => {
   const isConnectedWallet = true;
   const isFreeZone = true;
-  const { handleVotePost } = usePost();
+  const { handleVotePost, navigateUserProfile } = usePost();
 
   const renderRightContent = () => {
     if (isConnectedWallet && !isFreeZone) {
@@ -113,7 +113,14 @@ const Post = ({ data }: PropTypes) => {
               <Avatar {...stringAvatar(data?.user?.username)} />
             )
           }
-          title={data?.user.username}
+          title={
+            <Box
+              style={{ cursor: "pointer" }}
+              onClick={() => navigateUserProfile(data?.user?.walletAddress)}
+            >
+              {data?.user?.username}
+            </Box>
+          }
           subheader={timeAgo(data.createdAt)}
           action={renderRightContent()}
         />
