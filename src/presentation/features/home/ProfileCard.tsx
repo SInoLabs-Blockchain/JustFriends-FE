@@ -24,7 +24,10 @@ const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
           onClick={navigateToProfile}
         />
       ) : (
-        <Avatar {...stringAvatar(profile?.username)} />
+        <Avatar
+          {...stringAvatar(profile?.username)}
+          onClick={navigateToProfile}
+        />
       )}
       <Box className="profile__info">
         <Typography className="profile__card-name">

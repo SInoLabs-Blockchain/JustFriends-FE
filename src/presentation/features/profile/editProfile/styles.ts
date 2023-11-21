@@ -7,6 +7,14 @@ const Container = styled("div")({
   alignItems: "center",
   justifyContent: "center",
 
+  ".MuiAvatar-root": {
+    width: 130,
+    height: 130,
+    borderRadius: "50%",
+    fontSize: "48px",
+    cursor: "pointer",
+  },
+
   ".edit-profile-container": {
     display: "flex",
     width: "60%",

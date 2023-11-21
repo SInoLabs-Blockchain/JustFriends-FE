@@ -3,9 +3,12 @@ import { GET_FREE_POSTS, GET_PAID_POSTS } from "src/data/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { readContract } from "@wagmi/core";
-import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { orderByTimeCreated } from "src/common/utils";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
+import { useParams } from "react-router-dom";
+import { isEmpty } from "lodash";
+import Web3 from "web3";
+import JustFriendsABI from "src/common/abis/JustFriends.json";
 
 const TABS = [
   { id: 0, name: "Purchased posts" },
@@ -26,10 +29,18 @@ const useCreatorProfile = () => {
   const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
   const [unpurchasedPosts, setUnpurchasedPosts] = useState<any>([]);
   const [freePosts, setFreePosts] = useState<any>([]);
+  const [creatorInfo, setCreatorInfo] = useState({
+    username: "",
+    walletAddress: "",
+    avatarUrl: "",
+    coverUrl: "",
+    loyalFan: false,
+  });
 
-  const { profile } = useAppSelector((state) => state.auth);
+  const { profile, accessToken } = useAppSelector((state) => state.auth);
 
-  const walletAddress = "0xc97db9086e854f727db2b2c1462401eaf1eb9028";
+  const { id } = useParams();
+  const walletAddress = `0x${id}`;
 
   const { loading: loadingContentFreePosts, data: contentFreePosts } = useQuery(
     GET_FREE_POSTS,
@@ -81,7 +92,7 @@ const useCreatorProfile = () => {
         const contentPurchasedPosts = contentPaidPosts?.contentEntities.filter(
           (paidPost: any) =>
             contentPaidPosts?.userPostEntities.some(
-              (purchasedPost: any) => paidPost.hash === purchasedPost.hash
+              (purchasedPost: any) => paidPost.hash === purchasedPost.post
             )
         );
 
@@ -100,7 +111,7 @@ const useCreatorProfile = () => {
           contentPaidPosts?.contentEntities.filter(
             (paidPost: any) =>
               !contentPaidPosts?.userPostEntities.some(
-                (purchasedPost: any) => paidPost.hash === purchasedPost.hash
+                (purchasedPost: any) => paidPost.hash === purchasedPost.post
               )
           );
 
@@ -123,9 +134,45 @@ const useCreatorProfile = () => {
     setTab(data);
   };
 
+  const getCreatorInfo = async () => {
+    const profileRepository = ProfileRepository.create();
+    try {
+      const res = await profileRepository.getUsers(accessToken, [
+        walletAddress.toLocaleLowerCase(),
+      ]);
+
+      const isLoyalFan = await getLoyalFan(walletAddress);
+
+      if (!isEmpty(res)) setCreatorInfo({ ...res[0], loyalFan: !!isLoyalFan });
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const getLoyalFan = async (walletAddress: string) => {
+    const web3 = new Web3(process.env.REACT_APP_RPC);
+
+    const blockNumber = await web3.eth.getBlockNumber();
+
+    const data = (await readContract({
+      address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
+      abi: JustFriendsABI.abi,
+      functionName: "getListLoyalty",
+      args: [walletAddress, blockNumber],
+    })) as [];
+
+    const isLoyalFan = data.find((item: string) => item === walletAddress);
+
+    return isLoyalFan;
+  };
+
   useEffect(() => {
     getPosts();
-  }, [tab]);
+  }, [tab, contentFreePosts, contentPaidPosts]);
+
+  useEffect(() => {
+    if (accessToken) getCreatorInfo();
+  }, [accessToken]);
 
   return {
     tab,
@@ -135,6 +182,7 @@ const useCreatorProfile = () => {
     freePosts,
     loadingContentFreePosts,
     loadingContentPaidPosts,
+    creatorInfo,
     onChangeTab,
     getPosts,
   };

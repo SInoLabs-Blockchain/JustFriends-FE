@@ -21,11 +21,11 @@ const PostContainer = styled("div")(({ theme, type }: any) => ({
     height: "44px",
     borderRadius: "10px",
     cursor: "pointer",
+  },
 
-    img: {
-      width: "44px",
-      height: "44px",
-    },
+  img: {
+    width: "44px",
+    height: "44px",
   },
 
   ".MuiCardHeader-root": {

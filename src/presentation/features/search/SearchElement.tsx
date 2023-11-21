@@ -27,7 +27,7 @@ const SearchElement = ({ data }: any) => {
           <Box>
             <Typography
               className="search__element-name"
-              onClick={() => navigateUserProfile(data.userId)}
+              onClick={() => navigateUserProfile(data.walletAddress)}
             >
               {data.username}
             </Typography>

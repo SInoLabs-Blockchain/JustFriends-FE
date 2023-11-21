@@ -44,6 +44,16 @@ const BackgroundProfileImg = styled("div")({
       borderRadius: "50%",
       border: `4px solid ${COLOR.neutral.neutral_5}`,
     },
+
+    ".MuiAvatar-root": {
+      width: "140px",
+      height: "140px",
+      aspectRatio: 1 / 1,
+      borderRadius: "50%",
+      cursor: "pointer",
+      fontSize: "48px",
+      border: `4px solid ${COLOR.neutral.neutral_5}`,
+    },
   },
 });
 
@@ -136,6 +146,23 @@ const LeftContent = styled("div")({
 
 const RightContent = styled("div")({
   width: "70%",
+
+  ".no-data-container": {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    img: {
+      width: 200,
+    },
+
+    p: {
+      fontFamily: "Semibold",
+      fontSize: 18,
+      lineHeight: "24px",
+      color: COLOR.neutral.neutral_4,
+    },
+  },
 });
 
 const TabMenuContainer = styled("div")({

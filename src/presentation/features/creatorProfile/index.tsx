@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Avatar } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import Post from "src/presentation/components/post";
 import COLOR from "src/presentation/theme/Color";
@@ -9,6 +9,10 @@ import {
 } from "src/presentation/theme/assets/icons";
 import { shortenAddress } from "src/common/utils";
 import PostLoading from "src/presentation/components/loading/post";
+import { useParams } from "react-router-dom";
+import { stringAvatar } from "src/common/utils";
+import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
+import { isEmpty } from "lodash";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -21,18 +25,6 @@ import {
   PostsContainer,
 } from "./styles";
 
-const data = {
-  creator: {
-    name: "Donald Trump",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png",
-  },
-  content:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  upvote: 125,
-  downvote: 18,
-  holder: 312,
-};
-
 const CreatorProfile = () => {
   const {
     tab,
@@ -42,8 +34,18 @@ const CreatorProfile = () => {
     freePosts,
     loadingContentFreePosts,
     loadingContentPaidPosts,
+    creatorInfo,
     onChangeTab,
   } = useCreatorProfile();
+
+  const { id } = useParams();
+
+  const renderNoData = () => (
+    <Box className="no-data-container">
+      <img src={NotFound} alt="not-found" />
+      <Typography>No posts</Typography>
+    </Box>
+  );
 
   const renderTabMenu = () => (
     <TabMenuContainer>
@@ -63,6 +65,8 @@ const CreatorProfile = () => {
     <PostsContainer>
       {loadingContentPaidPosts ? (
         <PostLoading />
+      ) : isEmpty(purchasedPosts) ? (
+        renderNoData()
       ) : (
         purchasedPosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -75,6 +79,8 @@ const CreatorProfile = () => {
     <PostsContainer>
       {loadingContentPaidPosts ? (
         <PostLoading />
+      ) : isEmpty(unpurchasedPosts) ? (
+        renderNoData()
       ) : (
         unpurchasedPosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -87,6 +93,8 @@ const CreatorProfile = () => {
     <PostsContainer>
       {loadingContentFreePosts ? (
         <PostLoading />
+      ) : isEmpty(freePosts) ? (
+        renderNoData()
       ) : (
         freePosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -112,13 +120,15 @@ const CreatorProfile = () => {
     <LeftContent>
       <Box className="user-information-container">
         <Box className="user-information__content">
-          <Typography className="user-information__name">
-            Jerry Kane <FanIcon />
-          </Typography>
+          {creatorInfo.username && (
+            <Typography className="user-information__name">
+              {creatorInfo.username} {creatorInfo.loyalFan && <FanIcon />}
+            </Typography>
+          )}
           <Box className="user-information__content-container flex-center">
             <WalletIcon />
             <Typography className="user-information__content-title">
-              {shortenAddress("0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028")}
+              {shortenAddress(`0x${id}`)}
             </Typography>
           </Box>
           <Box className="user-information__content-container flex-center">
@@ -187,12 +197,13 @@ const CreatorProfile = () => {
           alt=""
         />
         <Box className="profile__avatar-container">
-          <img
-            src={
-              "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-            }
-            alt=""
-          />
+          {creatorInfo.avatarUrl ? (
+            <img src={creatorInfo.avatarUrl} alt="avatar" />
+          ) : (
+            creatorInfo.username && (
+              <Avatar {...stringAvatar(creatorInfo.username)} />
+            )
+          )}
         </Box>
       </BackgroundProfileImg>
 
