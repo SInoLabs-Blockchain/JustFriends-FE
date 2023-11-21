@@ -11,6 +11,8 @@ import { shortenAddress } from "src/common/utils";
 import PostLoading from "src/presentation/components/loading/post";
 import { useParams } from "react-router-dom";
 import { stringAvatar } from "src/common/utils";
+import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
+import { isEmpty } from "lodash";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -38,6 +40,13 @@ const CreatorProfile = () => {
 
   const { id } = useParams();
 
+  const renderNoData = () => (
+    <Box className="no-data-container">
+      <img src={NotFound} alt="not-found" />
+      <Typography>No posts</Typography>
+    </Box>
+  );
+
   const renderTabMenu = () => (
     <TabMenuContainer>
       {TABS.map((item, index) => (
@@ -56,6 +65,8 @@ const CreatorProfile = () => {
     <PostsContainer>
       {loadingContentPaidPosts ? (
         <PostLoading />
+      ) : isEmpty(purchasedPosts) ? (
+        renderNoData()
       ) : (
         purchasedPosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -68,6 +79,8 @@ const CreatorProfile = () => {
     <PostsContainer>
       {loadingContentPaidPosts ? (
         <PostLoading />
+      ) : isEmpty(unpurchasedPosts) ? (
+        renderNoData()
       ) : (
         unpurchasedPosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -80,6 +93,8 @@ const CreatorProfile = () => {
     <PostsContainer>
       {loadingContentFreePosts ? (
         <PostLoading />
+      ) : isEmpty(freePosts) ? (
+        renderNoData()
       ) : (
         freePosts?.map((post: any) => (
           <Post key={post.contentHash} data={post} />
@@ -105,9 +120,11 @@ const CreatorProfile = () => {
     <LeftContent>
       <Box className="user-information-container">
         <Box className="user-information__content">
-          <Typography className="user-information__name">
-            {creatorInfo.username} <FanIcon />
-          </Typography>
+          {creatorInfo.username && (
+            <Typography className="user-information__name">
+              {creatorInfo.username} {creatorInfo.loyalFan && <FanIcon />}
+            </Typography>
+          )}
           <Box className="user-information__content-container flex-center">
             <WalletIcon />
             <Typography className="user-information__content-title">
@@ -176,17 +193,16 @@ const CreatorProfile = () => {
     <Container>
       <BackgroundProfileImg>
         <img
-          src={
-            creatorInfo.coverUrl ||
-            require("src/presentation/theme/assets/images/background.png")
-          }
+          src={require("src/presentation/theme/assets/images/background.png")}
           alt=""
         />
         <Box className="profile__avatar-container">
           {creatorInfo.avatarUrl ? (
             <img src={creatorInfo.avatarUrl} alt="avatar" />
           ) : (
-            <Avatar {...stringAvatar(creatorInfo.username)} />
+            creatorInfo.username && (
+              <Avatar {...stringAvatar(creatorInfo.username)} />
+            )
           )}
         </Box>
       </BackgroundProfileImg>

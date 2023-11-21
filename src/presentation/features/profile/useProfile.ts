@@ -5,7 +5,11 @@ import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 import { setProfile } from "src/data/redux/auth/AuthReducer";
 import { toast } from "react-toastify";
 import { ROUTE } from "src/common/constants/route";
-import { GET_MY_POSTS, GET_PURCHASED_POSTS } from "src/data/graphql/queries";
+import {
+  GET_CREDIT_SCORE,
+  GET_MY_POSTS,
+  GET_PURCHASED_POSTS,
+} from "src/data/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { readContract } from "@wagmi/core";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
@@ -38,6 +42,7 @@ const useProfile = () => {
   );
   const [myPosts, setMyPosts] = useState<any>([]);
   const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
+  const [creditScore, setCreditScore] = useState("");
 
   const { loading: loadingContentMyPosts, data: contentMyPosts } = useQuery(
     GET_MY_POSTS,
@@ -45,10 +50,14 @@ const useProfile = () => {
       variables: { creator: profile?.walletAddress?.toLocaleLowerCase() },
     }
   );
-  const { loading: loadinContentPurchasedPosts, data: contentPurchasedPosts } =
+  const { loading: loadingContentPurchasedPosts, data: contentPurchasedPosts } =
     useQuery(GET_PURCHASED_POSTS, {
       variables: { account: profile?.walletAddress?.toLocaleLowerCase() },
     });
+  const { data } = useQuery(GET_CREDIT_SCORE, {
+    variables: { address: profile?.walletAddress?.toLocaleLowerCase() },
+    onCompleted: onChangeCreditScore,
+  });
 
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
@@ -58,6 +67,13 @@ const useProfile = () => {
   const onChangeTab = (data: TabState) => {
     setTab(data);
   };
+
+  function onChangeCreditScore() {
+    if (data?.creatorEntities[0]?.creditScore) {
+      const { creatorEntities } = data;
+      setCreditScore(creatorEntities[0].creditScore);
+    } else setCreditScore("0");
+  }
 
   const navigateToEditProfile = () => {
     navigate(ROUTE.EDIT_PROFILE);
@@ -118,12 +134,12 @@ const useProfile = () => {
       }
     } else if (tab.id === 1) {
       if (
-        !loadinContentPurchasedPosts &&
+        !loadingContentPurchasedPosts &&
         contentPurchasedPosts?.userPostEntities
       ) {
         const contentPosts = await getContentPosts(
           contentPurchasedPosts?.userPostEntities.map(
-            (content: any) => content.content
+            (content: any) => content.post
           )
         );
         setPurchasedPosts(contentPosts);
@@ -142,7 +158,8 @@ const useProfile = () => {
     myPosts,
     purchasedPosts,
     loadingContentMyPosts,
-    loadinContentPurchasedPosts,
+    loadingContentPurchasedPosts,
+    creditScore,
     onChangeTab,
     navigateToEditProfile,
     onEditProfile,

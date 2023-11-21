@@ -40,12 +40,14 @@ const Post = ({
   setPosts,
 }: PropTypes) => {
   const isConnectedWallet = true;
-  const { handleVotePost, isUpvoting, isDownvoting } = usePost({
-    open,
-    handleToggleModal,
-    handleRemoveText,
-    setPosts,
-  });
+  const { handleVotePost, isUpvoting, isDownvoting, navigateUserProfile } =
+    usePost({
+      open,
+      handleToggleModal,
+      handleRemoveText,
+      setPosts,
+    });
+  const isFreeZone = true;
 
   const renderRightContent = () => {
     if (isConnectedWallet && !isFreePosts) {
@@ -181,7 +183,14 @@ const Post = ({
               <Avatar {...stringAvatar(data?.user?.username)} />
             )
           }
-          title={data?.user.username}
+          title={
+            <Box
+              style={{ cursor: "pointer" }}
+              onClick={() => navigateUserProfile(data?.user?.walletAddress)}
+            >
+              {data?.user?.username}
+            </Box>
+          }
           subheader={timeAgo(data.createdAt)}
           action={renderRightContent()}
         />

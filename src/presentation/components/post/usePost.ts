@@ -4,6 +4,7 @@ import { writeContract } from "@wagmi/core";
 import { parseEther } from "viem";
 import { toast } from "react-toastify";
 import Web3 from "web3";
+import { ROUTE } from "src/common/constants/route";
 import {
   getCallDataVotePost,
   getCallDataEntryPoint,
@@ -13,7 +14,7 @@ import {
   getCallDataSellPost,
 } from "src/common/utils/wallet";
 import { requestToRelayer } from "src/presentation/services";
-
+import { useNavigate } from "react-router-dom";
 import { BAOBAB_CONFIG } from "src/data/config/chains";
 import entryPointAbi from "src/common/abis/IEntryPoint.json";
 import justFriendAbi from "src/common/abis/JustFriends.json";
@@ -25,6 +26,7 @@ function usePost({ open, handleToggleModal, handleRemoveText, setPosts }: any) {
   const { isConnected } = useAccount();
   const [isUpvoting, setUpvoting] = useState(false);
   const [isDownvoting, setDownvoting] = useState(false);
+  const navigate = useNavigate();
 
   async function handleVotePost(contentHash: string, voteType: number) {
     if (!accessToken) {
@@ -278,12 +280,18 @@ function usePost({ open, handleToggleModal, handleRemoveText, setPosts }: any) {
     }
   }
 
+  function navigateUserProfile(walletAddress: string) {
+    if (walletAddress === profile?.walletAddress) navigate(ROUTE.PROFILE);
+    else navigate(`/profile/${walletAddress.slice(2)}`);
+  }
+
   return {
     isUpvoting,
     isDownvoting,
     handleVotePost,
     handlePurchasePostAccess,
     handleSellPostAccess,
+    navigateUserProfile,
   };
 }
 
