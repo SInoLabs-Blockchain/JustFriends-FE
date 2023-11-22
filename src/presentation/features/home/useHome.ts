@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { FREE_POSTS, POST_OPTIONS, VOTE_TYPES } from "src/common/constants";
-import { writeContract } from "@wagmi/core";
+import {
+  FREE_POSTS,
+  PAID_POSTS,
+  POST_OPTIONS,
+  VOTE_TYPES,
+} from "src/common/constants";
+import { writeContract, readContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
@@ -11,7 +16,6 @@ import { toast } from "react-toastify";
 import { useQuery } from "@apollo/client";
 import { GET_NEW_POSTS } from "src/data/graphql/queries";
 import { OptionState } from "./types";
-import { useAccount } from "wagmi";
 import Web3 from "web3";
 import {
   fillUserOp,
@@ -25,6 +29,8 @@ import { BAOBAB_CONFIG } from "src/data/config/chains";
 import { requestToRelayer } from "src/presentation/services";
 import { orderByTimeCreated } from "src/common/utils";
 import { Post } from "src/domain/models/home/Post";
+import { ProfileRepository } from "src/data/repositories/ProfileRepository";
+import { Profile } from "src/domain/models/auth";
 
 const useHome = () => {
   const { open } = useWeb3Modal();
@@ -42,12 +48,13 @@ const useHome = () => {
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [basePrice, setBasePrice] = useState<string>("0");
   const [posts, setPosts] = useState<Array<Post>>([]);
+  const [topCreators, setTopCreators] = useState<Array<Profile>>([]);
 
   const homeRepository = HomeRepository.create();
+  const profileRepository = ProfileRepository.create();
 
   const { accessToken, profile } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
-  const { isConnected } = useAccount();
 
   const copyAddress = async () => {
     if (profile?.walletAddress) {
@@ -56,6 +63,7 @@ const useHome = () => {
   };
 
   const handleToggleModal = () => {
+    if (!accessToken) return;
     setOpenModal(!openModal);
   };
 
@@ -87,13 +95,15 @@ const useHome = () => {
       open();
     } else {
       try {
-        const { contentHash } = await homeRepository.createPost({
+        setLoading(true);
+        const content = await homeRepository.createPost({
           content: textareaValue,
           type: option.value,
           accessToken,
         });
-        setLoading(true);
-        if (isConnected) {
+
+        const { contentHash } = content;
+        if (!profile?.isFriend) {
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
@@ -118,6 +128,7 @@ const useHome = () => {
           const msgCallData = getCallDataCreatePost({
             contentHash: `0x${contentHash}`,
             startedPrice: parseEther(basePrice),
+            isPaid: option.id === 0 ? true : false,
           });
 
           const callData = getCallDataEntryPoint({
@@ -154,7 +165,26 @@ const useHome = () => {
         }
         handleToggleModal();
         handleRemoveText();
+        if (option.id === POST_OPTIONS[1].id) {
+          setIsFreePosts(false);
+        }
         setLoading(false);
+        setPosts((prev) => {
+          const temp = prev;
+          temp.unshift({
+            ...content,
+            user: {
+              username: profile?.username,
+              avatarUrl: profile?.avatarUrl,
+            },
+            totalUpvote: 0,
+            totalDownvote: 0,
+            price: basePrice,
+            isOwner: true,
+            type: PAID_POSTS,
+          });
+          return temp;
+        });
         toast.success("Your post has been created successfully!");
       } catch (error) {
         console.log({ error });
@@ -167,49 +197,81 @@ const useHome = () => {
   };
 
   const getListOfPostsByType = async () => {
-    if (data && !loading) {
+    setLoading(true);
+    if (data) {
       const {
         contentEntities: contents,
         postVoteEntities: myVotes,
         userPostEntities: myPosts,
+        creatorEntities: topCreators,
       } = data;
 
       const contentHashes = contents.map((content: any) => content.hash);
       try {
-        const result = await homeRepository.getPosts({
-          contentHashes,
-          accessToken,
-        });
-        const detailContentList = contents.map((content: any) => {
-          const contentHash = content.hash;
-          const detailContent = result.find(
-            (detail) => `0x${detail.contentHash}` === contentHash
-          );
-          const isVoted = myVotes.find(
-            (vote: any) => contentHash === vote.post
-          );
-          const isOwned = myPosts?.find(
-            (post: any) =>
-              post.account === profile?.walletAddress &&
-              post === `0x${contentHash}`
-          )?.isOwner;
-          return {
-            ...content,
-            ...detailContent,
-            isVoted: isVoted ? true : false,
-            voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
-            isOwner: !!isOwned,
-          };
-        });
-        const orderedPosts = orderByTimeCreated(detailContentList);
+        const [detailContentList, detailTopCreatorsList, contentPriceList] =
+          await Promise.all([
+            homeRepository.getPosts({ contentHashes, accessToken }),
+            profileRepository.getUsers(
+              accessToken,
+              topCreators.map((creator: any) => creator.address)
+            ),
+            getPrices(contentHashes),
+          ]);
+        const validTopCreatorsList = topCreators
+          ?.map((creator: any) => {
+            const detailCreator = detailTopCreatorsList.find(
+              (item: any) =>
+                item.walletAddress.toLowerCase() ===
+                creator.address.toLowerCase()
+            );
+            if (detailCreator) {
+              return { ...detailCreator, creditScore: creator.creditScore };
+            }
+            return null;
+          })
+          ?.filter((item: any) => item !== null);
+        setTopCreators(validTopCreatorsList);
+
+        const validContentList = contents
+          .map((content: any) => {
+            const contentHash = content.hash;
+            const detailContent = detailContentList.find(
+              (detail) => `0x${detail.contentHash}` === contentHash
+            );
+            if (!detailContent) return;
+            const isVoted = myVotes.find(
+              (vote: any) => contentHash === vote.post
+            );
+            const post = myPosts?.find(
+              (post: any) =>
+                post.account.toLowerCase() ===
+                  profile?.walletAddress?.toLowerCase() &&
+                post.post === contentHash
+            );
+            if (!!post) return null;
+            const price = contentPriceList.find(
+              (contentPrice: any) => contentPrice.contentHash === contentHash
+            );
+            return {
+              ...content,
+              ...detailContent,
+              isVoted: isVoted ? true : false,
+              voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
+              price: price?.price,
+            };
+          })
+          ?.filter((content: any) => !!content);
+        const orderedPosts = orderByTimeCreated(validContentList);
         setPosts(orderedPosts);
+        setLoading(false);
       } catch (error) {
         console.log({ error });
+        setLoading(false);
       }
     }
   };
 
-  const { loading: getLoading, data } = useQuery(GET_NEW_POSTS, {
+  const { data } = useQuery(GET_NEW_POSTS, {
     variables: {
       address: profile?.walletAddress?.toLowerCase() || "",
       isPaid: !isFreePosts,
@@ -217,6 +279,28 @@ const useHome = () => {
     onCompleted: getListOfPostsByType,
     skip: false && profile,
   });
+
+  const handleSwitchZone = () => {
+    setPosts([]);
+    setIsFreePosts((prev) => !prev);
+  };
+
+  const getPrices = async (contentHashes: any[]) => {
+    if (isFreePosts) return [];
+    const hashes = contentHashes.map((contentHash) => contentHash);
+    const amounts = new Array(contentHashes.length).fill(1);
+    const buyPrices = (await readContract({
+      address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+      abi: justFriendAbi.abi,
+      functionName: "getBuyPrice",
+      args: [hashes, amounts],
+    })) as Array<bigint>;
+    const res = contentHashes.map((contentHash, index) => ({
+      contentHash,
+      price: buyPrices[index],
+    }));
+    return res;
+  };
 
   return {
     posts,
@@ -227,10 +311,10 @@ const useHome = () => {
     textareaHeight,
     basePrice,
     isFreePosts,
+    topCreators,
     profile,
     data,
     loading,
-    getLoading,
     open,
     setBasePrice,
     setPosts,
@@ -244,6 +328,7 @@ const useHome = () => {
     navigateToProfile,
     handleRemoveText,
     getListOfPostsByType,
+    handleSwitchZone,
   };
 };
 

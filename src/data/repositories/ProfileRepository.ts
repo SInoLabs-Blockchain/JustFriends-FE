@@ -38,6 +38,7 @@ export class ProfileRepository implements ProfileUseCase {
     accessToken: string,
     walletAddresses: any
   ): Promise<Profile[]> {
+    if (!accessToken) return [];
     let api = new APIGateWay({ Authorization: `Bearer ${accessToken}` });
     return api.post(ProfileResource.PROFILE_ROUTES.GET_USERS, {
       walletAddresses,

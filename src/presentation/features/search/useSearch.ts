@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTE } from "src/common/constants/route";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
 import { Profile } from "src/domain/models/auth";
@@ -18,9 +17,8 @@ function useSearch() {
       return { key, value };
     });
   const keySearch = queries.find((query) => query.key === "keySearch");
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, profile } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
-  const { profile } = useAppSelector((state) => state.auth);
 
   async function handleSearch() {
     try {
@@ -51,7 +49,7 @@ function useSearch() {
 
   useEffect(() => {
     handleSearch();
-  }, [profile]);
+  }, [search]);
 
   return { result, loading, keySearch, navigateUserProfile };
 }

@@ -12,17 +12,16 @@ const Home = () => {
     posts,
     openModal,
     loading,
-    getLoading,
     isFreePosts,
     option,
     openOptionSelect,
     textareaValue,
     textareaHeight,
     basePrice,
+    topCreators,
     navigateToProfile,
     copyAddress,
     open,
-    setIsFreePosts,
     handleToggleModal,
     handleRemoveText,
     setPosts,
@@ -31,25 +30,29 @@ const Home = () => {
     handleTextareaChange,
     setBasePrice,
     handleSharePost,
+    handleSwitchZone,
   } = useHome();
 
   const renderPostSection = () => (
     <PostsContainer>
       <PostInput onToggleModal={handleToggleModal} />
-      {getLoading ? (
+      {loading ? (
         <Loading size={30} thickness={5} />
       ) : (
-        posts.map((post: any) => (
-          <Post
-            key={post.contentHash}
-            data={post}
-            open={open}
-            isFreePosts={isFreePosts}
-            handleToggleModal={handleToggleModal}
-            handleRemoveText={handleRemoveText}
-            setPosts={setPosts}
-          />
-        ))
+        posts.map((post: any) => {
+          if (!post) return null;
+          return (
+            <Post
+              key={post.contentHash}
+              data={post}
+              open={open}
+              isFreePosts={isFreePosts}
+              handleToggleModal={handleToggleModal}
+              handleRemoveText={handleRemoveText}
+              setPosts={setPosts}
+            />
+          );
+        })
       )}
     </PostsContainer>
   );
@@ -58,12 +61,12 @@ const Home = () => {
     <HomeContainer>
       <Menu
         isFreePosts={isFreePosts}
-        setIsFreePosts={setIsFreePosts}
+        handleSwitchZone={handleSwitchZone}
         navigateToProfile={navigateToProfile}
         copyAddress={copyAddress}
       />
       {renderPostSection()}
-      <TopAuthor />
+      <TopAuthor data={topCreators} />
       <ModalCreatePost
         loading={loading}
         open={openModal}

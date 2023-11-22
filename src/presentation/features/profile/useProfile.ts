@@ -14,6 +14,8 @@ import { useQuery } from "@apollo/client";
 import { readContract } from "@wagmi/core";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { orderByTimeCreated } from "src/common/utils";
+import justFriendAbi from "src/common/abis/JustFriends.json";
+import { Post } from "src/domain/models/home/Post";
 
 const TABS = [
   { id: 0, name: "My posts" },
@@ -93,7 +95,7 @@ const useProfile = () => {
         username,
         coverUrl
       );
-      dispatch(setProfile(res));
+      dispatch(setProfile({ ...profile, ...res }));
       toast.success("Your profile has been saved successfully!");
     } catch (error) {
       console.log({ error });
@@ -127,22 +129,52 @@ const useProfile = () => {
   const getPosts = async () => {
     if (tab.id === 0) {
       if (!loadingContentMyPosts && contentMyPosts?.contentEntities) {
-        const contentPosts = await getContentPosts(
-          contentMyPosts?.contentEntities.map((content: any) => content.hash)
+        const contentHashes = contentMyPosts?.contentEntities.map(
+          (content: any) => content.hash
         );
-        setMyPosts(contentPosts);
+        const [contentPosts, contentPrices]: [Post[] | undefined, any] =
+          await Promise.all([
+            getContentPosts(contentHashes),
+            readContract({
+              address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+              abi: justFriendAbi.abi,
+              functionName: "getSellPrice",
+              args: [contentHashes, new Array(contentHashes.length).fill(1)],
+            }),
+          ]);
+        setMyPosts(
+          contentPosts?.map((content, index) => ({
+            ...content,
+            price: contentPrices[index],
+          }))
+        );
       }
     } else if (tab.id === 1) {
       if (
         !loadingContentPurchasedPosts &&
         contentPurchasedPosts?.userPostEntities
       ) {
-        const contentPosts = await getContentPosts(
-          contentPurchasedPosts?.userPostEntities.map(
-            (content: any) => content.post
-          )
+        const purchasedList = contentPurchasedPosts?.userPostEntities;
+        const [contentPosts, contentPrices]: [Post[] | undefined, any] =
+          await Promise.all([
+            getContentPosts(purchasedList.map((content: any) => content.post)),
+            readContract({
+              address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+              abi: justFriendAbi.abi,
+              functionName: "getSellPrice",
+              args: [
+                purchasedList.map((content: any) => content.post),
+                new Array(purchasedList.length).fill(1),
+              ],
+            }),
+          ]);
+
+        setPurchasedPosts(
+          contentPosts?.map((content, index) => ({
+            ...content,
+            price: contentPrices[index],
+          }))
         );
-        setPurchasedPosts(contentPosts);
       }
     }
   };

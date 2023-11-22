@@ -18,9 +18,16 @@ import {
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
 import { stringAvatar, timeAgo } from "src/common/utils";
-import { FREE_POSTS, PAID_POSTS, VOTE_TYPES } from "src/common/constants";
+import {
+  FREE_POSTS,
+  MODAL_TYPES,
+  PAID_POSTS,
+  VOTE_TYPES,
+} from "src/common/constants";
 import usePost from "./usePost";
 import { formatEther } from "viem";
+import ConfirmModal from "./ConfirmModal";
+import Loading from "../loading/general";
 
 interface PropTypes {
   data: any;
@@ -29,6 +36,7 @@ interface PropTypes {
   handleToggleModal?: any;
   handleRemoveText?: any;
   setPosts?: any;
+  loading?: boolean;
 }
 
 const Post = ({
@@ -38,22 +46,33 @@ const Post = ({
   handleRemoveText,
   isFreePosts,
   setPosts,
+  loading,
 }: PropTypes) => {
   const isConnectedWallet = true;
-  const { handleVotePost, isUpvoting, isDownvoting, navigateUserProfile } =
-    usePost({
-      open,
-      handleToggleModal,
-      handleRemoveText,
-      setPosts,
-    });
-  const isFreeZone = true;
+  const {
+    handleVotePost,
+    isUpvoting,
+    isDownvoting,
+    isOpen,
+    handleToggleConfirmationModal,
+    handlePurchasePostAccess,
+    handleSellPostAccess,
+    navigateUserProfile,
+    isPurchasing,
+    type,
+    handleViewDetailPost,
+  } = usePost({
+    open,
+    handleToggleModal,
+    handleRemoveText,
+    setPosts,
+  });
 
   const renderRightContent = () => {
-    if (isConnectedWallet && !isFreePosts) {
+    if (isConnectedWallet && data?.type === PAID_POSTS) {
       return (
         <PriceContainer>
-          <Typography>{formatEther(data.startedPrice)} KLAY</Typography>
+          <Typography>{formatEther(data.price)} KLAY</Typography>
         </PriceContainer>
       );
     }
@@ -67,11 +86,13 @@ const Post = ({
   const renderFreePostAction = () => {
     if (isFreePosts) {
       let upvoteLabel, downvoteLabel;
-      const isUpvoted = data?.isVoted && data?.voteType ? true : false;
-      const isDownvoted = data?.isVoted && !data?.voteType ? true : false;
+      const isUpvoted =
+        data?.isVoted && data?.voteType === VOTE_TYPES.UPVOTE ? true : false;
+      const isDownvoted =
+        data?.isVoted && data?.voteType === VOTE_TYPES.DOWNVOTE ? true : false;
 
       if (data?.isVoted) {
-        if (data?.voteType) {
+        if (data?.voteType === VOTE_TYPES.UPVOTE) {
           const otherVoteCount = Number(data.totalUpvote) - 1;
           switch (otherVoteCount) {
             case -1:
@@ -159,12 +180,22 @@ const Post = ({
           <Typography className="post__interactions-holders">
             {Number(data.totalSupply)} holders
           </Typography>
-          <CustomButton
-            sm
-            title="Buy Share"
-            variant={"contained"}
-            startIcon={<ShareIcon />}
-          />
+          {data?.isOwner ? null : (
+            <CustomButton
+              sm
+              title={data?.isOwner ? "Sell Access" : "Buy Access"}
+              variant={"contained"}
+              onClick={() =>
+                handleToggleConfirmationModal(
+                  data?.contentHash,
+                  data?.totalSupply,
+                  data?.startedPrice,
+                  data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE
+                )
+              }
+              startIcon={<ShareIcon />}
+            />
+          )}
         </Box>
       );
     }
@@ -173,47 +204,69 @@ const Post = ({
   if (!data) return null;
 
   return (
-    <PostSection>
-      <PostContainer type={isFreePosts}>
-        <CardHeader
-          avatar={
-            data?.user?.avatarUrl ? (
-              <img src={data?.user?.avatarUrl} alt="avatar" />
-            ) : (
-              <Avatar {...stringAvatar(data?.user?.username)} />
-            )
-          }
-          title={
-            <Box
-              style={{ cursor: "pointer" }}
-              onClick={() => navigateUserProfile(data?.user?.walletAddress)}
-            >
-              {data?.user?.username}
+    <>
+      <PostSection>
+        {loading ? (
+          <Box sx={{ margin: "30px 0" }}>
+            <Loading size={24} thickness={5} />
+          </Box>
+        ) : (
+          <PostContainer type={isFreePosts}>
+            <CardHeader
+              avatar={
+                data?.user?.avatarUrl ? (
+                  <img src={data?.user?.avatarUrl} alt="avatar" />
+                ) : (
+                  <Avatar {...stringAvatar(data?.user?.username)} />
+                )
+              }
+              title={
+                <Box
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigateUserProfile(data?.user?.walletAddress)}
+                >
+                  {data?.user?.username}
+                </Box>
+              }
+              subheader={timeAgo(data.createdAt)}
+              action={renderRightContent()}
+            />
+            <CardContent>
+              <Typography className="content">
+                {data?.type === FREE_POSTS || data?.isOwner
+                  ? data?.content
+                  : `${data?.preview}...`}
+              </Typography>
+              {data?.type === FREE_POSTS ||
+              (data?.isOwner && data?.type === PAID_POSTS) ? null : (
+                <Typography
+                  className="viewmore"
+                  onClick={() => handleViewDetailPost(data?.contentHash)}
+                >
+                  View Detail
+                </Typography>
+              )}
+            </CardContent>
+            <Box className="separator">
+              <hr />
             </Box>
-          }
-          subheader={timeAgo(data.createdAt)}
-          action={renderRightContent()}
-        />
-        <CardContent>
-          <Typography className="content">
-            {data?.type === FREE_POSTS || data?.isOwner
-              ? data?.content
-              : `${data?.preview}...`}
-          </Typography>
-          {data?.type === FREE_POSTS ||
-          (data?.isOwner && data?.type === PAID_POSTS) ? null : (
-            <Typography className="viewmore">View Detail</Typography>
-          )}
-        </CardContent>
-        <Box className="separator">
-          <hr />
-        </Box>
-        <CardActions>
-          {renderFreePostAction()}
-          {renderPaidPostActions()}
-        </CardActions>
-      </PostContainer>
-    </PostSection>
+            <CardActions>
+              {renderFreePostAction()}
+              {renderPaidPostActions()}
+            </CardActions>
+          </PostContainer>
+        )}
+      </PostSection>
+      <ConfirmModal
+        price={data?.price}
+        isOpen={isOpen}
+        onClose={handleToggleConfirmationModal}
+        isPurchasing={isPurchasing}
+        handlePurchasePostAccess={handlePurchasePostAccess}
+        handleSellPostAccess={handleSellPostAccess}
+        type={type}
+      />
+    </>
   );
 };
 

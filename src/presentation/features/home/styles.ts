@@ -188,7 +188,10 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
   gap: "24px",
   borderRadius: 16,
   boxShadow: "0px 5px 40px -8px #566B8714",
-
+  ".author__list-empty": {
+    textAlign: "center",
+    fontFamily: "SemiBold",
+  },
   ".author__list-item": {
     display: "flex",
     justifyContent: "space-between",
@@ -199,6 +202,11 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
     alignItems: "center",
   },
   ".author__container-avatar": {
+    width: "44px",
+    aspectRatio: 1 / 1,
+    borderRadius: "12px",
+  },
+  ".MuiAvatar-root": {
     width: "44px",
     aspectRatio: 1 / 1,
     borderRadius: "12px",
@@ -220,6 +228,12 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
     lineHeight: "24px",
     letterSpacing: "0px",
     color: COLOR.neutral.neutral_4,
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    img: {
+      marginBottom: "4px",
+    },
   },
 
   [theme.breakpoints.down("xl")]: {

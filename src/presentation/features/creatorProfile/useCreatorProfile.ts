@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { isEmpty } from "lodash";
 import Web3 from "web3";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
+import { Post } from "src/domain/models/home/Post";
 
 const TABS = [
   { id: 0, name: "Purchased posts" },
@@ -95,11 +96,26 @@ const useCreatorProfile = () => {
               (purchasedPost: any) => paidPost.hash === purchasedPost.post
             )
         );
-
-        const contentPosts = await getContentPosts(
-          contentPurchasedPosts?.map((content: any) => content.hash)
+        const contentHashes = contentPurchasedPosts?.map(
+          (content: any) => content.hash
         );
-        setPurchasedPosts(contentPosts);
+        const [contentPosts, contentPrices]: [Post[] | undefined, any] =
+          await Promise.all([
+            getContentPosts(contentHashes),
+            readContract({
+              address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+              abi: JustFriendsABI.abi,
+              functionName: "getSellPrice",
+              args: [contentHashes, new Array(contentHashes.length).fill(1)],
+            }),
+          ]);
+
+        setPurchasedPosts(
+          contentPosts?.map((content, index) => ({
+            ...content,
+            price: contentPrices[index],
+          }))
+        );
       }
     } else if (tab.id === 1) {
       if (
@@ -114,11 +130,27 @@ const useCreatorProfile = () => {
                 (purchasedPost: any) => paidPost.hash === purchasedPost.post
               )
           );
-
-        const contentPosts = await getContentPosts(
-          contentUnpurchasedPosts?.map((content: any) => content.hash)
+        const contentHashes = contentUnpurchasedPosts?.map(
+          (content: any) => content.hash
         );
-        setUnpurchasedPosts(contentPosts);
+
+        const [contentPosts, contentPrices]: [Post[] | undefined, any] =
+          await Promise.all([
+            getContentPosts(contentHashes),
+            readContract({
+              address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+              abi: JustFriendsABI.abi,
+              functionName: "getBuyPrice",
+              args: [contentHashes, new Array(contentHashes.length).fill(1)],
+            }),
+          ]);
+
+        setUnpurchasedPosts(
+          contentPosts?.map((content, index) => ({
+            ...content,
+            price: contentPrices[index],
+          }))
+        );
       }
     } else if (tab.id === 2) {
       if (!loadingContentFreePosts && contentFreePosts?.contentEntities) {

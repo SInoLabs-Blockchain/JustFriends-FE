@@ -948,22 +948,46 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
-          "name": "_contentHash",
-          "type": "bytes32"
+          "internalType": "bytes32[]",
+          "name": "_contentHashes",
+          "type": "bytes32[]"
         },
         {
-          "internalType": "uint256",
-          "name": "_amount",
-          "type": "uint256"
+          "internalType": "uint256[]",
+          "name": "_amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getSellPrice",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "_contentHashes",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_amounts",
+          "type": "uint256[]"
         }
       ],
       "name": "getBuyPrice",
       "outputs": [
         {
-          "internalType": "uint256",
-          "name": "buyPrice",
-          "type": "uint256"
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
         }
       ],
       "stateMutability": "view",

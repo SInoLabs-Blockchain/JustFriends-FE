@@ -14,7 +14,7 @@ interface IProps {
 
 const PostInput = (props: IProps) => {
   const { onToggleModal } = props;
-  const { profile } = useAppSelector((state) => state.auth);
+  const { accessToken, profile } = useAppSelector((state) => state.auth);
 
   return (
     <PostInputContainer>
@@ -24,7 +24,11 @@ const PostInput = (props: IProps) => {
         ) : (
           <Avatar {...stringAvatar(profile?.username)} />
         )}
-        <Typography onClick={onToggleModal}>What's on your mind?</Typography>
+        <Typography onClick={onToggleModal}>
+          {accessToken
+            ? "What's on your mind?"
+            : "Connect to share your content"}
+        </Typography>
       </Box>
       <Box className="post__input-extra">
         <IconButton>

@@ -374,10 +374,15 @@ export const getCallDataAddSession = ({
   return msgData;
 };
 
-export const getCallDataCreatePost = ({ contentHash, startedPrice }: any) => {
+export const getCallDataCreatePost = ({
+  contentHash,
+  startedPrice,
+  isPaid,
+}: any) => {
   const msgData = web3.eth.abi.encodeFunctionCall(ABI_FUNCTION.POST_CONTENT, [
     contentHash,
     startedPrice,
+    isPaid,
   ]);
   return msgData;
 };

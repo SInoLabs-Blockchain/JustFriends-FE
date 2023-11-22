@@ -25,6 +25,11 @@ const VOTE_TYPES = {
   UPVOTE: 2,
 };
 
+const MODAL_TYPES = {
+  PURCHASE: 1,
+  SELL: 2,
+};
+
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export {
@@ -34,4 +39,5 @@ export {
   LOGIN_STEPS,
   VOTE_TYPES,
   ZERO_ADDRESS,
+  MODAL_TYPES,
 };

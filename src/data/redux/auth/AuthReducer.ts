@@ -8,6 +8,7 @@ interface Profile {
   walletAddress?: `0x${string}`;
   coverUrl?: string;
   userId?: number;
+  isFriend?: boolean;
 }
 interface AuthState {
   accessToken: string;
@@ -22,6 +23,7 @@ const initialState: AuthState = {
     walletAddress: ZERO_ADDRESS,
     coverUrl: "",
     userId: -1,
+    isFriend: false,
   },
 };
 
