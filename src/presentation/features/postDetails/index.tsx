@@ -4,7 +4,7 @@ import Post from "src/presentation/components/post";
 import TopAuthor from "../home/TopAuthor";
 import { Container } from "./styles";
 import usePostDetails from "./usePostDetails";
-import Loading from "src/presentation/components/loading/general";
+import PostLoading from "src/presentation/components/loading/post";
 
 const PostDetails = () => {
   const { topCreators, post, loading } = usePostDetails();
@@ -13,7 +13,7 @@ const PostDetails = () => {
     <Container>
       <Menu isFreePosts={false} handleSwitchZone={null} />
       <Box display={"flex"} flexDirection={"column"} width={"50%"} gap={"24px"}>
-        <Post data={post} loading={loading} />
+        {loading ? <PostLoading /> : <Post data={post} loading={loading} />}
       </Box>
       <TopAuthor data={topCreators} loading={loading} />
     </Container>

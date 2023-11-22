@@ -9,7 +9,7 @@ import { stringAvatar } from "src/common/utils";
 import CreditScore from "src/presentation/theme/assets/icons/credit-score.svg";
 import Loading from "src/presentation/components/loading/general";
 
-const TopAuthor = ({ data, loading }: any) => {
+const TopAuthor = ({ data, viewProfile, loading }: any) => {
   if (!data) return null;
   return (
     <TopAuthorContainer>
@@ -45,7 +45,12 @@ const TopAuthor = ({ data, loading }: any) => {
                     <Avatar {...stringAvatar(creator?.username)} />
                   )}
                   <Box className="author__container-info">
-                    <Typography className="author__container-name">
+                    <Typography
+                      className="author__container-name"
+                      onClick={() => {
+                        viewProfile(creator?.walletAddress.substring(2));
+                      }}
+                    >
                       {creator?.username || "Creator"}
                     </Typography>
                     <Box className="author__container-upvotes">

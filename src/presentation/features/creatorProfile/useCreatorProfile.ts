@@ -114,6 +114,7 @@ const useCreatorProfile = () => {
           contentPosts?.map((content, index) => ({
             ...content,
             price: contentPrices[index],
+            isOwner: true,
           }))
         );
       }

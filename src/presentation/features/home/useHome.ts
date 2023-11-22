@@ -46,6 +46,7 @@ const useHome = () => {
   const [openOptionSelect, setOpenOptionSelect] = useState(false);
   const [textareaValue, setTextareaValue] = useState("");
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
+  const [creatingPost, setCreatingPost] = useState<Post | null>(null);
   const [basePrice, setBasePrice] = useState<string>("0");
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [topCreators, setTopCreators] = useState<Array<Profile>>([]);
@@ -165,13 +166,10 @@ const useHome = () => {
         }
         handleToggleModal();
         handleRemoveText();
+        setLoading(false);
         if (option.id === POST_OPTIONS[1].id) {
           setIsFreePosts(false);
-        }
-        setLoading(false);
-        setPosts((prev) => {
-          const temp = prev;
-          temp.unshift({
+          setCreatingPost({
             ...content,
             user: {
               username: profile?.username,
@@ -179,12 +177,29 @@ const useHome = () => {
             },
             totalUpvote: 0,
             totalDownvote: 0,
-            price: basePrice,
+            totalSupply: 1,
+            price: parseEther(basePrice).toString(),
             isOwner: true,
             type: PAID_POSTS,
           });
-          return temp;
-        });
+        } else {
+          setPosts((prev) => {
+            const temp = prev;
+            temp.unshift({
+              ...content,
+              user: {
+                username: profile?.username,
+                avatarUrl: profile?.avatarUrl,
+              },
+              totalUpvote: 0,
+              totalDownvote: 0,
+              price: basePrice,
+              isOwner: true,
+              type: PAID_POSTS,
+            });
+            return temp;
+          });
+        }
         toast.success("Your post has been created successfully!");
       } catch (error) {
         console.log({ error });
@@ -194,6 +209,10 @@ const useHome = () => {
 
   const navigateToProfile = () => {
     navigate(ROUTE.PROFILE);
+  };
+
+  const navigateToCreatorProfile = (id: string) => {
+    navigate(`/profile/${id}`);
   };
 
   const getListOfPostsByType = async () => {
@@ -248,7 +267,6 @@ const useHome = () => {
                   profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
-            if (!!post) return null;
             const price = contentPriceList.find(
               (contentPrice: any) => contentPrice.contentHash === contentHash
             );
@@ -258,10 +276,15 @@ const useHome = () => {
               isVoted: isVoted ? true : false,
               voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
               price: price?.price,
+              isOwner: !!post,
             };
           })
           ?.filter((content: any) => !!content);
         const orderedPosts = orderByTimeCreated(validContentList);
+        if (creatingPost) {
+          orderedPosts.unshift(creatingPost);
+          setCreatingPost(null);
+        }
         setPosts(orderedPosts);
         setLoading(false);
       } catch (error) {
@@ -329,6 +352,7 @@ const useHome = () => {
     handleRemoveText,
     getListOfPostsByType,
     handleSwitchZone,
+    navigateToCreatorProfile,
   };
 };
 

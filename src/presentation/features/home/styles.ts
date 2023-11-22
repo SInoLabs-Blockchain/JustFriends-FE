@@ -221,6 +221,7 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
     lineHeight: "20px",
     letterSpacing: "0px",
     color: COLOR.neutral.neutral_1,
+    cursor: "pointer",
   },
   ".author__container-upvotes": {
     fontSize: "14px",
