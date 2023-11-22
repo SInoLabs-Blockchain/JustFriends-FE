@@ -31,6 +31,7 @@ const Home = () => {
     handleTextareaChange,
     setBasePrice,
     handleSharePost,
+    setIsTrendingPosts,
   } = useHome();
 
   const renderPostSection = () => (
@@ -61,6 +62,7 @@ const Home = () => {
         setIsFreePosts={setIsFreePosts}
         navigateToProfile={navigateToProfile}
         copyAddress={copyAddress}
+        setIsTrendingPosts={setIsTrendingPosts}
       />
       {renderPostSection()}
       <TopAuthor />

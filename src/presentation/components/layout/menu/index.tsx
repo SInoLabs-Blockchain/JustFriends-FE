@@ -8,10 +8,17 @@ interface IProps {
   setIsFreePosts: (value: boolean) => void;
   navigateToProfile?: any;
   copyAddress?: any;
+  setIsTrendingPosts: (value: boolean) => void;
 }
 
 const Menu = (props: IProps) => {
-  const { isFreePosts, setIsFreePosts, navigateToProfile, copyAddress } = props;
+  const {
+    isFreePosts,
+    setIsFreePosts,
+    navigateToProfile,
+    copyAddress,
+    setIsTrendingPosts,
+  } = props;
 
   const { profile } = useAppSelector((state) => state.auth);
 
@@ -23,7 +30,11 @@ const Menu = (props: IProps) => {
           copyAddress={copyAddress}
         />
       )}
-      <Filter checked={isFreePosts} setChecked={setIsFreePosts} />
+      <Filter
+        checked={isFreePosts}
+        setChecked={setIsFreePosts}
+        setIsTrendingPosts={setIsTrendingPosts}
+      />
     </MenuContainer>
   );
 };

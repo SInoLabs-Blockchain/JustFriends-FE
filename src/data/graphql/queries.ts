@@ -66,6 +66,15 @@ const GET_CREDIT_SCORE = gql`
   }
 `;
 
+const GET_VOTES = gql`
+  query GetVotes($timestamp: String!) {
+    votedEntities(where: { timestamp_gte: $timestamp }) {
+      timestamp
+      hash
+    }
+  }
+`;
+
 export {
   GET_NEW_POSTS,
   GET_MY_POSTS,
@@ -73,4 +82,5 @@ export {
   GET_FREE_POSTS,
   GET_PAID_POSTS,
   GET_CREDIT_SCORE,
+  GET_VOTES,
 };
