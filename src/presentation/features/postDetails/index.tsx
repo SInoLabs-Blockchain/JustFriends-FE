@@ -11,7 +11,11 @@ const PostDetails = () => {
 
   return (
     <Container>
-      <Menu isFreePosts={false} handleSwitchZone={null} />
+      <Menu
+        isFreePosts={false}
+        handleSwitchZone={null}
+        setIsTrendingPosts={null}
+      />
       <Box display={"flex"} flexDirection={"column"} width={"50%"} gap={"24px"}>
         {loading ? <PostLoading /> : <Post data={post} loading={loading} />}
       </Box>

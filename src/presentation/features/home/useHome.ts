@@ -13,8 +13,8 @@ import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useQuery } from "@apollo/client";
-import { GET_NEW_POSTS } from "src/data/graphql/queries";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { GET_NEW_POSTS, GET_VOTES } from "src/data/graphql/queries";
 import { OptionState } from "./types";
 import Web3 from "web3";
 import {
@@ -36,6 +36,7 @@ const useHome = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
+  const [isTrendingPosts, setIsTrendingPosts] = useState<boolean>(false);
 
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
@@ -50,12 +51,16 @@ const useHome = () => {
   const [basePrice, setBasePrice] = useState<string>("0");
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [topCreators, setTopCreators] = useState<Array<Profile>>([]);
+  const [trendingPosts, setTrendingPosts] = useState<Array<Post>>([]);
 
   const homeRepository = HomeRepository.create();
   const profileRepository = ProfileRepository.create();
 
   const { accessToken, profile } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [getVotes, { loading: loadingVotes, data: votes }] =
+    useLazyQuery(GET_VOTES);
 
   const copyAddress = async () => {
     if (profile?.walletAddress) {
@@ -217,7 +222,26 @@ const useHome = () => {
 
   const getListOfPostsByType = async () => {
     setLoading(true);
-    if (data) {
+    if (isTrendingPosts) {
+      const timestamp = Math.floor(Date.now() - 1000 * 24 * 60 * 60);
+      getVotes({ variables: { timestamp } });
+
+      if (votes && !loadingVotes) {
+        const { votedEntities } = votes;
+
+        const frequencyMap = votedEntities.reduce((map: any, obj: any) => {
+          const hash = obj.hash;
+          map.set(hash, (map.get(hash) || 0) + 1);
+          return map;
+        }, new Map());
+
+        const sortedHashes = Array.from(frequencyMap.entries()).sort(
+          (a: any, b: any) => b[1] - a[1]
+        );
+
+        const contentHashes = sortedHashes.map((hash: any) => hash[0]);
+      }
+    } else if (data) {
       const {
         contentEntities: contents,
         postVoteEntities: myVotes,
@@ -353,6 +377,7 @@ const useHome = () => {
     getListOfPostsByType,
     handleSwitchZone,
     navigateToCreatorProfile,
+    setIsTrendingPosts,
   };
 };
 

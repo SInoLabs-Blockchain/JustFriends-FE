@@ -11,6 +11,7 @@ import {
 interface IProps {
   checked: boolean;
   setChecked: (value: any) => void;
+  setIsTrendingPosts: (value: boolean) => void;
 }
 
 const initialMenuItems = [
@@ -27,7 +28,7 @@ const initialMenuItems = [
 ];
 
 const Filter = (props: IProps) => {
-  const { checked, setChecked } = props;
+  const { checked, setChecked, setIsTrendingPosts } = props;
 
   const [menuItems, setMenuItems] = useState(initialMenuItems);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
@@ -39,6 +40,7 @@ const Filter = (props: IProps) => {
       item.isSelected = i === index;
     });
 
+    setIsTrendingPosts(index=== 1 ? true : false);
     setSelectedMenuIndex(index);
     setMenuItems(updatedMenuItems);
   };

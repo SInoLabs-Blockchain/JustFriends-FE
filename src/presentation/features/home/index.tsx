@@ -32,6 +32,7 @@ const Home = () => {
     setBasePrice,
     handleSharePost,
     handleSwitchZone,
+    setIsTrendingPosts,
   } = useHome();
 
   const renderPostSection = () => (
@@ -68,6 +69,7 @@ const Home = () => {
         handleSwitchZone={handleSwitchZone}
         navigateToProfile={navigateToProfile}
         copyAddress={copyAddress}
+        setIsTrendingPosts={setIsTrendingPosts}
       />
       {renderPostSection()}
       <TopAuthor
