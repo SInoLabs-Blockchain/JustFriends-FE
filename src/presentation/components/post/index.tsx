@@ -180,22 +180,20 @@ const Post = ({
           <Typography className="post__interactions-holders">
             {Number(data.totalSupply)} holders
           </Typography>
-          {data?.isOwner ? null : (
-            <CustomButton
-              sm
-              title={data?.isOwner ? "Sell Access" : "Buy Access"}
-              variant={"contained"}
-              onClick={() =>
-                handleToggleConfirmationModal(
-                  data?.contentHash,
-                  data?.totalSupply,
-                  data?.startedPrice,
-                  data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE
-                )
-              }
-              startIcon={<ShareIcon />}
-            />
-          )}
+          <CustomButton
+            sm
+            title={data?.isOwner ? "Sell Access" : "Buy Access"}
+            variant={"contained"}
+            onClick={() =>
+              handleToggleConfirmationModal(
+                data?.contentHash,
+                data?.totalSupply,
+                data?.startedPrice,
+                data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE
+              )
+            }
+            startIcon={<ShareIcon />}
+          />
         </Box>
       );
     }

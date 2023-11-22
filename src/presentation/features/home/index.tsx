@@ -5,7 +5,7 @@ import PostInput from "./PostInput";
 import TopAuthor from "./TopAuthor";
 import { HomeContainer, PostsContainer } from "./styles";
 import useHome from "./useHome";
-import Loading from "src/presentation/components/loading/general";
+import PostLoading from "src/presentation/components/loading/post";
 
 const Home = () => {
   const {
@@ -20,6 +20,7 @@ const Home = () => {
     basePrice,
     topCreators,
     navigateToProfile,
+    navigateToCreatorProfile,
     copyAddress,
     open,
     handleToggleModal,
@@ -37,7 +38,10 @@ const Home = () => {
     <PostsContainer>
       <PostInput onToggleModal={handleToggleModal} />
       {loading ? (
-        <Loading size={30} thickness={5} />
+        <>
+          <PostLoading />
+          <PostLoading />
+        </>
       ) : (
         posts.map((post: any) => {
           if (!post) return null;
@@ -66,7 +70,11 @@ const Home = () => {
         copyAddress={copyAddress}
       />
       {renderPostSection()}
-      <TopAuthor data={topCreators} />
+      <TopAuthor
+        data={topCreators}
+        viewProfile={navigateToCreatorProfile}
+        loading={loading}
+      />
       <ModalCreatePost
         loading={loading}
         open={openModal}
