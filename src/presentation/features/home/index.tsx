@@ -19,6 +19,8 @@ const Home = () => {
     textareaHeight,
     basePrice,
     topCreators,
+    isTrendingPosts,
+    trendingPosts,
     navigateToProfile,
     navigateToCreatorProfile,
     copyAddress,
@@ -32,6 +34,7 @@ const Home = () => {
     setBasePrice,
     handleSharePost,
     handleSwitchZone,
+    setIsTrendingPosts,
   } = useHome();
 
   const renderPostSection = () => (
@@ -42,9 +45,25 @@ const Home = () => {
           <PostLoading />
           <PostLoading />
         </>
+      ) : isTrendingPosts ? (
+        trendingPosts.map((post: any) => {
+          if (!post) return null;
+          if (isFreePosts === post.isPaid) return null;
+          return (
+            <Post
+              key={post.contentHash}
+              data={post}
+              open={open}
+              isFreePosts={isFreePosts}
+              handleToggleModal={handleToggleModal}
+              handleRemoveText={handleRemoveText}
+            />
+          );
+        })
       ) : (
         posts.map((post: any) => {
           if (!post) return null;
+
           return (
             <Post
               key={post.contentHash}
@@ -68,6 +87,7 @@ const Home = () => {
         handleSwitchZone={handleSwitchZone}
         navigateToProfile={navigateToProfile}
         copyAddress={copyAddress}
+        setIsTrendingPosts={setIsTrendingPosts}
       />
       {renderPostSection()}
       <TopAuthor

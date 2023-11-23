@@ -8,11 +8,17 @@ interface IProps {
   handleSwitchZone: ((value: boolean) => void) | null;
   navigateToProfile?: any;
   copyAddress?: any;
+  setIsTrendingPosts: ((value: boolean) => void) | null;
 }
 
 const Menu = (props: IProps) => {
-  const { isFreePosts, handleSwitchZone, navigateToProfile, copyAddress } =
-    props;
+  const {
+    isFreePosts,
+    navigateToProfile,
+    copyAddress,
+    handleSwitchZone,
+    setIsTrendingPosts,
+  } = props;
 
   const { accessToken } = useAppSelector((state) => state.auth);
 
@@ -25,7 +31,11 @@ const Menu = (props: IProps) => {
         />
       )}
       {handleSwitchZone ? (
-        <Filter checked={isFreePosts} setChecked={handleSwitchZone} />
+        <Filter
+          checked={isFreePosts}
+          setChecked={handleSwitchZone}
+          setIsTrendingPosts={setIsTrendingPosts}
+        />
       ) : null}
     </MenuContainer>
   );
