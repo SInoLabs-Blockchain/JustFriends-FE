@@ -1,4 +1,4 @@
-import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Skeleton, Typography } from "@mui/material";
 import {
   AttachIcon,
   PhotoIcon,
@@ -16,13 +16,20 @@ const PostInput = (props: IProps) => {
   const { onToggleModal } = props;
   const { accessToken, profile } = useAppSelector((state) => state.auth);
 
+  const renderAvatar = () =>
+    profile?.avatarUrl ? (
+      <img src={profile?.avatarUrl} alt="avatar" />
+    ) : (
+      <Avatar {...stringAvatar(profile?.username)} />
+    );
+
   return (
     <PostInputContainer>
       <Box className="post__input-main">
-        {profile?.avatarUrl ? (
-          <img src={profile?.avatarUrl} alt="avatar" />
+        {profile?.loading ? (
+          <Skeleton variant="rectangular" width={"44px"} height={"44px"} />
         ) : (
-          <Avatar {...stringAvatar(profile?.username)} />
+          renderAvatar()
         )}
         <Typography onClick={onToggleModal}>
           {accessToken

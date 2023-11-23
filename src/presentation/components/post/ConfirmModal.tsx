@@ -41,7 +41,7 @@ const ConfirmModal = (props: IProps) => {
             onClick={() =>
               props.type === MODAL_TYPES.PURCHASE
                 ? props.handlePurchasePostAccess(props.price)
-                : props.handleSellPostAccess(props.price)
+                : props.handleSellPostAccess()
             }
           />
           <CustomButton title="No" onClick={() => props.onClose("")} />

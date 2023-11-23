@@ -6,6 +6,7 @@ import {
   CardHeader,
   CircularProgress,
   IconButton,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -18,12 +19,7 @@ import {
 import CustomButton from "../button";
 import { PostContainer, PostSection, PriceContainer } from "./styles";
 import { stringAvatar, timeAgo } from "src/common/utils";
-import {
-  FREE_POSTS,
-  MODAL_TYPES,
-  PAID_POSTS,
-  VOTE_TYPES,
-} from "src/common/constants";
+import { MODAL_TYPES, VOTE_TYPES } from "src/common/constants";
 import usePost from "./usePost";
 import { formatEther } from "viem";
 import ConfirmModal from "./ConfirmModal";
@@ -44,7 +40,6 @@ const Post = ({
   open,
   handleToggleModal,
   handleRemoveText,
-  isFreePosts,
   setPosts,
   loading,
 }: PropTypes) => {
@@ -71,9 +66,18 @@ const Post = ({
   const renderRightContent = () => {
     if (isConnectedWallet && data?.isPaid) {
       return (
-        <PriceContainer>
-          <Typography>{formatEther(data.price)} KLAY</Typography>
-        </PriceContainer>
+        <Box className="MuiCardHeader-prices">
+          <Tooltip title="Bought For">
+            <PriceContainer className="MuiCardHeader__prices-old">
+              <Typography>{formatEther(data.oldPrice)} KLAY</Typography>
+            </PriceContainer>
+          </Tooltip>
+          <Tooltip title="Current Price">
+            <PriceContainer className="MuiCardHeader__prices-new">
+              <Typography>{formatEther(data.price)} KLAY</Typography>
+            </PriceContainer>
+          </Tooltip>
+        </Box>
       );
     }
     return (
@@ -191,8 +195,9 @@ const Post = ({
               handleToggleConfirmationModal(
                 data?.contentHash,
                 data?.totalSupply,
-                data?.startedPrice,
-                data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE
+                data?.price,
+                data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE,
+                data?.accessTokenId
               )
             }
             startIcon={<ShareIcon />}

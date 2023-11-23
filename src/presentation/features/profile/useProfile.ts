@@ -181,6 +181,7 @@ const useProfile = () => {
         setPurchasedPosts(
           contentPosts?.map((content, index) => ({
             ...content,
+            contentHash: content.contentHash?.substring(2),
             isOwner: true,
             price: contentPrices[index],
           }))

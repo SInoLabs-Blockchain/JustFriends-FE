@@ -10,7 +10,7 @@ import {
 
 interface IProps {
   checked: boolean;
-  setChecked: (value: any) => void;
+  setChecked: any;
   setIsTrendingPosts: ((value: boolean) => void) | null;
 }
 

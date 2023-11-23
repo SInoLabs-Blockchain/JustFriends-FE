@@ -7,7 +7,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Logo, SearchIcon } from "src/presentation/theme/assets/icons";
+import { SearchIcon } from "src/presentation/theme/assets/icons";
 import {
   ButtonContainer,
   HeaderContainer,
@@ -24,6 +24,7 @@ import { formatBalance, stringAvatar } from "src/common/utils";
 
 import AccountDropdown from "./components/AccountDropdown";
 import ConnectModal from "./ConnectModal";
+import Logo from "src/presentation/theme/assets/images/JustFriends.png";
 
 const Header = () => {
   const {
@@ -65,7 +66,10 @@ const Header = () => {
             <img src={backArrow} alt="back" />
           </IconButton>
         ) : (
-          <Logo />
+          <Box className="header__logo">
+            <img src={Logo} alt="logo" />
+            <Typography>JustFriends</Typography>
+          </Box>
         )}
       </LogoWrapper>
       <SearchContainer>

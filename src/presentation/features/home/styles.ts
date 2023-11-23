@@ -83,6 +83,7 @@ const ProfileContainer = styled("div")(({ theme }: any) => ({
     lineHeight: "24px",
     fontFamily: "Bold",
     color: COLOR.neutral.neutral_1,
+    cursor: "pointer",
   },
 
   ".profile__card-address": {
@@ -105,7 +106,7 @@ const ProfileContainer = styled("div")(({ theme }: any) => ({
   ".profile__statistic": {
     display: "flex",
     gap: "20px",
-    marginTop: 16,
+    justifyContents: "space-between",
   },
   ".profile__statistic-item": {
     display: "flex",
@@ -203,12 +204,12 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
   },
   ".author__container-avatar": {
     width: "44px",
-    aspectRatio: 1 / 1,
+    height: "44px",
     borderRadius: "12px",
   },
   ".MuiAvatar-root": {
     width: "44px",
-    aspectRatio: 1 / 1,
+    height: "44px",
     borderRadius: "12px",
   },
   ".author__container-info": {
@@ -265,13 +266,13 @@ const PostInputContainer = styled("div")(() => ({
 
     img: {
       width: "44px",
-      aspectRatio: 1 / 1,
+      height: "44px",
       borderRadius: "10px",
     },
 
     ".MuiAvatar-root": {
       width: "44px",
-      aspectRatio: 1 / 1,
+      height: "44px",
       borderRadius: "10px",
     },
   },

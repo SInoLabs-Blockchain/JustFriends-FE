@@ -1,4 +1,4 @@
-import { Avatar, Box, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import { shortenAddress, stringAvatar } from "src/common/utils";
 import { WalletIcon } from "src/presentation/theme/assets/icons";
 import { ProfileContainer } from "./styles";
@@ -6,13 +6,34 @@ import { useAppSelector } from "src/data/redux/Hooks";
 
 const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
   const { profile } = useAppSelector((state) => state.auth);
-  const data = {
-    name: "Donald J.Trump",
-    address: "0x0bc68d7a06259006ae4cb3B8eFF737a46bF5912e",
-    following: 12867,
-    followers: 123,
-    posts: 134,
-  };
+
+  if (profile?.loading) {
+    return (
+      <ProfileContainer>
+        <Skeleton variant="rectangular" width={120} height={120} />
+        <Box className="profile__info">
+          <Skeleton variant="rectangular" width={160} height={18} />
+          <Box className="profile__card-address">
+            <Skeleton variant="rectangular" width={160} height={18} />
+          </Box>
+          <Box className="profile__statistic" sx={{ marginTop: "16px" }}>
+            <Box className="profile__statistic-item">
+              <Skeleton variant="rectangular" width={24} height={18} />
+              <Typography className="profile__card-label">Upvotes</Typography>
+            </Box>
+            <Box className="profile__statistic-item">
+              <Skeleton variant="rectangular" width={24} height={18} />
+              <Typography className="profile__card-label">Downvotes</Typography>
+            </Box>
+            <Box className="profile__statistic-item">
+              <Skeleton variant="rectangular" width={24} height={18} />
+              <Typography className="profile__card-label">Posts</Typography>
+            </Box>
+          </Box>
+        </Box>
+      </ProfileContainer>
+    );
+  }
 
   return (
     <ProfileContainer>
@@ -30,7 +51,7 @@ const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
         />
       )}
       <Box className="profile__info">
-        <Typography className="profile__card-name">
+        <Typography className="profile__card-name" onClick={navigateToProfile}>
           {profile?.username}
         </Typography>
         <Box className="profile__card-address">
@@ -45,18 +66,20 @@ const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
       <Box className="profile__statistic">
         <Box className="profile__statistic-item">
           <Typography className="profile__card-value">
-            {data.following}
+            {profile?.totalUpvote}
           </Typography>
-          <Typography className="profile__card-label">Following</Typography>
+          <Typography className="profile__card-label">Upvotes</Typography>
         </Box>
         <Box className="profile__statistic-item">
           <Typography className="profile__card-value">
-            {data.followers}
+            {profile?.totalDownvote}
           </Typography>
-          <Typography className="profile__card-label">Followers</Typography>
+          <Typography className="profile__card-label">Downvotes</Typography>
         </Box>
         <Box className="profile__statistic-item">
-          <Typography className="profile__card-value">{data.posts}</Typography>
+          <Typography className="profile__card-value">
+            {profile?.totalPost}
+          </Typography>
           <Typography className="profile__card-label">Posts</Typography>
         </Box>
       </Box>

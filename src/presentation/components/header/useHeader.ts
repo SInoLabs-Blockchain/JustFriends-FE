@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "src/common/constants/route";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
@@ -23,6 +23,8 @@ import { getWalletClient } from "@wagmi/core";
 import { toast } from "react-toastify";
 import { address } from "src/common/constants/solidityTypes";
 import { LOGIN_STEPS } from "src/common/constants";
+import { useLazyQuery } from "@apollo/client";
+import { GET_MY_PROFILE } from "src/data/graphql/queries";
 
 const useHeader = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -38,6 +40,8 @@ const useHeader = () => {
   const [timeOut, setTimeOut] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openAccountDropdown = Boolean(anchorEl);
+
+  const [getDetailProfile] = useLazyQuery(GET_MY_PROFILE);
 
   const handleClickAccount = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -77,15 +81,36 @@ const useHeader = () => {
     try {
       const res = await authRepository.getMe(accessToken);
       const friendAccount = localStorage.getItem("account");
-      if (friendAccount) {
-        const friendAccountInfo = JSON.parse(friendAccount);
-        if (res?.walletAddress === friendAccountInfo.contractAddress) {
-          return dispatch(setProfile({ ...res, isFriend: false }));
-        }
+      const friendAccountInfo = JSON.parse(friendAccount || "{}");
+
+      const { data } = await getDetailProfile({
+        variables: {
+          address: res?.walletAddress?.toLowerCase(),
+        },
+      });
+
+      if (data) {
+        const { creatorEntities, userPostEntities } = data;
+        const myProfile = {
+          ...res,
+          totalUpvote: creatorEntities[0].totalUpVote,
+          totalDownvote: creatorEntities[0].totalDownVote,
+          totalPost: userPostEntities.length,
+        };
+
+        dispatch(
+          setProfile({
+            ...myProfile,
+            loading: false,
+            isFriend:
+              res?.walletAddress.toLowerCase() ===
+              friendAccountInfo?.contractAddress.toLowerCase(),
+          })
+        );
       }
-      dispatch(setProfile({ ...res, isFriend: true }));
     } catch (error) {
       console.log({ error });
+      setLoading(false);
     }
   };
 

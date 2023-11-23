@@ -7,14 +7,18 @@ import {
 } from "src/common/constants";
 import { writeContract, readContract } from "@wagmi/core";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
-import { useAppSelector } from "src/data/redux/Hooks";
+import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQuery, useLazyQuery } from "@apollo/client";
-import { GET_NEW_POSTS, GET_VOTES } from "src/data/graphql/queries";
+import {
+  GET_NEW_POSTS,
+  GET_PURCHASES,
+  GET_VOTES,
+} from "src/data/graphql/queries";
 import { OptionState } from "./types";
 import Web3 from "web3";
 import {
@@ -32,12 +36,14 @@ import { Post } from "src/domain/models/home/Post";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 import { Profile } from "src/domain/models/auth";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
+import { setProfile } from "src/data/redux/auth/AuthReducer";
 
 const useHome = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
   const [isTrendingPosts, setIsTrendingPosts] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   const [openModal, setOpenModal] = useState(false);
   const [option, setOption] = useState<OptionState>({
@@ -58,10 +64,12 @@ const useHome = () => {
   const profileRepository = ProfileRepository.create();
 
   const { accessToken, profile } = useAppSelector((state) => state.auth);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [getVotes, { loading: loadingVotes, data: votes }] =
     useLazyQuery(GET_VOTES);
+  const [getPurchases, { loading: loadingPurchases, data: purchases }] =
+    useLazyQuery(GET_PURCHASES);
 
   const copyAddress = async () => {
     if (profile?.walletAddress) {
@@ -206,6 +214,9 @@ const useHome = () => {
             return temp;
           });
         }
+        dispatch(
+          setProfile({ ...profile, totalPost: (profile?.totalPost || 0) + 1 })
+        );
         toast.success("Your post has been created successfully!");
       } catch (error) {
         console.log({ error });
@@ -233,15 +244,13 @@ const useHome = () => {
 
       const contentHashes = contents.map((content: any) => content.hash);
       try {
-        const [detailContentList, detailTopCreatorsList, contentPriceList] =
-          await Promise.all([
-            homeRepository.getPosts({ contentHashes, accessToken }),
-            profileRepository.getUsers(
-              accessToken,
-              topCreators.map((creator: any) => creator.address)
-            ),
-            getPrices(contentHashes),
-          ]);
+        const [detailContentList, detailTopCreatorsList] = await Promise.all([
+          homeRepository.getPosts({ contentHashes, accessToken }),
+          profileRepository.getUsers(
+            accessToken,
+            topCreators.map((creator: any) => creator.address)
+          ),
+        ]);
         const validTopCreatorsList = topCreators
           ?.map((creator: any) => {
             const detailCreator = detailTopCreatorsList.find(
@@ -273,26 +282,24 @@ const useHome = () => {
                   profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
-            const price = contentPriceList.find(
-              (contentPrice: any) => contentPrice.hash === contentHash
-            );
             return {
               ...content,
               ...detailContent,
               isVoted: isVoted ? true : false,
               voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
-              price: price?.price,
               isOwner: !!post,
             };
           })
           ?.filter((content: any) => !!content);
 
         const orderedPosts = orderByTimeCreated(validContentList);
+
         if (creatingPost) {
           orderedPosts.unshift(creatingPost);
           setCreatingPost(null);
         }
-        setPosts(orderedPosts);
+        const orderedPostsWithPrices = await getPrices(orderedPosts);
+        setPosts(orderedPostsWithPrices);
         setLoading(false);
       } catch (error) {
         console.log({ error });
@@ -301,13 +308,13 @@ const useHome = () => {
     }
   };
 
-  const { data } = useQuery(GET_NEW_POSTS, {
+  const { data, refetch } = useQuery(GET_NEW_POSTS, {
     variables: {
       address: profile?.walletAddress?.toLowerCase() || "",
       isPaid: !isFreePosts,
     },
     onCompleted: getListOfPostsByType,
-    skip: false && profile,
+    skip: false && profile && !isTrendingPosts,
   });
 
   const handleSwitchZone = () => {
@@ -315,21 +322,55 @@ const useHome = () => {
     setIsFreePosts((prev) => !prev);
   };
 
-  const getPrices = async (contentHashes: any[]) => {
-    if (isFreePosts) return [];
-    const hashes = contentHashes.map((contentHash) => contentHash);
-    const amounts = new Array(contentHashes.length).fill(1);
+  const getPrices = async (contents: any[]) => {
+    if (isFreePosts) return contents;
+    let ownedContentHashes = <any>[],
+      unpurchasedContentHashes = <any>[];
+    for (const content of contents) {
+      if (content.isOwner) {
+        ownedContentHashes.push(content.hash);
+      } else {
+        unpurchasedContentHashes.push(content.hash);
+      }
+    }
+    const ownedAmounts = new Array(ownedContentHashes.length).fill(1);
+    const unpurchasedAmounts = new Array(unpurchasedContentHashes.length).fill(
+      1
+    );
+    const [sellPrices, buyPrices]: Array<any> = await Promise.all([
+      readContract({
+        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+        abi: justFriendAbi.abi,
+        functionName: "getSellPrice",
+        args: [ownedContentHashes, ownedAmounts],
+      }),
+      readContract({
+        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+        abi: justFriendAbi.abi,
+        functionName: "getBuyPrice",
+        args: [unpurchasedContentHashes, unpurchasedAmounts],
+      }),
+    ]);
 
-    const buyPrices = (await readContract({
-      address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-      abi: justFriendAbi.abi,
-      functionName: "getBuyPrice",
-      args: [hashes, amounts],
-    })) as Array<any>;
-    const res = hashes.map((hash, index) => ({
-      hash,
-      price: buyPrices[index],
-    }));
+    const res = contents.map((content: any) => {
+      if (content.isOwner) {
+        const index = ownedContentHashes.indexOf(content.hash);
+        const price = sellPrices[index];
+        return {
+          ...content,
+          price: BigInt(price),
+          oldPrice: parseEther("0.002"),
+        };
+      } else {
+        const index = unpurchasedContentHashes.indexOf(content.hash);
+        const price = buyPrices[index];
+        return {
+          ...content,
+          price: BigInt(price),
+          oldPrice: parseEther("0.002"),
+        };
+      }
+    });
 
     return res;
   };
@@ -350,75 +391,114 @@ const useHome = () => {
 
   async function getTrendingPosts() {
     setLoading(true);
-
     const timestamp = Math.floor(
       (Date.now() - 1000 * 24 * 60 * 60) / 1000
     ).toString();
-
-    getVotes({ variables: { timestamp } });
-
-    if (votes && !loadingVotes) {
-      const { votedEntities } = votes;
-
-      const frequencyMap = votedEntities.reduce((map: any, obj: any) => {
-        const hash = obj.hash;
-        map.set(hash, (map.get(hash) || 0) + 1);
-        return map;
-      }, new Map());
-
-      const sortedHashes = Array.from(frequencyMap.entries()).sort(
-        (a: any, b: any) => b[1] - a[1]
-      );
-
-      const contentHashes = sortedHashes.map((hash: any) => hash[0]);
-
-      const { postVoteEntities: myVotes, userPostEntities: myPosts } = data;
-
-      try {
-        const [detailContentList, detailPostList, contentPriceList] =
-          await Promise.all([
+    if (isFreePosts) {
+      getVotes({ variables: { timestamp } });
+      if (votes && !loadingVotes) {
+        const { votedEntities } = votes;
+        const frequencyMap = votedEntities.reduce((map: any, obj: any) => {
+          const hash = obj.hash;
+          map.set(hash, (map.get(hash) || 0) + 1);
+          return map;
+        }, new Map());
+        const sortedHashes = Array.from(frequencyMap.entries()).sort(
+          (a: any, b: any) => b[1] - a[1]
+        );
+        const contentHashes = sortedHashes.map((hash: any) => hash[0]);
+        const { postVoteEntities: myVotes, userPostEntities: myPosts } = data;
+        try {
+          const [detailContentList, detailPostList] = await Promise.all([
             homeRepository.getPosts({ contentHashes, accessToken }),
             getDetailPostList(contentHashes),
-            getPrices(contentHashes),
+          ]);
+          const validContentList = contentHashes
+            .map((contentHash: any, index) => {
+              const detailContent = detailContentList.find(
+                (detail) => `0x${detail.contentHash}` === contentHash
+              );
+              if (!detailContent) return;
+              const isVoted = myVotes.find(
+                (vote: any) => contentHash === vote.post
+              );
+              const post = myPosts?.find(
+                (post: any) =>
+                  post.account.toLowerCase() ===
+                    profile?.walletAddress?.toLowerCase() &&
+                  post.post === contentHash
+              );
+              return {
+                // @ts-ignore
+                ...detailPostList[index],
+                ...detailContent,
+                isVoted: isVoted ? true : false,
+                voteType: isVoted?.type
+                  ? VOTE_TYPES.UPVOTE
+                  : VOTE_TYPES.DOWNVOTE,
+                isOwner: !!post,
+              };
+            })
+            ?.filter((content: any) => !!content);
+          // @ts-ignore
+          setTrendingPosts(validContentList);
+          setLoading(false);
+        } catch (error) {
+          console.log({ error });
+          setLoading(false);
+        }
+      }
+    } else {
+      getPurchases({ variables: { timestamp } });
+      if (purchases && !loadingPurchases) {
+        const { accessPurchasedEntities } = purchases;
+        const frequencyMap = accessPurchasedEntities.reduce(
+          (map: any, obj: any) => {
+            const hash = obj.hash;
+            map.set(hash, (map.get(hash) || 0) + 1);
+            return map;
+          },
+          new Map()
+        );
+        const sortedHashes = Array.from(frequencyMap.entries()).sort(
+          (a: any, b: any) => b[1] - a[1]
+        );
+        const contentHashes = sortedHashes.map((hash: any) => hash[0]);
+        const { userPostEntities: myPosts } = data;
+        try {
+          const [detailContentList, detailPostList] = await Promise.all([
+            homeRepository.getPosts({ contentHashes, accessToken }),
+            getDetailPostList(contentHashes),
           ]);
 
-        const validContentList = contentHashes
-          .map((contentHash: any, index) => {
-            const detailContent = detailContentList.find(
-              (detail) => `0x${detail.contentHash}` === contentHash
-            );
+          const validContentList = contentHashes
+            .map((contentHash: any, index) => {
+              const detailContent = detailContentList.find(
+                (detail) => `0x${detail.contentHash}` === contentHash
+              );
 
-            if (!detailContent) return;
-            const isVoted = myVotes.find(
-              (vote: any) => contentHash === vote.post
-            );
-            const post = myPosts?.find(
-              (post: any) =>
-                post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
-                post.post === contentHash
-            );
-            const price = contentPriceList.find(
-              (contentPrice: any) => contentPrice.contentHash === contentHash
-            );
-            return {
-              // @ts-ignore
-              ...detailPostList[index],
-              ...detailContent,
-              isVoted: isVoted ? true : false,
-              voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
-              price: price?.price,
-              isOwner: !!post,
-            };
-          })
-          ?.filter((content: any) => !!content);
-
-        // @ts-ignore
-        setTrendingPosts(validContentList);
-        setLoading(false);
-      } catch (error) {
-        console.log({ error });
-        setLoading(false);
+              const post = myPosts?.find(
+                (post: any) =>
+                  post.account.toLowerCase() ===
+                    profile?.walletAddress?.toLowerCase() &&
+                  post.post === contentHash
+              );
+              return {
+                // @ts-ignore
+                ...detailPostList[index],
+                ...detailContent,
+                isOwner: !!post,
+              };
+            })
+            ?.filter((content: any) => !!content);
+          const validContentListWithPrice = await getPrices(validContentList);
+          // @ts-ignore
+          setTrendingPosts(validContentListWithPrice);
+          setLoading(false);
+        } catch (error) {
+          console.log({ error });
+          setLoading(false);
+        }
       }
     }
   }
@@ -427,7 +507,7 @@ const useHome = () => {
     if (isTrendingPosts) {
       getTrendingPosts();
     }
-  }, [isTrendingPosts, votes]);
+  }, [isTrendingPosts, isFreePosts, votes, purchases]);
 
   return {
     posts,

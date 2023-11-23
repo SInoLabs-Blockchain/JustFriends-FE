@@ -33,6 +33,17 @@ const PostContainer = styled("div")(({ theme, type }: any) => ({
 
   ".MuiCardHeader-root": {
     padding: "30px 0 12px 0",
+
+    ".MuiCardHeader-prices": {
+      display: "flex",
+      gap: "8px",
+      ".MuiCardHeader__prices-new": {
+        borderColor: COLOR.primary,
+        p: {
+          color: COLOR.primary,
+        },
+      },
+    },
   },
 
   ".MuiCardContent-root": {

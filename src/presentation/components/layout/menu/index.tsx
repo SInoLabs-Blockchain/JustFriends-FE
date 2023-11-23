@@ -5,10 +5,11 @@ import { MenuContainer } from "src/presentation/features/home/styles";
 
 interface IProps {
   isFreePosts: boolean;
-  handleSwitchZone: ((value: boolean) => void) | null;
+  handleSwitchZone: any;
   navigateToProfile?: any;
   copyAddress?: any;
   setIsTrendingPosts: ((value: boolean) => void) | null;
+  profile?: any;
 }
 
 const Menu = (props: IProps) => {
