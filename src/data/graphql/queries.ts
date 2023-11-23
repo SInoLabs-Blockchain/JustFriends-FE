@@ -44,9 +44,14 @@ const GET_PURCHASED_POSTS = gql`
 `;
 
 const GET_FREE_POSTS = gql`
-  query GetFreePosts($creator: String!) {
+  query GetFreePosts($creator: String!, $address: String!) {
     contentEntities(where: { creator: $creator, isPaid: false }) {
       hash
+    }
+    postVoteEntities(where: { account: $address }) {
+      post
+      type
+      account
     }
   }
 `;

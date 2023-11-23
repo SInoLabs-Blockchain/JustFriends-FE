@@ -36,6 +36,7 @@ const CreatorProfile = () => {
     loadingContentPaidPosts,
     creatorInfo,
     onChangeTab,
+    setFreePosts,
   } = useCreatorProfile();
 
   const { id } = useParams();
@@ -97,7 +98,7 @@ const CreatorProfile = () => {
         renderNoData()
       ) : (
         freePosts?.map((post: any) => (
-          <Post key={post.contentHash} data={post} />
+          <Post key={post.contentHash} data={post} setPosts={setFreePosts} />
         ))
       )}
     </PostsContainer>

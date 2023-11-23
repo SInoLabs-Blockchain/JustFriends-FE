@@ -69,7 +69,7 @@ const Post = ({
   });
 
   const renderRightContent = () => {
-    if (isConnectedWallet && data?.type === PAID_POSTS) {
+    if (isConnectedWallet && data?.isPaid) {
       return (
         <PriceContainer>
           <Typography>{formatEther(data.price)} KLAY</Typography>
@@ -84,7 +84,7 @@ const Post = ({
   };
 
   const renderFreePostAction = () => {
-    if (isFreePosts) {
+    if (!data?.isPaid) {
       let upvoteLabel, downvoteLabel;
       const isUpvoted =
         data?.isVoted && data?.voteType === VOTE_TYPES.UPVOTE ? true : false;
@@ -140,7 +140,9 @@ const Post = ({
               isUpvoted ? "post__interactions_button-upvoted" : ""
             }`}
             onClick={() =>
-              !isUpvoted && handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE)
+              !isUpvoted &&
+              !data?.isOwner &&
+              handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE)
             }
           >
             {isUpvoting ? <CircularProgress size={12} /> : <UpvoteIcon />}
@@ -154,6 +156,7 @@ const Post = ({
             }`}
             onClick={() =>
               !isDownvoted &&
+              !data?.isOwner &&
               handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE)
             }
           >
@@ -174,7 +177,7 @@ const Post = ({
   };
 
   const renderPaidPostActions = () => {
-    if (!isFreePosts) {
+    if (data?.isPaid) {
       return (
         <Box className="post__interactions-container">
           <Typography className="post__interactions-holders">
@@ -209,7 +212,7 @@ const Post = ({
             <Loading size={24} thickness={5} />
           </Box>
         ) : (
-          <PostContainer type={isFreePosts}>
+          <PostContainer type={!data?.isPaid}>
             <CardHeader
               avatar={
                 data?.user?.avatarUrl ? (
@@ -231,12 +234,11 @@ const Post = ({
             />
             <CardContent>
               <Typography className="content">
-                {data?.type === FREE_POSTS || data?.isOwner
+                {!data?.isPaid || data?.isOwner
                   ? data?.content
                   : `${data?.preview}...`}
               </Typography>
-              {data?.type === FREE_POSTS ||
-              (data?.isOwner && data?.type === PAID_POSTS) ? null : (
+              {!data?.isPaid || (data?.isOwner && data?.isPaid) ? null : (
                 <Typography
                   className="viewmore"
                   onClick={() => handleViewDetailPost(data?.contentHash)}

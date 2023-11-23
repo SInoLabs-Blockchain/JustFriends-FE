@@ -9,7 +9,7 @@ export interface ProfileUseCase {
     coverUrl: string
   ): Promise<Profile | null>;
 
-  getPosts(contentHashes: any): Promise<Post[]>;
+  getPosts(contentHashes: string, accessToken: string): Promise<Post[]>;
 
   getUsers(accessToken: string, walletAddresses: any): Promise<Profile[]>;
 }

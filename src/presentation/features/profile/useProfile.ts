@@ -102,11 +102,11 @@ const useProfile = () => {
     }
   };
 
-  const getContentPosts = async (hashes: any) => {
+  const getContentPosts = async (hashes: string, accessToken: string) => {
     const profileRepository = ProfileRepository.create();
 
     try {
-      const res = await profileRepository.getPosts(hashes);
+      const res = await profileRepository.getPosts(hashes, accessToken);
 
       const data = await readContract({
         address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
@@ -134,7 +134,7 @@ const useProfile = () => {
         );
         const [contentPosts, contentPrices]: [Post[] | undefined, any] =
           await Promise.all([
-            getContentPosts(contentHashes),
+            getContentPosts(contentHashes, accessToken),
             readContract({
               address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
               abi: justFriendAbi.abi,
@@ -142,10 +142,12 @@ const useProfile = () => {
               args: [contentHashes, new Array(contentHashes.length).fill(1)],
             }),
           ]);
+
         setMyPosts(
           contentPosts?.map((content, index) => ({
             ...content,
             price: contentPrices[index],
+            isOwner: true,
           }))
         );
       }
@@ -157,7 +159,10 @@ const useProfile = () => {
         const purchasedList = contentPurchasedPosts?.userPostEntities;
         const [contentPosts, contentPrices]: [Post[] | undefined, any] =
           await Promise.all([
-            getContentPosts(purchasedList.map((content: any) => content.post)),
+            getContentPosts(
+              purchasedList.map((content: any) => content.post),
+              accessToken
+            ),
             readContract({
               address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
               abi: justFriendAbi.abi,
@@ -172,6 +177,7 @@ const useProfile = () => {
         setPurchasedPosts(
           contentPosts?.map((content, index) => ({
             ...content,
+            isOwner: true,
             price: contentPrices[index],
           }))
         );

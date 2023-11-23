@@ -216,7 +216,7 @@ function usePost({ open, setPosts }: any) {
         }
         handleToggleConfirmationModal();
         setPurchasing(false);
-        // navigate(`/post/${selectingPost.contentHash}`);
+        navigate(`/post/${selectingPost.contentHash}`);
         toast.success("Buy Post Access Successfully");
       } catch (error) {
         setPurchasing(false);

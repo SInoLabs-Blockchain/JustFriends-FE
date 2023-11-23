@@ -10,6 +10,7 @@ import { isEmpty } from "lodash";
 import Web3 from "web3";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { Post } from "src/domain/models/home/Post";
+import { VOTE_TYPES } from "src/common/constants";
 
 const TABS = [
   { id: 0, name: "Purchased posts" },
@@ -46,7 +47,10 @@ const useCreatorProfile = () => {
   const { loading: loadingContentFreePosts, data: contentFreePosts } = useQuery(
     GET_FREE_POSTS,
     {
-      variables: { creator: walletAddress.toLocaleLowerCase() },
+      variables: {
+        creator: walletAddress.toLocaleLowerCase(),
+        address: profile?.walletAddress?.toLowerCase(),
+      },
     }
   );
   const { loading: loadingContentPaidPosts, data: contentPaidPosts } = useQuery(
@@ -63,7 +67,7 @@ const useCreatorProfile = () => {
     const profileRepository = ProfileRepository.create();
 
     try {
-      const res = await profileRepository.getPosts(hashes);
+      const res = await profileRepository.getPosts(hashes, accessToken);
 
       const data = await readContract({
         address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
@@ -74,7 +78,7 @@ const useCreatorProfile = () => {
 
       const posts = res.map((post: object, index: number) => {
         // @ts-ignore
-        return { ...post, ...data[index] };
+        return { ...data[index], ...post };
       });
 
       return orderByTimeCreated(posts);
@@ -154,11 +158,29 @@ const useCreatorProfile = () => {
         );
       }
     } else if (tab.id === 2) {
-      if (!loadingContentFreePosts && contentFreePosts?.contentEntities) {
+      const { contentEntities, postVoteEntities } = contentFreePosts;
+      if (!loadingContentFreePosts && contentEntities) {
         const contentPosts = await getContentPosts(
           contentFreePosts?.contentEntities.map((content: any) => content.hash)
         );
-        setFreePosts(contentPosts);
+
+        const res = contentPosts?.map((content: any) => {
+          const contentHash = `0x${content.contentHash}`;
+          const vote = postVoteEntities.find(
+            (vote: any) => vote.post === contentHash
+          );
+          if (!vote) {
+            return { ...content, isVoted: false };
+          } else {
+            return {
+              ...content,
+              isVoted: true,
+              voteType: vote.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
+            };
+          }
+        });
+
+        setFreePosts(res);
       }
     }
   };
@@ -218,6 +240,7 @@ const useCreatorProfile = () => {
     creatorInfo,
     onChangeTab,
     getPosts,
+    setFreePosts,
   };
 };
 

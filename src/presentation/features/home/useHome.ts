@@ -274,7 +274,7 @@ const useHome = () => {
                 post.post === contentHash
             );
             const price = contentPriceList.find(
-              (contentPrice: any) => contentPrice.contentHash === contentHash
+              (contentPrice: any) => contentPrice.hash === contentHash
             );
             return {
               ...content,
@@ -286,6 +286,7 @@ const useHome = () => {
             };
           })
           ?.filter((content: any) => !!content);
+
         const orderedPosts = orderByTimeCreated(validContentList);
         if (creatingPost) {
           orderedPosts.unshift(creatingPost);
@@ -318,16 +319,18 @@ const useHome = () => {
     if (isFreePosts) return [];
     const hashes = contentHashes.map((contentHash) => contentHash);
     const amounts = new Array(contentHashes.length).fill(1);
+
     const buyPrices = (await readContract({
       address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
       abi: justFriendAbi.abi,
       functionName: "getBuyPrice",
       args: [hashes, amounts],
-    })) as Array<bigint>;
-    const res = contentHashes.map((contentHash, index) => ({
-      contentHash,
+    })) as Array<any>;
+    const res = hashes.map((hash, index) => ({
+      hash,
       price: buyPrices[index],
     }));
+
     return res;
   };
 
