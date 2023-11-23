@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import COLOR from "src/presentation/theme/Color";
+import Menu from "@mui/material/Menu";
 
 const HeaderContainer = styled("div")(({ theme }: any) => ({
   width: "100%",
@@ -11,6 +12,34 @@ const HeaderContainer = styled("div")(({ theme }: any) => ({
 
   [theme.breakpoints.down("md")]: {
     padding: "20px 24px",
+  },
+
+  ".MuiPaper-root": {
+    background: "#2D325A",
+    borderRadius: 6,
+    marginTop: 4,
+    maxWidth: 545,
+    width: 545,
+    color: COLOR.neutral.neutral_3,
+    boxShadow: "none",
+
+    ".MuiMenu-list": {
+      padding: "20px 8px",
+    },
+
+    ".MuiMenuItem-root": {
+      padding: "0",
+      marginTop: 8,
+      borderRadius: "8px",
+      cursor: "default",
+
+      "&:active, &:hover": {
+        background: "none",
+      },
+      "&:first-of-type": {
+        marginTop: 0,
+      },
+    },
   },
 }));
 
@@ -77,6 +106,34 @@ const ButtonContainer = styled("div")({
       fontWeight: 700,
       lineHeight: "20px",
       marginTop: "4px",
+    },
+  },
+
+  "& .MuiPaper-root": {
+    background: "#2D325A",
+    borderRadius: 6,
+    marginTop: 4,
+    maxWidth: 545,
+    width: 545,
+    color: COLOR.neutral.neutral_3,
+    boxShadow: "none",
+
+    "& .MuiMenu-list": {
+      padding: "20px 8px",
+    },
+
+    "& .MuiMenuItem-root": {
+      padding: "0",
+      marginTop: 8,
+      borderRadius: "8px",
+      cursor: "default",
+
+      "&:active, &:hover": {
+        background: "none",
+      },
+      "&:first-of-type": {
+        marginTop: 0,
+      },
     },
   },
 });
@@ -183,10 +240,70 @@ const ModalContainer = styled(Box)(({ theme }: any) => ({
   },
 }));
 
+const StyledMenu = styled((props: any) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(() => ({
+  "& .MuiPaper-root": {
+    width: 300,
+    borderRadius: 10,
+    marginTop: 10,
+    boxShadow:
+      " 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+
+    "& .MuiMenu-list": {
+      padding: "16px",
+    },
+
+    "& .MuiMenuItem-root": {
+      padding: "0",
+      marginTop: 8,
+      cursor: "default",
+      background: "#fff",
+      display: "flex",
+      justifyContent: "space-between",
+
+      "&:active, &:hover": {
+        background: "none",
+      },
+      "&:first-of-type": {
+        marginTop: 0,
+      },
+    },
+
+    ".user-info": {
+      display: "flex",
+      gap: 8,
+      alignItems: "center",
+      p: {
+        fontSize: "16px",
+        fontFamily: "SemiBold",
+        lineHeight: "24px",
+        color: COLOR.neutral.neutral_1,
+      },
+      svg: {
+        width: 24,
+        height: 24,
+      },
+    },
+  },
+}));
+
 export {
   HeaderContainer,
   LogoWrapper,
   SearchContainer,
   ButtonContainer,
   ModalContainer,
+  StyledMenu,
 };

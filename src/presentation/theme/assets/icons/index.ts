@@ -34,3 +34,5 @@ export { ReactComponent as FanIcon } from "src/presentation/theme/assets/icons/f
 export { ReactComponent as KlaytnLogo1 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-1.svg";
 export { ReactComponent as KlaytnLogo2 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-2.svg";
 export { ReactComponent as KlaytnLogo3 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-3.svg";
+export { ReactComponent as WalletIcon2 } from "src/presentation/theme/assets/icons/wallet-2.svg";
+export { ReactComponent as LogoutIcon } from "src/presentation/theme/assets/icons/arrow.svg";
