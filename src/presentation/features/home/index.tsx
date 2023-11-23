@@ -19,6 +19,8 @@ const Home = () => {
     textareaHeight,
     basePrice,
     topCreators,
+    isTrendingPosts,
+    trendingPosts,
     navigateToProfile,
     navigateToCreatorProfile,
     copyAddress,
@@ -43,9 +45,25 @@ const Home = () => {
           <PostLoading />
           <PostLoading />
         </>
+      ) : isTrendingPosts ? (
+        trendingPosts.map((post: any) => {
+          if (!post) return null;
+          if (!isFreePosts && post.isPaid === false) return null;
+          return (
+            <Post
+              key={post.contentHash}
+              data={post}
+              open={open}
+              isFreePosts={isFreePosts}
+              handleToggleModal={handleToggleModal}
+              handleRemoveText={handleRemoveText}
+            />
+          );
+        })
       ) : (
         posts.map((post: any) => {
           if (!post) return null;
+
           return (
             <Post
               key={post.contentHash}

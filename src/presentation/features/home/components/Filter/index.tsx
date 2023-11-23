@@ -11,7 +11,7 @@ import {
 interface IProps {
   checked: boolean;
   setChecked: (value: any) => void;
-  setIsTrendingPosts: (value: boolean) => void;
+  setIsTrendingPosts: ((value: boolean) => void) | null;
 }
 
 const initialMenuItems = [
@@ -40,7 +40,7 @@ const Filter = (props: IProps) => {
       item.isSelected = i === index;
     });
 
-    setIsTrendingPosts(index=== 1 ? true : false);
+    setIsTrendingPosts && setIsTrendingPosts(index === 1 ? true : false);
     setSelectedMenuIndex(index);
     setMenuItems(updatedMenuItems);
   };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FREE_POSTS,
   PAID_POSTS,
@@ -31,6 +31,7 @@ import { orderByTimeCreated } from "src/common/utils";
 import { Post } from "src/domain/models/home/Post";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 import { Profile } from "src/domain/models/auth";
+import JustFriendsABI from "src/common/abis/JustFriends.json";
 
 const useHome = () => {
   const { open } = useWeb3Modal();
@@ -222,26 +223,7 @@ const useHome = () => {
 
   const getListOfPostsByType = async () => {
     setLoading(true);
-    if (isTrendingPosts) {
-      const timestamp = Math.floor(Date.now() - 1000 * 24 * 60 * 60);
-      getVotes({ variables: { timestamp } });
-
-      if (votes && !loadingVotes) {
-        const { votedEntities } = votes;
-
-        const frequencyMap = votedEntities.reduce((map: any, obj: any) => {
-          const hash = obj.hash;
-          map.set(hash, (map.get(hash) || 0) + 1);
-          return map;
-        }, new Map());
-
-        const sortedHashes = Array.from(frequencyMap.entries()).sort(
-          (a: any, b: any) => b[1] - a[1]
-        );
-
-        const contentHashes = sortedHashes.map((hash: any) => hash[0]);
-      }
-    } else if (data) {
+    if (data) {
       const {
         contentEntities: contents,
         postVoteEntities: myVotes,
@@ -349,6 +331,101 @@ const useHome = () => {
     return res;
   };
 
+  const getDetailPostList = async (hashes: any) => {
+    try {
+      const data = await readContract({
+        address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
+        abi: JustFriendsABI.abi,
+        functionName: "getContentsInfo",
+        args: [hashes],
+      });
+      return data;
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  async function getTrendingPosts() {
+    setLoading(true);
+
+    const timestamp = Math.floor(
+      (Date.now() - 1000 * 24 * 60 * 60) / 1000
+    ).toString();
+
+    getVotes({ variables: { timestamp } });
+
+    if (votes && !loadingVotes) {
+      const { votedEntities } = votes;
+
+      const frequencyMap = votedEntities.reduce((map: any, obj: any) => {
+        const hash = obj.hash;
+        map.set(hash, (map.get(hash) || 0) + 1);
+        return map;
+      }, new Map());
+
+      const sortedHashes = Array.from(frequencyMap.entries()).sort(
+        (a: any, b: any) => b[1] - a[1]
+      );
+
+      const contentHashes = sortedHashes.map((hash: any) => hash[0]);
+
+      const { postVoteEntities: myVotes, userPostEntities: myPosts } = data;
+
+      try {
+        const [detailContentList, detailPostList, contentPriceList] =
+          await Promise.all([
+            homeRepository.getPosts({ contentHashes, accessToken }),
+            getDetailPostList(contentHashes),
+            getPrices(contentHashes),
+          ]);
+
+        const validContentList = contentHashes
+          .map((contentHash: any, index) => {
+            const detailContent = detailContentList.find(
+              (detail) => `0x${detail.contentHash}` === contentHash
+            );
+
+            if (!detailContent) return;
+            const isVoted = myVotes.find(
+              (vote: any) => contentHash === vote.post
+            );
+            const post = myPosts?.find(
+              (post: any) =>
+                post.account.toLowerCase() ===
+                  profile?.walletAddress?.toLowerCase() &&
+                post.post === contentHash
+            );
+            const price = contentPriceList.find(
+              (contentPrice: any) => contentPrice.contentHash === contentHash
+            );
+            return {
+              // @ts-ignore
+              ...detailPostList[index],
+              ...detailContent,
+              isVoted: isVoted ? true : false,
+              voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
+              price: price?.price,
+              isOwner: !!post,
+            };
+          })
+          ?.filter((content: any) => !!content);
+
+        // @ts-ignore
+        setTrendingPosts(validContentList);
+        setLoading(false);
+      } catch (error) {
+        console.log({ error });
+        setLoading(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (isTrendingPosts) {
+      getTrendingPosts();
+    }
+  }, [isTrendingPosts, votes]);
+
   return {
     posts,
     openModal,
@@ -362,6 +439,8 @@ const useHome = () => {
     profile,
     data,
     loading,
+    isTrendingPosts,
+    trendingPosts,
     open,
     setBasePrice,
     setPosts,
