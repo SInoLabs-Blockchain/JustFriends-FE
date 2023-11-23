@@ -1,18 +1,49 @@
-import { Avatar, Box, TextField, Typography } from "@mui/material";
+import { Avatar, Box, TextField, Typography, MenuItem } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import COLOR from "src/presentation/theme/Color";
 import Backwall from "src/presentation/theme/assets/images/background.png";
 import { InfoIcon, UploadIcon } from "src/presentation/theme/assets/icons";
 import { stringAvatar } from "src/common/utils";
 import { useAppSelector } from "src/data/redux/Hooks";
+import { useState } from "react";
 
 import useProfile from "../useProfile";
-import { Container } from "./styles";
+import { Container, StyledMenu } from "./styles";
 
 const EditProfile = () => {
-  const { username, onChangeUsername, onEditProfile } = useProfile();
+  const {
+    username,
+    avatarUrl,
+    coverUrl,
+    onChangeUsername,
+    onEditProfile,
+    onChangeAvatar,
+    onChangeCover,
+  } = useProfile();
 
   const { profile } = useAppSelector((state) => state.auth);
+
+  const [avatarAnchorEl, setAvatarAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
+  const openInputAvatar = Boolean(avatarAnchorEl);
+
+  const [coverAnchorEl, setCoverAnchorEl] = useState<null | HTMLElement>(null);
+  const openInputCover = Boolean(coverAnchorEl);
+
+  const handleClickAvatar = (event: any) => {
+    setAvatarAnchorEl(event.currentTarget);
+  };
+  const handleCloseInputAvatar = () => {
+    setAvatarAnchorEl(null);
+  };
+
+  const handleClickCover = (event: any) => {
+    setCoverAnchorEl(event.currentTarget);
+  };
+  const handleCloseInputCover = () => {
+    setCoverAnchorEl(null);
+  };
 
   const renderContent = () => (
     <Box className="edit-profile-container">
@@ -23,16 +54,36 @@ const EditProfile = () => {
             <Typography className="user-information____title flex-center">
               Profile Image <InfoIcon />
             </Typography>
-            {profile?.avatarUrl ? (
+            {avatarUrl ? (
               <Box
                 className="user-information__avatar"
                 sx={{
-                  backgroundImage: profile?.avatarUrl,
+                  backgroundImage: `url(${avatarUrl})`,
                 }}
               />
             ) : (
-              <Avatar {...stringAvatar(profile?.username)} />
+              <Avatar
+                {...stringAvatar(profile?.username)}
+                onClick={handleClickAvatar}
+              />
             )}
+            <StyledMenu
+              id="avatar"
+              anchorEl={avatarAnchorEl}
+              open={openInputAvatar}
+              onClose={handleCloseInputAvatar}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem>
+                <TextField
+                  value={avatarUrl}
+                  placeholder="Enter your url"
+                  onChange={onChangeAvatar}
+                />
+              </MenuItem>
+            </StyledMenu>
           </Box>
           <Box className="user-information__backwall-container">
             <Typography className="user-information____title flex-center">
@@ -41,12 +92,29 @@ const EditProfile = () => {
             <Box
               className="user-information__backwall"
               sx={{
-                backgroundImage: `url(${Backwall})`,
+                backgroundImage: `url(${coverUrl || Backwall})`,
               }}
             >
-              <UploadIcon />
+              <UploadIcon onClick={handleClickCover} />
             </Box>
           </Box>
+          <StyledMenu
+            id="cover"
+            anchorEl={coverAnchorEl}
+            open={openInputCover}
+            onClose={handleCloseInputCover}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem>
+              <TextField
+                value={coverUrl}
+                placeholder="Enter your url"
+                onChange={onChangeCover}
+              />
+            </MenuItem>
+          </StyledMenu>
         </Box>
         <Box className="user-information__right-content">
           <Box className="user-information__name">

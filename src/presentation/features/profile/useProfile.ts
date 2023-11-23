@@ -36,12 +36,8 @@ const useProfile = () => {
   const { accessToken, profile } = useAppSelector((state) => state.auth);
 
   const [username, setUsername] = useState(profile?.username || "");
-  const [avatarUrl, setAvatarUrl] = useState(
-    "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-  );
-  const [coverUrl, setCoverUrl] = useState(
-    "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-  );
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatarUrl || "");
+  const [coverUrl, setCoverUrl] = useState(profile?.coverUrl || "");
   const [myPosts, setMyPosts] = useState<any>([]);
   const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
   const [creditScore, setCreditScore] = useState("");
@@ -83,6 +79,14 @@ const useProfile = () => {
 
   const onChangeUsername = (event: any) => {
     setUsername(event.target.value);
+  };
+
+  const onChangeAvatar = (event: any) => {
+    setAvatarUrl(event.target.value);
+  };
+
+  const onChangeCover = (event: any) => {
+    setCoverUrl(event.target.value);
   };
 
   const onEditProfile = async () => {
@@ -198,11 +202,15 @@ const useProfile = () => {
     loadingContentMyPosts,
     loadingContentPurchasedPosts,
     creditScore,
+    avatarUrl,
+    coverUrl,
     onChangeTab,
     navigateToEditProfile,
     onEditProfile,
     onChangeUsername,
     getPosts,
+    onChangeAvatar,
+    onChangeCover,
   };
 };
 

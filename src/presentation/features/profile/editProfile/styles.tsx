@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import COLOR from "src/presentation/theme/Color";
+import Menu from "@mui/material/Menu";
 
 const Container = styled("div")({
   padding: "80px 0 150px",
@@ -83,6 +84,11 @@ const Container = styled("div")({
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       paddingTop: 42,
+      backgroundPosition: "center",
+
+      svg: {
+        cursor: "pointer",
+      },
     },
   },
 
@@ -135,4 +141,56 @@ const Container = styled("div")({
   },
 });
 
-export { Container };
+const StyledMenu = styled((props: any) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center",
+    }}
+    {...props}
+  />
+))(() => ({
+  "& .MuiPaper-root": {
+    width: 300,
+    borderRadius: 10,
+    marginTop: 10,
+    boxShadow:
+      " 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+
+    "& .MuiMenu-list": {
+      padding: 8,
+    },
+
+    "& .MuiMenuItem-root": {
+      padding: "0",
+      cursor: "default",
+      background: "#fff",
+      display: "flex",
+      justifyContent: "space-between",
+
+      "&:active, &:hover": {
+        background: "none",
+      },
+
+      "& .MuiTextField-root": {
+        width: "100%",
+      },
+
+      "& .MuiOutlinedInput-root": {
+        borderRadius: 10,
+        backgroundColor: COLOR.white,
+
+        input: {
+          padding: "8px 16px",
+        },
+      },
+    },
+  },
+}));
+
+export { Container, StyledMenu };

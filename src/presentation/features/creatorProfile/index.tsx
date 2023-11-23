@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { stringAvatar } from "src/common/utils";
 import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
 import { isEmpty } from "lodash";
+import Backwall from "src/presentation/theme/assets/images/background.png";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -193,9 +194,11 @@ const CreatorProfile = () => {
   return (
     <Container>
       <BackgroundProfileImg>
-        <img
-          src={require("src/presentation/theme/assets/images/background.png")}
-          alt=""
+        <Box
+          className="profile__cover-container"
+          style={{
+            backgroundImage: `url(${creatorInfo?.coverUrl || Backwall})`,
+          }}
         />
         <Box className="profile__avatar-container">
           {creatorInfo.avatarUrl ? (

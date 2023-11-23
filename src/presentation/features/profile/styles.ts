@@ -28,9 +28,11 @@ const BackgroundProfileImg = styled("div")({
   position: "relative",
   cursor: "pointer",
 
-  img: {
+  ".profile__cover-container": {
     width: "100%",
     height: "100%",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
   },
 
   ".profile__avatar-container": {

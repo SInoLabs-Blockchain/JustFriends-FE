@@ -8,6 +8,7 @@ import { useAppSelector } from "src/data/redux/Hooks";
 import { stringAvatar } from "src/common/utils";
 import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
 import { isEmpty } from "lodash";
+import Backwall from "src/presentation/theme/assets/images/background.png";
 
 import useProfile from "./useProfile";
 import Revenue from "./revenue";
@@ -177,9 +178,11 @@ const Profile = () => {
   return (
     <Container>
       <BackgroundProfileImg>
-        <img
-          src={require("src/presentation/theme/assets/images/background.png")}
-          alt=""
+        <Box
+          className="profile__cover-container"
+          style={{
+            backgroundImage: `url(${profile?.coverUrl || Backwall})`,
+          }}
         />
         <Box className="profile__avatar-container">
           {profile?.avatarUrl ? (
