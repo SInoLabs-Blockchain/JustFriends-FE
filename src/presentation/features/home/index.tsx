@@ -48,7 +48,7 @@ const Home = () => {
       ) : isTrendingPosts ? (
         trendingPosts.map((post: any) => {
           if (!post) return null;
-          if (!isFreePosts && post.isPaid === false) return null;
+          if (isFreePosts === post.isPaid) return null;
           return (
             <Post
               key={post.contentHash}
