@@ -41,10 +41,25 @@ const HeaderContainer = styled("div")(({ theme }: any) => ({
       },
     },
   },
+
+  ".header__logo": {
+    display: "flex",
+    gap: "8px",
+    alignItems: "center",
+    p: {
+      fontFamily: "SemiBold",
+      fontSize: "24px",
+    },
+  },
 }));
 
 const LogoWrapper = styled("div")(({ theme }: any) => ({
   cursor: "pointer",
+  ".header__logo": {
+    img: {
+      height: "48px",
+    },
+  },
 
   [theme.breakpoints.down("md")]: {
     svg: {

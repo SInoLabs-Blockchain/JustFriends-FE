@@ -7,7 +7,7 @@ import usePostDetails from "./usePostDetails";
 import PostLoading from "src/presentation/components/loading/post";
 
 const PostDetails = () => {
-  const { topCreators, post, loading } = usePostDetails();
+  const { topCreators, post, loading, navigateToProfile } = usePostDetails();
 
   return (
     <Container>
@@ -15,6 +15,7 @@ const PostDetails = () => {
         isFreePosts={false}
         handleSwitchZone={null}
         setIsTrendingPosts={null}
+        navigateToProfile={navigateToProfile}
       />
       <Box display={"flex"} flexDirection={"column"} width={"50%"} gap={"24px"}>
         {loading ? <PostLoading /> : <Post data={post} loading={loading} />}

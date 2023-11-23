@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { BAOBAB_CONFIG } from "src/data/config/chains";
 import entryPointAbi from "src/common/abis/IEntryPoint.json";
 import justFriendAbi from "src/common/abis/JustFriends.json";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { VOTE_TYPES } from "src/common/constants";
 import Web3 from "web3";
 import { ROUTE } from "src/common/constants/route";
@@ -32,6 +32,7 @@ function usePost({ open, setPosts }: any) {
     price: -1,
     supply: -1,
     startPrice: -1,
+    accessTokenId: -1,
   });
   const [type, setType] = useState(0);
 
@@ -214,10 +215,12 @@ function usePost({ open, setPosts }: any) {
           });
           await requestToRelayer(signedUserOp);
         }
-        handleToggleConfirmationModal();
-        setPurchasing(false);
-        navigate(`/post/${selectingPost.contentHash}`);
-        toast.success("Buy Post Access Successfully");
+        setTimeout(() => {
+          handleToggleConfirmationModal();
+          setPurchasing(false);
+          navigate(`/post/${selectingPost.contentHash}`);
+          toast.success("Buy Post Access Successfully");
+        }, 5000);
       } catch (error) {
         setPurchasing(false);
         console.log({ error });
@@ -225,12 +228,15 @@ function usePost({ open, setPosts }: any) {
     }
   }
 
-  async function handleSellPostAccess(price: number) {
+  async function handleSellPostAccess() {
     if (!accessToken) {
       open();
     } else {
       try {
         setPurchasing(true);
+        if (selectingPost?.supply === 1) {
+          throw new Error("You cannot sell the last content access");
+        }
         if (!profile?.isFriend) {
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -254,7 +260,7 @@ function usePost({ open, setPosts }: any) {
             amount: 1,
           });
           const callData = getCallDataEntryPoint({
-            value: parseEther(price.toString()),
+            value: "0",
             target: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             msgDataEncode: msgCallData,
           });
@@ -285,11 +291,16 @@ function usePost({ open, setPosts }: any) {
           });
           await requestToRelayer(signedUserOp);
         }
+        setTimeout(async () => {
+          handleToggleConfirmationModal();
+          setPurchasing(false);
+          navigate(`/profile`);
+          toast.success("Sell Post Access Successfully");
+        }, 5000);
+      } catch (error: any) {
         handleToggleConfirmationModal();
         setPurchasing(false);
-        navigate(`/post/${selectingPost.contentHash}`);
-        toast.success("Sell Post Access Successfully");
-      } catch (error) {
+        toast.error(error.message);
         console.log({ error });
       }
     }
@@ -303,15 +314,17 @@ function usePost({ open, setPosts }: any) {
   async function handleToggleConfirmationModal(
     selectingContentHash?: string,
     selectingContentSupply?: number,
-    selectingContentStartPrice?: number,
-    modalType?: number
+    selectingContentPrice?: number,
+    modalType?: number,
+    accessTokenId?: number
   ) {
     setType(modalType || 0);
     setSelectingPost((prev) => ({
       ...prev,
       contentHash: selectingContentHash ? `0x${selectingContentHash}` : "",
       supply: selectingContentSupply || -1,
-      startPrice: selectingContentStartPrice || -1,
+      startPrice: selectingContentPrice || -1,
+      accessTokenId: accessTokenId || -1,
     }));
     setOpen((prev) => !prev);
   }
@@ -331,7 +344,6 @@ function usePost({ open, setPosts }: any) {
     isUpvoting,
     isDownvoting,
     isPurchasing,
-    setSelectingPost,
     handleVotePost,
     handlePurchasePostAccess,
     handleSellPostAccess,

@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GET_POST_DETAIL_DATA } from "src/data/graphql/queries";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { HomeRepository } from "src/data/repositories/HomeRepository";
@@ -9,6 +9,8 @@ import { Profile } from "src/domain/models/auth";
 import { Post } from "src/domain/models/home/Post";
 import { readContract } from "@wagmi/core";
 import justFriendAbi from "src/common/abis/JustFriends.json";
+import { ROUTE } from "src/common/constants/route";
+import { parseEther } from "viem";
 
 const usePostDetails = () => {
   let { id } = useParams();
@@ -18,6 +20,7 @@ const usePostDetails = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const profileRepository = ProfileRepository.create();
   const homeRepository = HomeRepository.create();
+  const navigate = useNavigate();
 
   const getData = async () => {
     setLoading(true);
@@ -47,6 +50,8 @@ const usePostDetails = () => {
           ...contentEntities[0],
           isOwner: true,
           price: prices[0],
+          oldPrice: parseEther("0.02"),
+          isPaid: true,
         });
 
         const validTopCreatorsList = creatorDetails
@@ -71,6 +76,10 @@ const usePostDetails = () => {
     }
   };
 
+  const navigateToProfile = () => {
+    navigate(ROUTE.PROFILE);
+  };
+
   const { data } = useQuery(GET_POST_DETAIL_DATA, {
     variables: {
       contentHash: id,
@@ -79,7 +88,7 @@ const usePostDetails = () => {
     onCompleted: getData,
   });
 
-  return { topCreators, post, loading };
+  return { topCreators, post, loading, navigateToProfile };
 };
 
 export default usePostDetails;

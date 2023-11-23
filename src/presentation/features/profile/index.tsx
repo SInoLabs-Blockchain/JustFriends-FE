@@ -125,18 +125,18 @@ const Profile = () => {
         <Box className="user-information__metrics-container flex-center">
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              11 K
+              {profile?.totalUpvote}
             </Typography>
             <Typography className="user-information__metrics-title">
-              Following
+              Upvotes
             </Typography>
           </Box>
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              11 K
+              {profile?.totalDownvote}
             </Typography>
             <Typography className="user-information__metrics-title">
-              Follower
+              Downvotes
             </Typography>
           </Box>
 

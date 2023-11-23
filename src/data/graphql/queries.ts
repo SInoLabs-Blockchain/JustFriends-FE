@@ -9,6 +9,7 @@ const GET_NEW_POSTS = gql`
       totalDownvote
       totalSupply
       startedPrice
+      isPaid
     }
     postVoteEntities(where: { account: $address }) {
       post
@@ -23,6 +24,20 @@ const GET_NEW_POSTS = gql`
     creatorEntities(orderBy: creditScore, orderDirection: desc) {
       address
       creditScore
+    }
+  }
+`;
+
+const GET_MY_PROFILE = gql`
+  query GetMyProfile($address: String!) {
+    creatorEntities(where: { address: $address }) {
+      address
+      creditScore
+      totalDownVote
+      totalUpVote
+    }
+    userPostEntities(where: { account: $address, isOwner: true }) {
+      id
     }
   }
 `;
@@ -101,6 +116,14 @@ const GET_VOTES = gql`
   }
 `;
 
+const GET_PURCHASES = gql`
+  query GetPurchases($timestamp: String!) {
+    accessPurchasedEntities(where: { timestamp_gte: $timestamp }) {
+      timestamp
+    }
+  }
+`;
+
 export {
   GET_NEW_POSTS,
   GET_MY_POSTS,
@@ -110,4 +133,6 @@ export {
   GET_CREDIT_SCORE,
   GET_POST_DETAIL_DATA,
   GET_VOTES,
+  GET_PURCHASES,
+  GET_MY_PROFILE,
 };
