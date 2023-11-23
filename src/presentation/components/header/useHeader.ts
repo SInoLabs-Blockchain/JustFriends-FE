@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "src/common/constants/route";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
@@ -23,7 +23,6 @@ import { getWalletClient } from "@wagmi/core";
 import { toast } from "react-toastify";
 import { address } from "src/common/constants/solidityTypes";
 import { LOGIN_STEPS } from "src/common/constants";
-import { parseEther } from "viem";
 
 const useHeader = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -37,6 +36,16 @@ const useHeader = () => {
   const { open: walletConnect } = useWeb3Modal();
   const [loading, setLoading] = useState(false);
   const [timeOut, setTimeOut] = useState(0);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openAccountDropdown = Boolean(anchorEl);
+
+  const handleClickAccount = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseAccountDropdown = () => {
+    setAnchorEl(null);
+  };
 
   const onSearch = (e: any) => {
     if (e.keyCode === 13) {
@@ -348,6 +357,8 @@ const useHeader = () => {
     content,
     otp,
     loading,
+    openAccountDropdown,
+    anchorEl,
     setOtp,
     setContent,
     nextStep,
@@ -357,6 +368,8 @@ const useHeader = () => {
     connectMetamask,
     connectWalletConnect,
     connectSelfDeployWallet,
+    handleClickAccount,
+    handleCloseAccountDropdown,
   };
 };
 

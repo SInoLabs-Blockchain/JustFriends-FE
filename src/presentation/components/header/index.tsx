@@ -21,6 +21,8 @@ import backArrow from "src/presentation/theme/assets/icons/back.svg";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { useBalance } from "wagmi";
 import { formatBalance, stringAvatar } from "src/common/utils";
+
+import AccountDropdown from "./components/AccountDropdown";
 import ConnectModal from "./ConnectModal";
 
 const Header = () => {
@@ -31,6 +33,8 @@ const Header = () => {
     content,
     loading,
     otp,
+    openAccountDropdown,
+    anchorEl,
     setOtp,
     setContent,
     onSearch,
@@ -40,6 +44,8 @@ const Header = () => {
     connectMetamask,
     connectWalletConnect,
     connectSelfDeployWallet,
+    handleClickAccount,
+    handleCloseAccountDropdown,
   } = useHeader();
   const location = useLocation();
   const page = location.pathname.split("/")[1];
@@ -85,10 +91,22 @@ const Header = () => {
               <Typography>{formatBalance(balance?.formatted || "")}</Typography>
             </Box>
             {profile?.avatarUrl ? (
-              <img src={profile?.avatarUrl} alt="avatar" />
+              <img
+                src={profile?.avatarUrl}
+                alt="avatar"
+                onClick={handleClickAccount}
+              />
             ) : (
-              <Avatar {...stringAvatar(profile?.username)} />
+              <Avatar
+                {...stringAvatar(profile?.username)}
+                onClick={handleClickAccount}
+              />
             )}
+            <AccountDropdown
+              anchorEl={anchorEl}
+              open={openAccountDropdown}
+              handleClose={handleCloseAccountDropdown}
+            />
           </>
         ) : matches ? (
           <Button>
