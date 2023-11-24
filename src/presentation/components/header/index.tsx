@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   IconButton,
+  Skeleton,
   TextField,
   Typography,
   useMediaQuery,
@@ -36,6 +37,7 @@ const Header = () => {
     otp,
     openAccountDropdown,
     anchorEl,
+    handleLogout,
     setOtp,
     setContent,
     onSearch,
@@ -92,7 +94,17 @@ const Header = () => {
                 }
                 alt="klaytn"
               />
-              <Typography>{formatBalance(balance?.formatted || "")}</Typography>
+              {profile?.loading ? (
+                <Skeleton
+                  variant="text"
+                  sx={{ fontSize: "14px" }}
+                  width="100px"
+                />
+              ) : (
+                <Typography>
+                  {formatBalance(balance?.formatted || "")}
+                </Typography>
+              )}
             </Box>
             {profile?.avatarUrl ? (
               <img
@@ -110,6 +122,7 @@ const Header = () => {
               anchorEl={anchorEl}
               open={openAccountDropdown}
               handleClose={handleCloseAccountDropdown}
+              handleLogout={handleLogout}
             />
           </>
         ) : matches ? (

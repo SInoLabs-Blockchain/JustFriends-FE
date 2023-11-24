@@ -16,6 +16,7 @@ import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { orderByTimeCreated } from "src/common/utils";
 import justFriendAbi from "src/common/abis/JustFriends.json";
 import { Post } from "src/domain/models/home/Post";
+import { parseEther } from "viem";
 
 const TABS = [
   { id: 0, name: "My posts" },
@@ -146,11 +147,11 @@ const useProfile = () => {
               args: [contentHashes, new Array(contentHashes.length).fill(1)],
             }),
           ]);
-
         setMyPosts(
           contentPosts?.map((content, index) => ({
             ...content,
-            price: contentPrices[index],
+            price: BigInt(contentPrices[index]),
+            oldPrice: parseEther("0.02"),
             isOwner: true,
           }))
         );
@@ -184,6 +185,7 @@ const useProfile = () => {
             contentHash: content.contentHash?.substring(2),
             isOwner: true,
             price: contentPrices[index],
+            oldPrice: parseEther("0.02"),
           }))
         );
       }

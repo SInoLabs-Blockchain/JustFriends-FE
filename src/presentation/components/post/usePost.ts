@@ -100,49 +100,52 @@ function usePost({ open, setPosts }: any) {
           });
           await requestToRelayer(signedUserOp);
         }
-        if (voteType === VOTE_TYPES.DOWNVOTE) {
-          setDownvoting(false);
-          setPosts((prev: any) => {
-            const res = prev.map((content: any) => {
-              if (content?.contentHash === contentHash) {
-                return {
-                  ...content,
-                  totalDownvote: Number(content?.totalDownvote) + 1,
-                  totalUpvote:
-                    content?.isVoted && content?.voteType === VOTE_TYPES.UPVOTE
-                      ? Number(content?.totalUpvote) - 1
-                      : Number(content?.totalUpvote),
-                  isVoted: true,
-                  voteType,
-                };
-              } else {
-                return content;
-              }
+        setTimeout(() => {
+          if (voteType === VOTE_TYPES.DOWNVOTE) {
+            setDownvoting(false);
+            setPosts((prev: any) => {
+              const res = prev.map((content: any) => {
+                if (content?.contentHash === contentHash) {
+                  return {
+                    ...content,
+                    totalDownvote: Number(content?.totalDownvote) + 1,
+                    totalUpvote:
+                      content?.isVoted &&
+                      content?.voteType === VOTE_TYPES.UPVOTE
+                        ? Number(content?.totalUpvote) - 1
+                        : Number(content?.totalUpvote),
+                    isVoted: true,
+                    voteType,
+                  };
+                } else {
+                  return content;
+                }
+              });
+              return res;
             });
-            return res;
-          });
-        } else {
-          setUpvoting(false);
-          setPosts((prev: any) => {
-            return prev.map((content: any) => {
-              if (content?.contentHash === contentHash) {
-                return {
-                  ...content,
-                  totalDownvote:
-                    content?.isVoted &&
-                    content?.voteType === VOTE_TYPES.DOWNVOTE
-                      ? Number(content?.totalDownvote) - 1
-                      : Number(content?.totalDownvote),
-                  totalUpvote: Number(content?.totalUpvote) + 1,
-                  isVoted: true,
-                  voteType,
-                };
-              } else {
-                return content;
-              }
+          } else {
+            setUpvoting(false);
+            setPosts((prev: any) => {
+              return prev.map((content: any) => {
+                if (content?.contentHash === contentHash) {
+                  return {
+                    ...content,
+                    totalDownvote:
+                      content?.isVoted &&
+                      content?.voteType === VOTE_TYPES.DOWNVOTE
+                        ? Number(content?.totalDownvote) - 1
+                        : Number(content?.totalDownvote),
+                    totalUpvote: Number(content?.totalUpvote) + 1,
+                    isVoted: true,
+                    voteType,
+                  };
+                } else {
+                  return content;
+                }
+              });
             });
-          });
-        }
+          }
+        }, 3000);
       } catch (error) {
         console.log({ error });
         if (voteType === VOTE_TYPES.DOWNVOTE) {
@@ -161,6 +164,15 @@ function usePost({ open, setPosts }: any) {
       try {
         setPurchasing(true);
         if (!profile?.isFriend) {
+          console.log({
+            address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+            abi: justFriendAbi.abi,
+            functionName: "buyContentAccess",
+            args: [`${selectingPost.contentHash}`, 1],
+            account: profile?.walletAddress,
+            value: BigInt(selectingPost.price),
+          });
+
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
@@ -323,7 +335,7 @@ function usePost({ open, setPosts }: any) {
       ...prev,
       contentHash: selectingContentHash ? `0x${selectingContentHash}` : "",
       supply: selectingContentSupply || -1,
-      startPrice: selectingContentPrice || -1,
+      price: selectingContentPrice || -1,
       accessTokenId: accessTokenId || -1,
     }));
     setOpen((prev) => !prev);

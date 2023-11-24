@@ -9,9 +9,15 @@ interface PropTypes {
   anchorEl: any;
   open: any;
   handleClose: any;
+  handleLogout: any;
 }
 
-const AccountDropdown = ({ anchorEl, open, handleClose }: PropTypes) => {
+const AccountDropdown = ({
+  anchorEl,
+  open,
+  handleClose,
+  handleLogout,
+}: PropTypes) => {
   const { profile } = useAppSelector((state) => state.auth);
 
   return (
@@ -31,7 +37,7 @@ const AccountDropdown = ({ anchorEl, open, handleClose }: PropTypes) => {
             {shortenAddress(profile?.walletAddress || "")}
           </Typography>
         </Box>
-        <LogoutIcon />
+        <LogoutIcon onClick={handleLogout} />
       </MenuItem>
     </StyledMenu>
   );

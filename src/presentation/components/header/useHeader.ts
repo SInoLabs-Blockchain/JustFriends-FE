@@ -25,6 +25,7 @@ import { address } from "src/common/constants/solidityTypes";
 import { LOGIN_STEPS } from "src/common/constants";
 import { useLazyQuery } from "@apollo/client";
 import { GET_MY_PROFILE } from "src/data/graphql/queries";
+import { useAccount, useDisconnect, useWalletClient } from "wagmi";
 
 const useHeader = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -40,6 +41,8 @@ const useHeader = () => {
   const [timeOut, setTimeOut] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openAccountDropdown = Boolean(anchorEl);
+  const { disconnect } = useDisconnect();
+  const { address: walletClientAddr } = useAccount();
 
   const [getDetailProfile] = useLazyQuery(GET_MY_PROFILE);
 
@@ -93,9 +96,9 @@ const useHeader = () => {
         const { creatorEntities, userPostEntities } = data;
         const myProfile = {
           ...res,
-          totalUpvote: creatorEntities[0].totalUpVote,
-          totalDownvote: creatorEntities[0].totalDownVote,
-          totalPost: userPostEntities.length,
+          totalUpvote: creatorEntities[0]?.totalUpVote || 0,
+          totalDownvote: creatorEntities[0]?.totalDownVote || 0,
+          totalPost: userPostEntities?.length,
         };
 
         dispatch(
@@ -104,7 +107,7 @@ const useHeader = () => {
             loading: false,
             isFriend:
               res?.walletAddress.toLowerCase() ===
-              friendAccountInfo?.contractAddress.toLowerCase(),
+              friendAccountInfo?.contractAddress?.toLowerCase(),
           })
         );
       }
@@ -151,7 +154,7 @@ const useHeader = () => {
   const connectWalletConnect = async () => {
     try {
       onToggleModal();
-      walletConnect();
+      await walletConnect();
     } catch (error) {
       onToggleModal();
       console.log({ error });
@@ -340,6 +343,27 @@ const useHeader = () => {
     }
   };
 
+  const connectWallet = async () => {
+    const walletClient = await getWalletClient();
+
+    // @ts-ignore: Unreachable code error
+    const { challenge } = await authRepository.connectWallet(walletClientAddr);
+    // @ts-ignore: Unreachable code error
+    const signature = await walletClient?.signMessage({
+      account: walletClientAddr,
+      message: challenge,
+    });
+
+    const res = await authRepository.login(walletClientAddr, signature);
+    dispatch(setAuth(res.accessToken));
+    localStorage.setItem("accessToken", res.accessToken);
+    setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    disconnect();
+  };
+
   useEffect(() => {
     reAuth();
   }, []);
@@ -348,32 +372,10 @@ const useHeader = () => {
     getMe();
   }, [accessToken]);
 
-  useWeb3ModalEvents(async (event) => {
-    if (event.name === "ACCOUNT_CONNECTED") {
-      setLoading(true);
-      try {
-        const walletClient = await getWalletClient();
-        // @ts-ignore: Unreachable code error
-        const accounts = await walletClient?.getAddresses();
-        // @ts-ignore: Unreachable code error
-        const account = accounts[0];
-        const { challenge } = await authRepository.connectWallet(account);
-        // @ts-ignore: Unreachable code error
-        const signature = await walletClient?.signMessage({
-          account,
-          message: challenge,
-        });
-        const res = await authRepository.login(account, signature);
-        dispatch(setAuth(res.accessToken));
-        localStorage.setItem("accessToken", res.accessToken);
-        setLoading(false);
-      } catch (error) {
-        console.log({ error });
-        // TODO: Handle login BE failed
-        setLoading(false);
-      }
-    }
-  });
+  useEffect(() => {
+    if (!walletClientAddr || localStorage.getItem("accessToken")) return;
+    connectWallet();
+  }, [walletClientAddr]);
 
   return {
     loginStep,
@@ -395,6 +397,7 @@ const useHeader = () => {
     connectSelfDeployWallet,
     handleClickAccount,
     handleCloseAccountDropdown,
+    handleLogout,
   };
 };
 

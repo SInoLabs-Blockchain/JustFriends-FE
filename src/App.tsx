@@ -25,18 +25,7 @@ const App = () => {
   const router = createBrowserRouter(appRoutes);
   return (
     <Provider store={store}>
-      <MetaMaskProvider
-        debug={false}
-        sdkOptions={{
-          checkInstallationImmediately: false,
-          dappMetadata: {
-            name: "JustFriends",
-            url: window.location.host,
-          },
-        }}
-      >
-        <RouterProvider router={router} />
-      </MetaMaskProvider>
+      <RouterProvider router={router} />
       <WagmiConfig config={wagmiConfig}>
         <RootContainer />
       </WagmiConfig>
