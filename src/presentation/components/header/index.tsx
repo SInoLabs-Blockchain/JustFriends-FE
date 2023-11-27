@@ -106,18 +106,20 @@ const Header = () => {
                 </Typography>
               )}
             </Box>
-            {profile?.avatarUrl ? (
-              <img
-                src={profile?.avatarUrl}
-                alt="avatar"
-                onClick={handleClickAccount}
-              />
-            ) : (
-              <Avatar
-                {...stringAvatar(profile?.username)}
-                onClick={handleClickAccount}
-              />
-            )}
+            <Box sx={{ cursor: 'pointer' }}>
+              {profile?.avatarUrl ? (
+                <img
+                  src={profile?.avatarUrl}
+                  alt="avatar"
+                  onClick={handleClickAccount}
+                />
+              ) : (
+                <Avatar
+                  {...stringAvatar(profile?.username)}
+                  onClick={handleClickAccount}
+                />
+              )}
+            </Box>
             <AccountDropdown
               anchorEl={anchorEl}
               open={openAccountDropdown}

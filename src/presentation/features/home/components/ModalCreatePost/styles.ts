@@ -132,7 +132,7 @@ const StyledSelectItem = styled("div")({
   },
 });
 
-const StyledTextArea = styled("textarea")({
+const StyledTextArea = styled("textarea")(({ theme }: any) => ({
   marginTop: 30,
   width: "100%",
   maxHeight: "50vh",
@@ -151,7 +151,11 @@ const StyledTextArea = styled("textarea")({
     lineHeight: "32px",
     fontFamily: "Gilroy",
   },
-});
+
+  [theme.breakpoints.down("xl")]: {
+    maxHeight: "30vh",
+  },
+}));
 
 const StyledBottomActions = styled("div")({
   marginTop: 30,

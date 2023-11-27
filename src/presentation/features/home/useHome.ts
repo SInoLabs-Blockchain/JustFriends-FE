@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  ERROR_MESSAGE,
   FREE_POSTS,
   PAID_POSTS,
   POST_OPTIONS,
@@ -218,8 +219,9 @@ const useHome = () => {
           setProfile({ ...profile, totalPost: (profile?.totalPost || 0) + 1 })
         );
         toast.success("Your post has been created successfully!");
-      } catch (error) {
-        console.log({ error });
+      } catch (error: any) {
+        setLoading(false);
+        toast.error(error.message || ERROR_MESSAGE)
       }
     }
   };
@@ -279,7 +281,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
             return {
@@ -425,7 +427,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -480,7 +482,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {

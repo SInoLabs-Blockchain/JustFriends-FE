@@ -24,6 +24,7 @@ import usePost from "./usePost";
 import { formatEther } from "viem";
 import ConfirmModal from "./ConfirmModal";
 import Loading from "../loading/general";
+import { toast } from "react-toastify";
 
 interface PropTypes {
   data: any;
@@ -109,9 +110,8 @@ const Post = ({
               upvoteLabel = `You and ${otherVoteCount} people upvoted`;
               break;
           }
-          downvoteLabel = `${Number(data.totalDownvote)} ${
-            Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
-          }`;
+          downvoteLabel = `${Number(data.totalDownvote)} ${Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
+            }`;
         } else {
           const otherVoteCount = Number(data.totalDownvote) - 1;
           switch (otherVoteCount) {
@@ -125,29 +125,27 @@ const Post = ({
               downvoteLabel = `You and ${otherVoteCount} people downvoted`;
               break;
           }
-          upvoteLabel = `${Number(data.totalUpvote)} ${
-            Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
-          }`;
+          upvoteLabel = `${Number(data.totalUpvote)} ${Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+            }`;
         }
       } else {
-        upvoteLabel = `${Number(data.totalUpvote)} ${
-          Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
-        }`;
-        downvoteLabel = `${Number(data.totalDownvote)} ${
-          Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
-        }`;
+        upvoteLabel = `${Number(data.totalUpvote)} ${Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+          }`;
+        downvoteLabel = `${Number(data.totalDownvote)} ${Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
+          }`;
       }
       return (
         <Box>
           <IconButton
-            className={`post__interactions-button ${
-              isUpvoted ? "post__interactions_button-upvoted" : ""
-            }`}
-            onClick={() =>
-              !isUpvoted &&
-              !data?.isOwner &&
-              handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE)
-            }
+            className={`post__interactions-button ${isUpvoted ? "post__interactions_button-upvoted" : ""
+              }`}
+            onClick={() => {
+              if (!isUpvoted && !data?.isOwner) {
+                handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE);
+              } else {
+                toast.warning('You cannot upvote your own post.');
+              }
+            }}
           >
             {isUpvoting ? <CircularProgress size={12} /> : <UpvoteIcon />}
             <Typography className="post__interactions-votes">
@@ -155,21 +153,22 @@ const Post = ({
             </Typography>
           </IconButton>
           <IconButton
-            className={`post__interactions-button ${
-              isDownvoted ? "post__interactions_button-downvoted" : ""
-            }`}
-            onClick={() =>
-              !isDownvoted &&
-              !data?.isOwner &&
-              handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE)
-            }
+            className={`post__interactions-button ${isDownvoted ? "post__interactions_button-downvoted" : ""
+              }`}
+            onClick={() => {
+              if (!isDownvoted && !data?.isOwner) {
+                handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE);
+              } else {
+                toast.warning('You cannot downvote your own post.');
+              }
+            }}
           >
             {isDownvoting ? <CircularProgress size={12} /> : <DownvoteIcon />}
             <Typography className="post__interactions-votes">
               {downvoteLabel}
             </Typography>
           </IconButton>
-          <IconButton>
+          <IconButton onClick={() => toast.warning('This feature is temporarily not developed.')}>
             <CommentIcon />
             <Typography className="post__interactions-votes">
               {Number(data.comments) || 0} comments

@@ -115,7 +115,7 @@ const Profile = () => {
           <Box className="user-information__content-container flex-center">
             <DollarIcon />
             <Typography className="user-information__content-title">
-              Total earn: <span>100 KLAY</span>
+              Total earn: <span>0 KLAY</span>
             </Typography>
           </Box>
         </Box>
@@ -143,7 +143,7 @@ const Profile = () => {
 
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              {myPosts?.length}
+              {myPosts?.length || 0}
             </Typography>
             <Typography className="user-information__metrics-title">
               Posts
