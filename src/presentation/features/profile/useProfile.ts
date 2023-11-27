@@ -101,6 +101,7 @@ const useProfile = () => {
         coverUrl
       );
       dispatch(setProfile({ ...profile, ...res }));
+      navigate(ROUTE.PROFILE);
       toast.success("Your profile has been saved successfully!");
     } catch (error) {
       console.log({ error });

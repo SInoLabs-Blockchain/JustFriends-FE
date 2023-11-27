@@ -27,7 +27,8 @@ const TopAuthor = ({ data, viewProfile, loading }: any) => {
         <TopAuthorListContainer>
           {data.length === 0 ? (
             <Typography className="author__list-empty">
-              Connect to see our top creators
+              {/* Connect to see our top creators */}
+              Be the first
             </Typography>
           ) : (
             data?.map((creator: any) => (

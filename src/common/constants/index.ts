@@ -32,6 +32,8 @@ const MODAL_TYPES = {
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
+const ERROR_MESSAGE = 'Error! An error occurred. Please try again later'
+
 export {
   POST_OPTIONS,
   FREE_POSTS,
@@ -40,4 +42,5 @@ export {
   VOTE_TYPES,
   ZERO_ADDRESS,
   MODAL_TYPES,
+  ERROR_MESSAGE
 };
