@@ -164,6 +164,7 @@ const ModalContainer = styled(Box)(({ theme }: any) => ({
   padding: 30,
   boxShadow: "0px 3px 4px 0px #00000008",
   outline: "none",
+  width: '40%',
 
   /* Chrome, Safari, Edge, Opera */
   "input::-webkit-outer-spin-button": {
@@ -195,6 +196,13 @@ const ModalContainer = styled(Box)(({ theme }: any) => ({
       fontFamily: "Bold",
       fontSize: 24,
       lineHeight: "32px",
+    },
+
+    ".modal-header__description": {
+      color: COLOR.primary,
+      fontFamily: "Gilroy",
+      textAlign: 'center',
+      marginTop: 20
     },
 
     ".modal-header__action": {
@@ -252,6 +260,26 @@ const ModalContainer = styled(Box)(({ theme }: any) => ({
 
   ".modal__information-otp-seperator": {
     width: "8px",
+  },
+
+  [theme.breakpoints.down("xl")]: {
+    width: '45%',
+  },
+
+  [theme.breakpoints.down("lg")]: {
+    width: '56%',
+  },
+
+  [theme.breakpoints.down("md")]: {
+    width: '65%',
+
+    ".modal-information .modal__information-method-name": {
+      fontSize: 20,
+    }
+  },
+
+  [theme.breakpoints.down("sm")]: {
+    width: '80%',
   },
 }));
 
