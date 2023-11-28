@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useNavigationType, NavigationType } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import {
@@ -42,6 +42,9 @@ import { setProfile } from "src/data/redux/auth/AuthReducer";
 const useHome = () => {
   const { open } = useWeb3Modal();
   const navigate = useNavigate();
+  const location = useLocation();
+  const navigationType = useNavigationType();
+
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
   const [isTrendingPosts, setIsTrendingPosts] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -282,7 +285,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
             return {
@@ -428,7 +431,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -483,7 +486,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -511,6 +514,12 @@ const useHome = () => {
       getTrendingPosts();
     }
   }, [isTrendingPosts, isFreePosts, votes, purchases]);
+
+  useEffect(() => {
+    if (navigationType === NavigationType.Pop) {
+      setIsFreePosts(false)
+    }
+  }, [location, navigationType])
 
   return {
     posts,
