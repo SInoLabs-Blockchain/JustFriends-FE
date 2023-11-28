@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { GET_FREE_POSTS, GET_PAID_POSTS } from "src/data/graphql/queries";
+import { GET_FREE_POSTS, GET_MY_PROFILE, GET_PAID_POSTS } from "src/data/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { readContract } from "@wagmi/core";
@@ -38,8 +38,11 @@ const useCreatorProfile = () => {
     avatarUrl: "",
     coverUrl: "",
     loyalFan: false,
+    numberOfUpVotes: '',
+    numberOfDownVotes: '',
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [totalPosts, setTotalPosts] = useState<number>(0);
 
   const { profile, accessToken } = useAppSelector((state) => state.auth);
 
@@ -156,7 +159,7 @@ const useCreatorProfile = () => {
             }),
           ]);
 
-                setUnpurchasedPosts(
+        setUnpurchasedPosts(
           contentPosts?.map((content, index) => ({
             ...content,
             price: BigInt(contentPrices[index]),
@@ -208,7 +211,18 @@ const useCreatorProfile = () => {
 
       const isLoyalFan = await getLoyalFan(walletAddress);
 
-      if (!isEmpty(res)) setCreatorInfo({ ...res[0], loyalFan: !!isLoyalFan });
+      if (!isEmpty(res) && !loadingProfile) {
+        const { creatorEntities, userPostEntities } = profileData
+
+        setCreatorInfo({
+          ...res[0],
+          loyalFan: !!isLoyalFan,
+          numberOfUpVotes: creatorEntities[0].totalUpVote,
+          numberOfDownVotes: creatorEntities[0].totalDownVote
+        });
+
+        setTotalPosts(userPostEntities.length || 0)
+      }
     } catch (error) {
       console.log({ error });
     }
@@ -231,6 +245,14 @@ const useCreatorProfile = () => {
     return isLoyalFan;
   };
 
+  const { loading: loadingProfile, data: profileData } = useQuery(
+    GET_MY_PROFILE,
+    {
+      variables: { address: walletAddress },
+      onCompleted: getCreatorInfo
+    }
+  );
+
   useEffect(() => {
     getPosts();
   }, [tab]);
@@ -239,12 +261,19 @@ const useCreatorProfile = () => {
     if (accessToken) getCreatorInfo();
   }, [accessToken]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return {
+    totalPosts,
+    profileData,
     tab,
     TABS,
     purchasedPosts,
     unpurchasedPosts,
     freePosts,
+    loadingProfile,
     loadingContentFreePosts,
     loadingContentPaidPosts,
     creatorInfo,
