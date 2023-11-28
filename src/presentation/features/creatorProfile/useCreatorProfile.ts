@@ -11,6 +11,7 @@ import Web3 from "web3";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { Post } from "src/domain/models/home/Post";
 import { VOTE_TYPES } from "src/common/constants";
+import { parseEther } from "viem";
 
 const TABS = [
   { id: 0, name: "Purchased posts" },
@@ -117,7 +118,8 @@ const useCreatorProfile = () => {
         setPurchasedPosts(
           contentPosts?.map((content, index) => ({
             ...content,
-            price: contentPrices[index],
+            price: BigInt(contentPrices[index]),
+            oldPrice: parseEther("0.002"),
             isOwner: true,
           }))
         );
@@ -150,10 +152,11 @@ const useCreatorProfile = () => {
             }),
           ]);
 
-        setUnpurchasedPosts(
+                setUnpurchasedPosts(
           contentPosts?.map((content, index) => ({
             ...content,
-            price: contentPrices[index],
+            price: BigInt(contentPrices[index]),
+            oldPrice: parseEther("0.002"),
           }))
         );
       }
