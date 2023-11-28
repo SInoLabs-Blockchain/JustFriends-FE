@@ -198,6 +198,7 @@ const useHome = () => {
             type: PAID_POSTS,
           });
         } else {
+          setIsFreePosts(true);
           setPosts((prev) => {
             const temp = prev;
             temp.unshift({
@@ -210,7 +211,7 @@ const useHome = () => {
               totalDownvote: 0,
               price: basePrice,
               isOwner: true,
-              type: PAID_POSTS,
+              type: FREE_POSTS,
             });
             return temp;
           });
