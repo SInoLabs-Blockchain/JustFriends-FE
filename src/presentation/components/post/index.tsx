@@ -140,10 +140,12 @@ const Post = ({
             className={`post__interactions-button ${isUpvoted ? "post__interactions_button-upvoted" : ""
               }`}
             onClick={() => {
-              if (!isUpvoted && !data?.isOwner) {
-                handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE);
-              } else {
+              if (isUpvoted) {
+                toast.warning('Post interactions cannot be removed');
+              } else if (data?.isOwner) {
                 toast.warning('You cannot upvote your own post.');
+              } else {
+                handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE);
               }
             }}
           >
@@ -156,10 +158,12 @@ const Post = ({
             className={`post__interactions-button ${isDownvoted ? "post__interactions_button-downvoted" : ""
               }`}
             onClick={() => {
-              if (!isDownvoted && !data?.isOwner) {
-                handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE);
-              } else {
+              if (isDownvoted) {
+                toast.warning('Post interactions cannot be removed');
+              } else if (data?.isOwner) {
                 toast.warning('You cannot downvote your own post.');
+              } else {
+                handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE);
               }
             }}
           >

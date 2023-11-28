@@ -233,8 +233,9 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
     display: "flex",
     alignItems: "center",
     gap: "4px",
+
     img: {
-      marginBottom: "4px",
+      marginBottom: 2,
     },
   },
 
