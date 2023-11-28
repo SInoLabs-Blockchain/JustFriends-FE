@@ -25,7 +25,6 @@ import {
   TabMenuItem,
   PostsContainer,
 } from "./styles";
-import { useAppSelector } from "src/data/redux/Hooks";
 
 const CreatorProfile = () => {
   const {
@@ -36,12 +35,12 @@ const CreatorProfile = () => {
     freePosts,
     creatorInfo,
     loading,
+    totalPosts,
     onChangeTab,
     setFreePosts,
   } = useCreatorProfile();
 
   const { id } = useParams();
-  const { profile } = useAppSelector((state) => state.auth);
 
   const renderNoData = () => (
     <Box className="no-data-container">
@@ -137,7 +136,7 @@ const CreatorProfile = () => {
           <Box className="user-information__content-container flex-center">
             <Share2Icon />
             <Typography className="user-information__content-title">
-              Number of share: <span> 151825</span>
+              Number of share: <span> {totalPosts}</span>
             </Typography>
           </Box>
         </Box>
@@ -148,7 +147,7 @@ const CreatorProfile = () => {
         <Box className="user-information__metrics-container flex-center">
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              {profile?.totalUpvote}
+              {creatorInfo.numberOfUpVotes}
             </Typography>
             <Typography className="user-information__metrics-title">
               Upvotes
@@ -156,7 +155,7 @@ const CreatorProfile = () => {
           </Box>
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              {profile?.totalDownvote}
+              {creatorInfo.numberOfDownVotes}
             </Typography>
             <Typography className="user-information__metrics-title">
               Downvotes
@@ -164,7 +163,7 @@ const CreatorProfile = () => {
           </Box>
           <Box className="user-information__metrics-item flex-center">
             <Typography className="user-information__metrics-value">
-              {profile?.totalPost}
+              {totalPosts}
             </Typography>
             <Typography className="user-information__metrics-title">
               Posts
