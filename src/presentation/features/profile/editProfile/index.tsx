@@ -59,7 +59,9 @@ const EditProfile = () => {
                 className="user-information__avatar"
                 sx={{
                   backgroundImage: `url(${avatarUrl})`,
+                  cursor: "pointer",
                 }}
+                onClick={handleClickAvatar}
               />
             ) : (
               <Avatar
