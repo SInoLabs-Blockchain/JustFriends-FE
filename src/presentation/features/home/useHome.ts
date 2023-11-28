@@ -221,7 +221,7 @@ const useHome = () => {
         toast.success("Your post has been created successfully!");
       } catch (error: any) {
         setLoading(false);
-        toast.error(error.message || ERROR_MESSAGE)
+        toast.error(error.message || ERROR_MESSAGE);
       }
     }
   };
@@ -281,7 +281,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
             return {
@@ -412,7 +412,7 @@ const useHome = () => {
         const { postVoteEntities: myVotes, userPostEntities: myPosts } = data;
         try {
           const [detailContentList, detailPostList] = await Promise.all([
-            homeRepository.getPosts({ contentHashes, accessToken }),
+            homeRepository.getPosts({ contentHashes }),
             getDetailPostList(contentHashes),
           ]);
           const validContentList = contentHashes
@@ -427,7 +427,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -469,7 +469,7 @@ const useHome = () => {
         const { userPostEntities: myPosts } = data;
         try {
           const [detailContentList, detailPostList] = await Promise.all([
-            homeRepository.getPosts({ contentHashes, accessToken }),
+            homeRepository.getPosts({ contentHashes }),
             getDetailPostList(contentHashes),
           ]);
 
@@ -482,7 +482,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {

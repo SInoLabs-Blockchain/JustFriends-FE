@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
@@ -42,16 +42,19 @@ const useProfile = () => {
   const [myPosts, setMyPosts] = useState<any>([]);
   const [purchasedPosts, setPurchasedPosts] = useState<any>([]);
   const [creditScore, setCreditScore] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { loading: loadingContentMyPosts, data: contentMyPosts } = useQuery(
     GET_MY_POSTS,
     {
       variables: { creator: profile?.walletAddress?.toLocaleLowerCase() },
+      onCompleted: getPosts,
     }
   );
   const { loading: loadingContentPurchasedPosts, data: contentPurchasedPosts } =
     useQuery(GET_PURCHASED_POSTS, {
       variables: { account: profile?.walletAddress?.toLocaleLowerCase() },
+      onCompleted: getPosts,
     });
   const { data } = useQuery(GET_CREDIT_SCORE, {
     variables: { address: profile?.walletAddress?.toLocaleLowerCase() },
@@ -65,6 +68,7 @@ const useProfile = () => {
 
   const onChangeTab = (data: TabState) => {
     setTab(data);
+    getPosts(data.id);
   };
 
   function onChangeCreditScore() {
@@ -132,8 +136,9 @@ const useProfile = () => {
     }
   };
 
-  const getPosts = async () => {
-    if (tab.id === 0) {
+  async function getPosts(tabId: number) {
+    setLoading(true);
+    if (tabId || tab.id === 0) {
       if (!loadingContentMyPosts && contentMyPosts?.contentEntities) {
         const contentHashes = contentMyPosts?.contentEntities.map(
           (content: any) => content.hash
@@ -157,7 +162,7 @@ const useProfile = () => {
           }))
         );
       }
-    } else if (tab.id === 1) {
+    } else if (tabId || tab.id === 1) {
       if (
         !loadingContentPurchasedPosts &&
         contentPurchasedPosts?.userPostEntities
@@ -191,11 +196,10 @@ const useProfile = () => {
         );
       }
     }
-  };
-
-  useEffect(() => {
-    getPosts();
-  }, [tab, contentMyPosts, contentPurchasedPosts]);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }
 
   return {
     tab,
@@ -208,6 +212,7 @@ const useProfile = () => {
     creditScore,
     avatarUrl,
     coverUrl,
+    loading,
     onChangeTab,
     navigateToEditProfile,
     onEditProfile,
