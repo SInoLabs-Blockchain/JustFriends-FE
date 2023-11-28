@@ -311,6 +311,10 @@ const StyledMenu = styled((props: any) => (
         height: 24,
       },
     },
+
+    ".logout__icon": {
+      cursor: 'pointer'
+    }
   },
 }));
 
