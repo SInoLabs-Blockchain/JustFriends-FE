@@ -29,6 +29,7 @@ const Menu = (props: IProps) => {
         <ProfileCard
           navigateToProfile={navigateToProfile}
           copyAddress={copyAddress}
+          isFullSize={handleSwitchZone}
         />
       )}
       {handleSwitchZone ? (

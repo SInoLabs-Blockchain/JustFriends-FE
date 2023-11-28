@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { GET_POST_DETAIL_DATA } from "src/data/graphql/queries";
 import { useAppSelector } from "src/data/redux/Hooks";
@@ -31,7 +31,6 @@ const usePostDetails = () => {
           await Promise.all([
             homeRepository.getPosts({
               contentHashes: [id],
-              accessToken,
             }),
             profileRepository.getUsers(
               accessToken,
@@ -87,6 +86,11 @@ const usePostDetails = () => {
     skip: !accessToken || !id,
     onCompleted: getData,
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
 
   return { topCreators, post, loading, navigateToProfile };
 };

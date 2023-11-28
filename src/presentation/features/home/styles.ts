@@ -1,6 +1,10 @@
 import { styled } from "@mui/material/styles";
-import { Box, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import COLOR from "src/presentation/theme/Color";
+
+type InputProps = {
+  isFullSize?: boolean;
+};
 
 const HomeContainer = styled("div")(({ theme }: any) => ({
   display: "flex",
@@ -23,6 +27,7 @@ const MenuContainer = styled("div")(({ theme }: any) => ({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 40,
+    gap: 0,
   },
 }));
 
@@ -48,7 +53,7 @@ const PostsContainer = styled("div")(({ theme }: any) => ({
   },
 }));
 
-const ProfileContainer = styled("div")(({ theme }: any) => ({
+const ProfileContainer = styled("div")<InputProps>(({ theme, isFullSize }: any) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -133,7 +138,7 @@ const ProfileContainer = styled("div")(({ theme }: any) => ({
   },
 
   [theme.breakpoints.down("md")]: {
-    width: "50%",
+    width: isFullSize ? "50%" : '80%',
 
     ".profile__card-avatar": {
       display: "none",
