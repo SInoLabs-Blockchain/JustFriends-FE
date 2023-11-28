@@ -5,7 +5,7 @@ import { useAppSelector } from "src/data/redux/Hooks";
 import { readContract } from "@wagmi/core";
 import { orderByTimeCreated } from "src/common/utils";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { isEmpty } from "lodash";
 import Web3 from "web3";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
@@ -25,6 +25,8 @@ type TabState = {
 };
 
 const useCreatorProfile = () => {
+  const location = useLocation()
+
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
     name: TABS[0].name,
@@ -253,12 +255,28 @@ const useCreatorProfile = () => {
     }
   );
 
+  const getCreatorInfoFromGraphQL = () => {
+    if (!loadingProfile) {
+      const { creatorEntities, userPostEntities } = profileData
+
+      setCreatorInfo({
+        ...creatorInfo,
+        username: location.state.name,
+        numberOfUpVotes: creatorEntities[0].totalUpVote,
+        numberOfDownVotes: creatorEntities[0].totalDownVote
+      });
+
+      setTotalPosts(userPostEntities.length || 0)
+    }
+  }
+
   useEffect(() => {
     getPosts();
   }, [tab]);
 
   useEffect(() => {
     if (accessToken) getCreatorInfo();
+    else getCreatorInfoFromGraphQL()
   }, [accessToken]);
 
   useEffect(() => {

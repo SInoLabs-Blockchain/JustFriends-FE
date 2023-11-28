@@ -29,6 +29,17 @@ const Revenue = () => {
   return (
     <RevenueContainer>
       <Grid container spacing={3}>
+        <Box className="revenue__description">
+          <Typography>
+            To access revenue details and further information, please consult the smart contract at:
+          </Typography>
+          <a href={`https://baobab.klaytnscope.com/account/0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}?tabId=contractCode`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            https://baobab.klaytnscope.com/account/0x{process.env.REACT_APP_JUST_FRIENDS_CONTRACT}?tabId=contractCode
+          </a>
+        </Box>
         <Grid item sm={12} md={12} lg={4.8}>
           <Box className="profit-container revenue-box">
             <Box>

@@ -46,10 +46,11 @@ const Post = ({
 }: PropTypes) => {
   const isConnectedWallet = true;
   const {
-    handleVotePost,
+    accessToken,
     isUpvoting,
     isDownvoting,
     isOpen,
+    handleVotePost,
     handleToggleConfirmationModal,
     handlePurchasePostAccess,
     handleSellPostAccess,
@@ -194,15 +195,19 @@ const Post = ({
             sm
             title={data?.isOwner ? "Sell Access" : "Buy Access"}
             variant={"contained"}
-            onClick={() =>
-              handleToggleConfirmationModal(
-                data?.contentHash,
-                data?.totalSupply,
-                data?.price,
-                data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE,
-                data?.accessTokenId
-              )
-            }
+            onClick={() => {
+              if (accessToken) {
+                handleToggleConfirmationModal(
+                  data?.contentHash,
+                  data?.totalSupply,
+                  data?.price,
+                  data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE,
+                  data?.accessTokenId
+                )
+              } else {
+                toast.warning('You need to connect your wallet to interact with the post');
+              }
+            }}
             startIcon={<ShareIcon />}
           />
         </Box>
@@ -232,7 +237,7 @@ const Post = ({
               title={
                 <Box
                   style={{ cursor: "pointer" }}
-                  onClick={() => navigateUserProfile(data?.user?.walletAddress)}
+                  onClick={() => navigateUserProfile(data?.user)}
                 >
                   {data?.user?.username}
                 </Box>
@@ -241,11 +246,14 @@ const Post = ({
               action={renderRightContent()}
             />
             <CardContent>
-              <Typography className="content">
-                {!data?.isPaid || data?.isOwner
-                  ? data?.content
-                  : `${data?.preview}...`}
-              </Typography>
+              <Box
+                className="content"
+                dangerouslySetInnerHTML={{
+                  __html: !data?.isPaid || data?.isOwner
+                    ? data?.content
+                    : `${data?.preview}...`
+                }}
+              />
               {!data?.isPaid || (data?.isOwner && data?.isPaid) ? null : (
                 <Typography
                   className="viewmore"
