@@ -26,7 +26,7 @@ const TopAuthor = ({ data, viewProfile }: any) => {
           </Typography>
         ) : (
           data?.map((creator: any) => (
-            <Box className="author__list-item" key={creator.address}>
+            <Box className="author__list-item" key={creator.walletAddress}>
               <Box className="author__container">
                 {creator?.avatarUrl ? (
                   <img
