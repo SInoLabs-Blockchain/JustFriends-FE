@@ -57,7 +57,7 @@ const Header = () => {
     address,
     watch: true,
   });
-  const matches = useMediaQuery("(max-width: 768px)");
+  const matches = useMediaQuery("(min-width: 620px)");
 
   return (
     <HeaderContainer>
@@ -73,16 +73,18 @@ const Header = () => {
           </Box>
         )}
       </LogoWrapper>
-      <SearchContainer>
-        <SearchIcon />
-        <TextField
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Search..."
-          onKeyDown={onSearch}
-          style={{ width: "100%" }}
-        />
-      </SearchContainer>
+      {matches && (
+        <SearchContainer>
+          <SearchIcon />
+          <TextField
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Search..."
+            onKeyDown={onSearch}
+            style={{ width: "100%" }}
+          />
+        </SearchContainer>
+      )}
       <ButtonContainer>
         {accessToken ? (
           <>
@@ -126,15 +128,6 @@ const Header = () => {
               handleLogout={handleLogout}
             />
           </>
-        ) : matches ? (
-          <Button>
-            <img
-              src={
-                "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-              }
-              alt="avatar"
-            />
-          </Button>
         ) : (
           <ConnectButton
             address={address}

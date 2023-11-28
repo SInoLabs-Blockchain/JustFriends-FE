@@ -37,7 +37,10 @@ const AccountDropdown = ({
             {shortenAddress(profile?.walletAddress || "")}
           </Typography>
         </Box>
-        <LogoutIcon onClick={handleLogout} />
+        <LogoutIcon
+          className="logout__icon"
+          onClick={handleLogout}
+        />
       </MenuItem>
     </StyledMenu>
   );

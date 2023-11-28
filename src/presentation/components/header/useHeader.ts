@@ -327,7 +327,14 @@ const useHeader = () => {
   };
 
   const handleLogout = async () => {
-    disconnect();
+    await Promise.all([
+      disconnect(),
+      localStorage.removeItem('accessToken'),
+      localStorage.removeItem('account'),
+      localStorage.removeItem('sessionAccount'),
+      localStorage.removeItem('wagmi.wallet')
+    ]);
+    window.location.reload()
   };
 
   useEffect(() => {
