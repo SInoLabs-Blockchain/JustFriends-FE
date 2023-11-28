@@ -34,9 +34,8 @@ const CreatorProfile = () => {
     purchasedPosts,
     unpurchasedPosts,
     freePosts,
-    loadingContentFreePosts,
-    loadingContentPaidPosts,
     creatorInfo,
+    loading,
     onChangeTab,
     setFreePosts,
   } = useCreatorProfile();
@@ -67,7 +66,7 @@ const CreatorProfile = () => {
 
   const renderPurchasedPosts = () => (
     <PostsContainer>
-      {loadingContentPaidPosts ? (
+      {loading ? (
         <PostLoading />
       ) : isEmpty(purchasedPosts) ? (
         renderNoData()
@@ -81,7 +80,7 @@ const CreatorProfile = () => {
 
   const renderUnpurchasedPost = () => (
     <PostsContainer>
-      {loadingContentPaidPosts ? (
+      {loading ? (
         <PostLoading />
       ) : isEmpty(unpurchasedPosts) ? (
         renderNoData()
@@ -95,7 +94,7 @@ const CreatorProfile = () => {
 
   const renderFreePosts = () => (
     <PostsContainer>
-      {loadingContentFreePosts ? (
+      {loading ? (
         <PostLoading />
       ) : isEmpty(freePosts) ? (
         renderNoData()
