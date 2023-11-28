@@ -4,7 +4,11 @@ import { WalletIcon } from "src/presentation/theme/assets/icons";
 import { ProfileContainer } from "./styles";
 import { useAppSelector } from "src/data/redux/Hooks";
 
-const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
+const ProfileCard = ({
+  navigateToProfile,
+  copyAddress,
+  isFullSize
+}: any) => {
   const { profile } = useAppSelector((state) => state.auth);
 
   if (profile?.loading) {
@@ -36,7 +40,7 @@ const ProfileCard = ({ navigateToProfile, copyAddress }: any) => {
   }
 
   return (
-    <ProfileContainer>
+    <ProfileContainer isFullSize={isFullSize}>
       {profile?.avatarUrl ? (
         <img
           src={profile?.avatarUrl}
