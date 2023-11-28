@@ -55,13 +55,20 @@ const ConnectModal = (props: IProps) => {
   return (
     <Modal open={isOpen} onClose={onToggleModal}>
       <ModalContainer>
-        <Box className="modal-header flex-center">
-          <Typography className="modal-header__title">
-            {renderModalTitle()}
-          </Typography>
-          <Box className="modal-header__action">
-            <CloseIcon onClick={onToggleModal} />
+        <Box className="modal-header">
+          <Box className="flex-center" sx={{ justifyContent: 'space-between' }}>
+            <Typography className="modal-header__title">
+              {renderModalTitle()}
+            </Typography>
+            <Box className="modal-header__action">
+              <CloseIcon onClick={onToggleModal} />
+            </Box>
           </Box>
+          {step === LOGIN_STEPS.CREATE_WALLET && (
+            <Typography className="modal-header__description">
+              Connect with WalletConnect or as a friends to enjoy simplified usage with AA's session keys.
+            </Typography>
+          )}
         </Box>
         <Box className="modal-information flex-center">
           {step === LOGIN_STEPS.CREATE_WALLET ? (
