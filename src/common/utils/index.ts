@@ -128,14 +128,18 @@ const stringToColor = (string: string) => {
 };
 
 const stringAvatar = (name?: string) => {
+  console.log('name', name);
+
   if (!name) name = "default-name-1";
   return {
     sx: {
       bgcolor: stringToColor(name),
     },
-    children: `${name.split("-")[0][0].toUpperCase()}${name
-      .split("-")[1][0]
-      .toUpperCase()}`,
+    children: name.includes('-')
+      ? `${name.split("-")[0][0].toUpperCase()}${name
+        .split("-")[1][0]
+        .toUpperCase()}`
+      : name.substring(0, 1).toUpperCase(),
   };
 };
 
