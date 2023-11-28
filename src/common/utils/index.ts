@@ -128,8 +128,6 @@ const stringToColor = (string: string) => {
 };
 
 const stringAvatar = (name?: string) => {
-  console.log('name', name);
-
   if (!name) name = "default-name-1";
   return {
     sx: {

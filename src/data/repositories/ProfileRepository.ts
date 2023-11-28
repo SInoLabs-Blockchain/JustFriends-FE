@@ -27,8 +27,8 @@ export class ProfileRepository implements ProfileUseCase {
     });
   }
 
-  async getPosts(contentHashes: string, accessToken: string): Promise<Post[]> {
-    let api = new APIGateWay({ Authorization: `Bearer ${accessToken}` });
+  async getPosts(contentHashes: string): Promise<Post[]> {
+    let api = new APIGateWay();
     return api.post(ProfileResource.PROFILE_ROUTES.LIST_OF_POSTS, {
       contentHashes,
     });

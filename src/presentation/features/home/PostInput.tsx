@@ -1,4 +1,4 @@
-import { Avatar, Box, IconButton, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Typography } from "@mui/material";
 import {
   AttachIcon,
   PhotoIcon,
@@ -27,7 +27,7 @@ const PostInput = (props: IProps) => {
     <PostInputContainer>
       <Box className="post__input-main">
         {profile?.loading ? (
-          <Skeleton variant="rectangular" width={"44px"} height={"44px"} />
+          <></>
         ) : (
           renderAvatar()
         )}

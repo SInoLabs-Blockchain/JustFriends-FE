@@ -44,7 +44,6 @@ const Header = () => {
     nextStep,
     onToggleModal,
     navigateToHome,
-    connectMetamask,
     connectWalletConnect,
     connectSelfDeployWallet,
     handleClickAccount,
@@ -152,7 +151,6 @@ const Header = () => {
         isOpen={openModal}
         onToggleModal={onToggleModal}
         nextStep={nextStep}
-        connectMetamask={connectMetamask}
         connectWalletConnect={connectWalletConnect}
         connectSelfDeployWallet={connectSelfDeployWallet}
       />

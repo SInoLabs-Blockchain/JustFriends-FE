@@ -4,7 +4,6 @@ import Modal from "@mui/material/Modal";
 
 import { CloseIcon } from "src/presentation/theme/assets/icons";
 import { ModalContainer } from "./styles";
-import MetamaskIcon from "src/presentation/theme/assets/icons/metamask-icon.svg";
 import WalletConnectIcon from "src/presentation/theme/assets/icons/walletconnect-icon.svg";
 import JustFriendIcon from "src/presentation/theme/assets/icons/justfriends-icon.svg";
 import OtpInput from "react-otp-input";
@@ -14,7 +13,6 @@ interface IProps {
   step: number;
   isOpen: boolean;
   onToggleModal: any;
-  connectMetamask: any;
   connectWalletConnect: any;
   connectSelfDeployWallet: any;
   otp: string;
@@ -29,7 +27,6 @@ const ConnectModal = (props: IProps) => {
     isOpen,
     onToggleModal,
     connectWalletConnect,
-    connectMetamask,
     connectSelfDeployWallet,
     otp,
     setOtp,
@@ -69,19 +66,6 @@ const ConnectModal = (props: IProps) => {
         <Box className="modal-information flex-center">
           {step === LOGIN_STEPS.CREATE_WALLET ? (
             <>
-              <Box
-                className="modal__information-method"
-                onClick={connectMetamask}
-              >
-                <img
-                  src={MetamaskIcon}
-                  alt="icon"
-                  className="modal__information-method-icon"
-                />
-                <Typography className="modal__information-method-name">
-                  Connect via Metamask
-                </Typography>
-              </Box>
               <Box
                 className="modal__information-method"
                 onClick={connectWalletConnect}

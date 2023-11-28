@@ -247,7 +247,7 @@ const useHome = () => {
       const contentHashes = contents.map((content: any) => content.hash);
       try {
         const [detailContentList, detailTopCreatorsList] = await Promise.all([
-          homeRepository.getPosts({ contentHashes, accessToken }),
+          homeRepository.getPosts({ contentHashes }),
           profileRepository.getUsers(
             accessToken,
             topCreators.map((creator: any) => creator.address)

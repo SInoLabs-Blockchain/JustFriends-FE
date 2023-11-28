@@ -18,14 +18,14 @@ import { BAOBAB_CONFIG } from "src/data/config/chains";
 import { requestToRelayer } from "src/presentation/services";
 import factoryAbi from "src/common/abis/SimpleAccountFactory.json";
 import { readContract } from "@wagmi/core";
-import { useWeb3Modal, useWeb3ModalEvents } from "@web3modal/react";
+import { useWeb3Modal } from "@web3modal/react";
 import { getWalletClient } from "@wagmi/core";
 import { toast } from "react-toastify";
 import { address } from "src/common/constants/solidityTypes";
 import { LOGIN_STEPS } from "src/common/constants";
 import { useLazyQuery } from "@apollo/client";
 import { GET_MY_PROFILE } from "src/data/graphql/queries";
-import { useAccount, useDisconnect, useWalletClient } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 
 const useHeader = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -114,40 +114,6 @@ const useHeader = () => {
     } catch (error) {
       console.log({ error });
       setLoading(false);
-    }
-  };
-
-  const connectMetamask = async () => {
-    try {
-      const accounts = (await window.ethereum
-        ?.request({ method: "eth_requestAccounts" })
-        .catch((err) => {
-          if (err.code === 4001) {
-            // EIP-1193 userRejectedRequest error
-            // If this happens, the user rejected the connection request.
-            console.log("Please connect to MetaMask.");
-          } else {
-            console.error(err);
-          }
-        })) as Array<string>;
-      if (!accounts) {
-        throw new Error("Error");
-      }
-      const account = new Web3().utils.toChecksumAddress(accounts[0]);
-      const { challenge } = await authRepository.connectWallet(account);
-      const signature = await window.ethereum?.request({
-        method: "personal_sign",
-        params: [challenge, account],
-      });
-      const res = await authRepository.login(account, signature);
-      dispatch(setAuth(res.accessToken));
-      localStorage.setItem("accessToken", res.accessToken);
-      onToggleModal();
-      toast.success("Connect Successfully");
-    } catch (error) {
-      onToggleModal();
-      toast.error("Connect Failed");
-      console.log({ error });
     }
   };
 
@@ -392,7 +358,6 @@ const useHeader = () => {
     navigateToHome,
     onSearch,
     onToggleModal,
-    connectMetamask,
     connectWalletConnect,
     connectSelfDeployWallet,
     handleClickAccount,
