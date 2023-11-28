@@ -38,6 +38,7 @@ const useCreatorProfile = () => {
     coverUrl: "",
     loyalFan: false,
   });
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { profile, accessToken } = useAppSelector((state) => state.auth);
 
@@ -51,6 +52,7 @@ const useCreatorProfile = () => {
         creator: walletAddress.toLocaleLowerCase(),
         address: profile?.walletAddress?.toLowerCase(),
       },
+      onCompleted: getPosts,
     }
   );
   const { loading: loadingContentPaidPosts, data: contentPaidPosts } = useQuery(
@@ -60,6 +62,7 @@ const useCreatorProfile = () => {
         creator: walletAddress.toLocaleLowerCase(),
         account: profile?.walletAddress?.toLocaleLowerCase(),
       },
+      onCompleted: getPosts,
     }
   );
 
@@ -87,7 +90,8 @@ const useCreatorProfile = () => {
     }
   };
 
-  const getPosts = async () => {
+  async function getPosts() {
+    setLoading(true);
     if (tab.id === 0) {
       if (
         !loadingContentPaidPosts &&
@@ -183,7 +187,10 @@ const useCreatorProfile = () => {
         setFreePosts(res);
       }
     }
-  };
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }
 
   const onChangeTab = (data: TabState) => {
     setTab(data);
@@ -223,7 +230,7 @@ const useCreatorProfile = () => {
 
   useEffect(() => {
     getPosts();
-  }, [tab, contentFreePosts, contentPaidPosts]);
+  }, [tab]);
 
   useEffect(() => {
     if (accessToken) getCreatorInfo();
@@ -238,6 +245,7 @@ const useCreatorProfile = () => {
     loadingContentFreePosts,
     loadingContentPaidPosts,
     creatorInfo,
+    loading,
     onChangeTab,
     getPosts,
     setFreePosts,

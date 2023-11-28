@@ -28,8 +28,7 @@ const Profile = () => {
     TABS,
     myPosts,
     purchasedPosts,
-    loadingContentMyPosts,
-    loadingContentPurchasedPosts,
+    loading,
     creditScore,
     onChangeTab,
     navigateToEditProfile,
@@ -60,7 +59,7 @@ const Profile = () => {
 
   const renderMyPosts = () => (
     <PostsContainer>
-      {loadingContentMyPosts ? (
+      {loading ? (
         <PostLoading />
       ) : isEmpty(myPosts) ? (
         renderNoData()
@@ -72,7 +71,7 @@ const Profile = () => {
 
   const renderPurchasedPost = () => (
     <PostsContainer>
-      {loadingContentPurchasedPosts ? (
+      {loading ? (
         <PostLoading />
       ) : isEmpty(purchasedPosts) ? (
         renderNoData()
