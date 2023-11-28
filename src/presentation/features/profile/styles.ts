@@ -202,6 +202,13 @@ const RevenueContainer = styled("div")({
   flexDirection: "column",
   gap: 40,
 
+  '.revenue__description': {
+    fontSize: 14,
+    fontFamily: 'Gilroy',
+    marginLeft: 24,
+    width: '100%',
+  },
+
   ".revenue-box": {
     borderRadius: 12,
     padding: 30,

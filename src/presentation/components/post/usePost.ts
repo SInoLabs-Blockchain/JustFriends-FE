@@ -1,5 +1,5 @@
 import { useAppSelector } from "src/data/redux/Hooks";
-import { writeContract, readContract } from "@wagmi/core";
+import { writeContract } from "@wagmi/core";
 import { parseEther } from "viem";
 import { toast } from "react-toastify";
 import {
@@ -38,6 +38,7 @@ function usePost({ open, setPosts }: any) {
 
   async function handleVotePost(contentHash: string, voteType: number) {
     if (!accessToken) {
+      toast.warning('You need to connect your wallet to interact with the post');
       return;
     } else {
       if (voteType === VOTE_TYPES.DOWNVOTE) {
@@ -318,9 +319,13 @@ function usePost({ open, setPosts }: any) {
     }
   }
 
-  function navigateUserProfile(walletAddress: string) {
+  function navigateUserProfile(userData: any) {
+    const { walletAddress, username } = userData
+
     if (walletAddress === profile?.walletAddress) navigate(ROUTE.PROFILE);
-    else navigate(`/profile/${walletAddress.slice(2)}`);
+    else navigate(`/profile/${walletAddress.slice(2)}`, {
+      state: { name: username }
+    });
   }
 
   async function handleToggleConfirmationModal(
@@ -347,6 +352,7 @@ function usePost({ open, setPosts }: any) {
   };
 
   return {
+    accessToken,
     type,
     price: selectingPost.price,
     isOpen,
