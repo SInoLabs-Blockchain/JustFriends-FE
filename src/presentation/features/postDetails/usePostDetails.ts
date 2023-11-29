@@ -30,6 +30,7 @@ const usePostDetails = () => {
           await Promise.all([
             homeRepository.getPosts({
               contentHashes: [id],
+              accessToken
             }),
             profileRepository.getUsers(
               accessToken,
