@@ -12,7 +12,12 @@ import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { parseEther } from "viem";
 import { useWeb3Modal } from "@web3modal/react";
 import { ROUTE } from "src/common/constants/route";
-import { useNavigate, useLocation, useNavigationType, NavigationType } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  useNavigationType,
+  NavigationType,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import {
@@ -285,7 +290,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
             return {
@@ -294,6 +299,7 @@ const useHome = () => {
               isVoted: isVoted ? true : false,
               voteType: isVoted?.type ? VOTE_TYPES.UPVOTE : VOTE_TYPES.DOWNVOTE,
               isOwner: !!post,
+              oldPrice: post?.price,
             };
           })
           ?.filter((content: any) => !!content);
@@ -306,6 +312,7 @@ const useHome = () => {
         }
         const orderedPostsWithPrices = await getPrices(orderedPosts);
         setPosts(orderedPostsWithPrices);
+
         setLoading(false);
       } catch (error) {
         console.log({ error });
@@ -357,6 +364,7 @@ const useHome = () => {
         args: [unpurchasedContentHashes, unpurchasedAmounts],
       }),
     ]);
+    console.log({ sellPrices });
 
     const res = contents.map((content: any) => {
       if (content.isOwner) {
@@ -365,7 +373,6 @@ const useHome = () => {
         return {
           ...content,
           price: BigInt(price),
-          oldPrice: parseEther("0.002"),
         };
       } else {
         const index = unpurchasedContentHashes.indexOf(content.hash);
@@ -373,7 +380,6 @@ const useHome = () => {
         return {
           ...content,
           price: BigInt(price),
-          oldPrice: parseEther("0.002"),
         };
       }
     });
@@ -413,6 +419,7 @@ const useHome = () => {
           (a: any, b: any) => b[1] - a[1]
         );
         const contentHashes = sortedHashes.map((hash: any) => hash[0]);
+
         const { postVoteEntities: myVotes, userPostEntities: myPosts } = data;
         try {
           const [detailContentList, detailPostList] = await Promise.all([
@@ -431,7 +438,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -486,7 +493,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -517,9 +524,9 @@ const useHome = () => {
 
   useEffect(() => {
     if (navigationType === NavigationType.Pop) {
-      setIsFreePosts(false)
+      setIsFreePosts(false);
     }
-  }, [location, navigationType])
+  }, [location, navigationType]);
 
   return {
     posts,

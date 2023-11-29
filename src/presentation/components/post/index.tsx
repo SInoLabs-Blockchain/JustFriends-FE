@@ -69,11 +69,13 @@ const Post = ({
     if (isConnectedWallet && data?.isPaid) {
       return (
         <Box className="MuiCardHeader-prices">
-          <Tooltip title="Bought For">
-            <PriceContainer className="MuiCardHeader__prices-old">
-              <Typography>{formatEther(data.oldPrice)} KLAY</Typography>
-            </PriceContainer>
-          </Tooltip>
+          {data?.oldPrice ? (
+            <Tooltip title="Bought For">
+              <PriceContainer className="MuiCardHeader__prices-old">
+                <Typography>{formatEther(data.oldPrice)} KLAY</Typography>
+              </PriceContainer>
+            </Tooltip>
+          ) : null}
           <Tooltip title="Current Price">
             <PriceContainer className="MuiCardHeader__prices-new">
               <Typography>{formatEther(data.price)} KLAY</Typography>
@@ -111,8 +113,9 @@ const Post = ({
               upvoteLabel = `You and ${otherVoteCount} people upvoted`;
               break;
           }
-          downvoteLabel = `${Number(data.totalDownvote)} ${Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
-            }`;
+          downvoteLabel = `${Number(data.totalDownvote)} ${
+            Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
+          }`;
         } else {
           const otherVoteCount = Number(data.totalDownvote) - 1;
           switch (otherVoteCount) {
@@ -126,25 +129,29 @@ const Post = ({
               downvoteLabel = `You and ${otherVoteCount} people downvoted`;
               break;
           }
-          upvoteLabel = `${Number(data.totalUpvote)} ${Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
-            }`;
+          upvoteLabel = `${Number(data.totalUpvote)} ${
+            Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+          }`;
         }
       } else {
-        upvoteLabel = `${Number(data.totalUpvote)} ${Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
-          }`;
-        downvoteLabel = `${Number(data.totalDownvote)} ${Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
-          }`;
+        upvoteLabel = `${Number(data.totalUpvote)} ${
+          Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+        }`;
+        downvoteLabel = `${Number(data.totalDownvote)} ${
+          Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
+        }`;
       }
       return (
         <Box>
           <IconButton
-            className={`post__interactions-button ${isUpvoted ? "post__interactions_button-upvoted" : ""
-              }`}
+            className={`post__interactions-button ${
+              isUpvoted ? "post__interactions_button-upvoted" : ""
+            }`}
             onClick={() => {
               if (isUpvoted) {
-                toast.warning('Post interactions cannot be removed');
+                toast.warning("Post interactions cannot be removed");
               } else if (data?.isOwner) {
-                toast.warning('You cannot upvote your own post.');
+                toast.warning("You cannot upvote your own post.");
               } else {
                 handleVotePost(data?.contentHash, VOTE_TYPES.UPVOTE);
               }
@@ -156,13 +163,14 @@ const Post = ({
             </Typography>
           </IconButton>
           <IconButton
-            className={`post__interactions-button ${isDownvoted ? "post__interactions_button-downvoted" : ""
-              }`}
+            className={`post__interactions-button ${
+              isDownvoted ? "post__interactions_button-downvoted" : ""
+            }`}
             onClick={() => {
               if (isDownvoted) {
-                toast.warning('Post interactions cannot be removed');
+                toast.warning("Post interactions cannot be removed");
               } else if (data?.isOwner) {
-                toast.warning('You cannot downvote your own post.');
+                toast.warning("You cannot downvote your own post.");
               } else {
                 handleVotePost(data?.contentHash, VOTE_TYPES.DOWNVOTE);
               }
@@ -173,7 +181,11 @@ const Post = ({
               {downvoteLabel}
             </Typography>
           </IconButton>
-          <IconButton onClick={() => toast.warning('This feature is temporarily not developed.')}>
+          <IconButton
+            onClick={() =>
+              toast.warning("This feature is temporarily not developed.")
+            }
+          >
             <CommentIcon />
             <Typography className="post__interactions-votes">
               {Number(data.comments) || 0} comments
@@ -203,9 +215,11 @@ const Post = ({
                   data?.price,
                   data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE,
                   data?.accessTokenId
-                )
+                );
               } else {
-                toast.warning('You need to connect your wallet to interact with the post');
+                toast.warning(
+                  "You need to connect your wallet to interact with the post"
+                );
               }
             }}
             startIcon={<ShareIcon />}
@@ -249,9 +263,10 @@ const Post = ({
               <Box
                 className="content"
                 dangerouslySetInnerHTML={{
-                  __html: !data?.isPaid || data?.isOwner
-                    ? data?.content
-                    : `${data?.preview}...`
+                  __html:
+                    !data?.isPaid || data?.isOwner
+                      ? data?.content
+                      : `${data?.preview}...`,
                 }}
               />
               {!data?.isPaid || (data?.isOwner && data?.isPaid) ? null : (

@@ -20,6 +20,7 @@ const GET_NEW_POSTS = gql`
       account
       isOwner
       post
+      price
     }
     creatorEntities(orderBy: creditScore, orderDirection: desc) {
       address
