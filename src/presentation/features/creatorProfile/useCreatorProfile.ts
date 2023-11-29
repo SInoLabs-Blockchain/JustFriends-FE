@@ -76,7 +76,7 @@ const useCreatorProfile = () => {
     const profileRepository = ProfileRepository.create();
 
     try {
-      const res = await profileRepository.getPosts(hashes);
+      const res = await profileRepository.getPosts(hashes, accessToken);
 
       const data = await readContract({
         address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",

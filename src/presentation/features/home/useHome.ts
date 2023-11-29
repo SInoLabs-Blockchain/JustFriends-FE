@@ -256,7 +256,7 @@ const useHome = () => {
       const contentHashes = contents.map((content: any) => content.hash);
       try {
         const [detailContentList, detailTopCreatorsList] = await Promise.all([
-          homeRepository.getPosts({ contentHashes }),
+          homeRepository.getPosts({ contentHashes, accessToken }),
           profileRepository.getUsers(
             accessToken,
             topCreators.map((creator: any) => creator.address)
@@ -290,7 +290,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
             return {
@@ -364,7 +364,6 @@ const useHome = () => {
         args: [unpurchasedContentHashes, unpurchasedAmounts],
       }),
     ]);
-    console.log({ sellPrices });
 
     const res = contents.map((content: any) => {
       if (content.isOwner) {
@@ -423,7 +422,7 @@ const useHome = () => {
         const { postVoteEntities: myVotes, userPostEntities: myPosts } = data;
         try {
           const [detailContentList, detailPostList] = await Promise.all([
-            homeRepository.getPosts({ contentHashes }),
+            homeRepository.getPosts({ contentHashes, accessToken }),
             getDetailPostList(contentHashes),
           ]);
           const validContentList = contentHashes
@@ -438,7 +437,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -480,7 +479,7 @@ const useHome = () => {
         const { userPostEntities: myPosts } = data;
         try {
           const [detailContentList, detailPostList] = await Promise.all([
-            homeRepository.getPosts({ contentHashes }),
+            homeRepository.getPosts({ contentHashes, accessToken }),
             getDetailPostList(contentHashes),
           ]);
 
@@ -493,7 +492,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
