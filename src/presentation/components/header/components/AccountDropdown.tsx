@@ -1,4 +1,4 @@
-import { Box, MenuItem, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { WalletIcon2, LogoutIcon } from "src/presentation/theme/assets/icons";
 import { shortenAddress } from "src/common/utils";
@@ -19,6 +19,7 @@ const AccountDropdown = ({
   handleLogout,
 }: PropTypes) => {
   const { profile } = useAppSelector((state) => state.auth);
+  const matches = useMediaQuery("(min-width: 620px)");
 
   return (
     <StyledMenu
@@ -30,18 +31,18 @@ const AccountDropdown = ({
         "aria-labelledby": "basic-button",
       }}
     >
-      <MenuItem>
+      <Box className="user-info__wrapper">
         <Box className="user-info">
           <WalletIcon2 />
           <Typography>
-            {shortenAddress(profile?.walletAddress || "")}
+            {matches ? profile?.walletAddress : shortenAddress(profile?.walletAddress || '')}
           </Typography>
         </Box>
         <LogoutIcon
           className="logout__icon"
           onClick={handleLogout}
         />
-      </MenuItem>
+      </Box>
     </StyledMenu>
   );
 };

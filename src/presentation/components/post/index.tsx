@@ -113,9 +113,8 @@ const Post = ({
               upvoteLabel = `You and ${otherVoteCount} people upvoted`;
               break;
           }
-          downvoteLabel = `${Number(data.totalDownvote)} ${
-            Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
-          }`;
+          downvoteLabel = `${Number(data.totalDownvote)} ${Number(data.totalDownvote) === 0 ? "downvote" : "downvotes"
+            }`;
         } else {
           const otherVoteCount = Number(data.totalDownvote) - 1;
           switch (otherVoteCount) {
@@ -129,24 +128,20 @@ const Post = ({
               downvoteLabel = `You and ${otherVoteCount} people downvoted`;
               break;
           }
-          upvoteLabel = `${Number(data.totalUpvote)} ${
-            Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
-          }`;
+          upvoteLabel = `${Number(data.totalUpvote)} ${Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+            }`;
         }
       } else {
-        upvoteLabel = `${Number(data.totalUpvote)} ${
-          Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
-        }`;
-        downvoteLabel = `${Number(data.totalDownvote)} ${
-          Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
-        }`;
+        upvoteLabel = `${Number(data.totalUpvote)} ${Number(data.totalUpvote) === 0 ? "upvote" : "upvotes"
+          }`;
+        downvoteLabel = `${Number(data.totalDownvote)} ${Number(data.totalUpvote) === 0 ? "downvote" : "downvotes"
+          }`;
       }
       return (
         <Box>
           <IconButton
-            className={`post__interactions-button ${
-              isUpvoted ? "post__interactions_button-upvoted" : ""
-            }`}
+            className={`post__interactions-button ${isUpvoted ? "post__interactions_button-upvoted" : ""
+              }`}
             onClick={() => {
               if (isUpvoted) {
                 toast.warning("Post interactions cannot be removed");
@@ -163,9 +158,8 @@ const Post = ({
             </Typography>
           </IconButton>
           <IconButton
-            className={`post__interactions-button ${
-              isDownvoted ? "post__interactions_button-downvoted" : ""
-            }`}
+            className={`post__interactions-button ${isDownvoted ? "post__interactions_button-downvoted" : ""
+              }`}
             onClick={() => {
               if (isDownvoted) {
                 toast.warning("Post interactions cannot be removed");
@@ -207,6 +201,7 @@ const Post = ({
             sm
             title={data?.isOwner ? "Sell Access" : "Buy Access"}
             variant={"contained"}
+            disabled={data?.isOwner}
             onClick={() => {
               if (accessToken) {
                 handleToggleConfirmationModal(

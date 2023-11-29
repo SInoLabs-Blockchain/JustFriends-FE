@@ -204,7 +204,7 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
   },
   ".author__container": {
     display: "flex",
-    gap: "18px",
+    gap: 16,
     alignItems: "center",
   },
   ".author__container-avatar": {
@@ -233,14 +233,11 @@ const TopAuthorListContainer = styled(Box)(({ theme }: any) => ({
     fontSize: "14px",
     fontWeight: 400,
     lineHeight: "24px",
-    letterSpacing: "0px",
     color: COLOR.neutral.neutral_4,
-    display: "flex",
-    alignItems: "center",
-    gap: "4px",
+    marginTop: 4,
 
     img: {
-      marginBottom: 2,
+      marginBottom: 1,
     },
   },
 

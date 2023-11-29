@@ -33,6 +33,7 @@ const BackgroundProfileImg = styled("div")({
     height: "100%",
     backgroundSize: "cover",
     backgroundPosition: "center",
+    borderRadius: 20
   },
 
   ".profile__avatar-container": {

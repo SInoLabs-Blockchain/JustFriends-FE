@@ -50,9 +50,8 @@ const TopAuthor = ({ data, viewProfile }: any) => {
                   </Typography>
                   <Box className="author__container-upvotes">
                     <Typography>
-                      Credit score: {creator?.creditScore}
+                      {creator?.creditScore} credit scores
                     </Typography>
-                    <img src={CreditScore} alt="credit" />
                   </Box>
                 </Box>
               </Box>
