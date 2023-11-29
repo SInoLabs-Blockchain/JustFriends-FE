@@ -114,7 +114,7 @@ function usePost({ open, setPosts }: any) {
                     totalDownvote: Number(content?.totalDownvote) + 1,
                     totalUpvote:
                       content?.isVoted &&
-                      content?.voteType === VOTE_TYPES.UPVOTE
+                        content?.voteType === VOTE_TYPES.UPVOTE
                         ? Number(content?.totalUpvote) - 1
                         : Number(content?.totalUpvote),
                     isVoted: true,
@@ -135,7 +135,7 @@ function usePost({ open, setPosts }: any) {
                     ...content,
                     totalDownvote:
                       content?.isVoted &&
-                      content?.voteType === VOTE_TYPES.DOWNVOTE
+                        content?.voteType === VOTE_TYPES.DOWNVOTE
                         ? Number(content?.totalDownvote) - 1
                         : Number(content?.totalDownvote),
                     totalUpvote: Number(content?.totalUpvote) + 1,
@@ -350,6 +350,11 @@ function usePost({ open, setPosts }: any) {
   }
 
   const handleViewDetailPost = (contentHash: string) => {
+    if (!accessToken) {
+      toast.warning('You need to connect your wallet to view this post')
+      return
+    }
+
     const formattedHash = contentHash.includes("0x")
       ? contentHash
       : `0x${contentHash}`;
