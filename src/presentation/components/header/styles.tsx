@@ -298,7 +298,6 @@ const StyledMenu = styled((props: any) => (
   />
 ))(() => ({
   "& .MuiPaper-root": {
-    width: 300,
     borderRadius: 10,
     marginTop: 10,
     boxShadow:
@@ -315,6 +314,7 @@ const StyledMenu = styled((props: any) => (
       background: "#fff",
       display: "flex",
       justifyContent: "space-between",
+      gap: 16,
 
       "&:active, &:hover": {
         background: "none",
@@ -324,24 +324,32 @@ const StyledMenu = styled((props: any) => (
       },
     },
 
-    ".user-info": {
-      display: "flex",
-      gap: 8,
-      alignItems: "center",
-      p: {
-        fontSize: "16px",
-        fontFamily: "SemiBold",
-        lineHeight: "24px",
-        color: COLOR.neutral.neutral_1,
-      },
-      svg: {
-        width: 24,
-        height: 24,
-      },
-    },
+    ".user-info__wrapper": {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 16,
 
-    ".logout__icon": {
-      cursor: 'pointer'
+      ".user-info": {
+        display: "flex",
+        gap: 6,
+        alignItems: "center",
+        p: {
+          fontSize: "16px",
+          fontFamily: "SemiBold",
+          lineHeight: "24px",
+          color: COLOR.neutral.neutral_1,
+          cursor: 'text'
+        },
+        svg: {
+          width: 24,
+          height: 24,
+          marginBottom: 2
+        },
+      },
+
+      ".logout__icon": {
+        cursor: 'pointer'
+      }
     }
   },
 }));
