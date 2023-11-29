@@ -173,7 +173,7 @@ const useHome = () => {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            "111111"
+            sessionStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");

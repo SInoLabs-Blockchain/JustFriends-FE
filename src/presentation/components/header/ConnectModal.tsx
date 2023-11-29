@@ -56,7 +56,7 @@ const ConnectModal = (props: IProps) => {
     <Modal open={isOpen} onClose={onToggleModal}>
       <ModalContainer>
         <Box className="modal-header">
-          <Box className="flex-center" sx={{ justifyContent: 'space-between' }}>
+          <Box className="flex-center" sx={{ justifyContent: "space-between" }}>
             <Typography className="modal-header__title">
               {renderModalTitle()}
             </Typography>
@@ -66,7 +66,8 @@ const ConnectModal = (props: IProps) => {
           </Box>
           {step === LOGIN_STEPS.CREATE_WALLET && (
             <Typography className="modal-header__description">
-              Connect with WalletConnect or as a friends to enjoy simplified usage with AA's session keys.
+              Connect with WalletConnect or as a friends to enjoy simplified
+              usage with AA's session keys.
             </Typography>
           )}
         </Box>
@@ -111,7 +112,7 @@ const ConnectModal = (props: IProps) => {
                 }
                 shouldAutoFocus={true}
                 onPaste={handlePaste}
-                inputType="number"
+                inputType="password"
               />
               <CustomButton
                 title={loading ? <CircularProgress size={"20px"} /> : "Confirm"}
