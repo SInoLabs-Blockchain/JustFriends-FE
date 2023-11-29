@@ -220,6 +220,7 @@ const useHeader = () => {
         );
         dispatch(setAuth(res.accessToken));
         localStorage.setItem("accessToken", res.accessToken);
+        sessionStorage.setItem("passcode", otp);
         onToggleModal();
         toast.success("Connect Successfully");
       } else {
@@ -329,12 +330,12 @@ const useHeader = () => {
   const handleLogout = async () => {
     await Promise.all([
       disconnect(),
-      localStorage.removeItem('accessToken'),
-      localStorage.removeItem('account'),
-      localStorage.removeItem('sessionAccount'),
-      localStorage.removeItem('wagmi.wallet')
+      localStorage.removeItem("accessToken"),
+      localStorage.removeItem("sessionAccount"),
+      localStorage.removeItem("wagmi.wallet"),
+      sessionStorage.removeItem("passcode"),
     ]);
-    window.location.reload()
+    window.location.reload();
   };
 
   useEffect(() => {

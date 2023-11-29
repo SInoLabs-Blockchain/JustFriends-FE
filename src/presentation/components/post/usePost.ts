@@ -38,7 +38,9 @@ function usePost({ open, setPosts }: any) {
 
   async function handleVotePost(contentHash: string, voteType: number) {
     if (!accessToken) {
-      toast.warning('You need to connect your wallet to interact with the post');
+      toast.warning(
+        "You need to connect your wallet to interact with the post"
+      );
       return;
     } else {
       if (voteType === VOTE_TYPES.DOWNVOTE) {
@@ -87,7 +89,7 @@ function usePost({ open, setPosts }: any) {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            "111111"
+            sessionStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");
@@ -112,7 +114,7 @@ function usePost({ open, setPosts }: any) {
                     totalDownvote: Number(content?.totalDownvote) + 1,
                     totalUpvote:
                       content?.isVoted &&
-                        content?.voteType === VOTE_TYPES.UPVOTE
+                      content?.voteType === VOTE_TYPES.UPVOTE
                         ? Number(content?.totalUpvote) - 1
                         : Number(content?.totalUpvote),
                     isVoted: true,
@@ -133,7 +135,7 @@ function usePost({ open, setPosts }: any) {
                     ...content,
                     totalDownvote:
                       content?.isVoted &&
-                        content?.voteType === VOTE_TYPES.DOWNVOTE
+                      content?.voteType === VOTE_TYPES.DOWNVOTE
                         ? Number(content?.totalDownvote) - 1
                         : Number(content?.totalDownvote),
                     totalUpvote: Number(content?.totalUpvote) + 1,
@@ -214,7 +216,7 @@ function usePost({ open, setPosts }: any) {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            "111111"
+            sessionStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");
@@ -290,7 +292,7 @@ function usePost({ open, setPosts }: any) {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            "111111"
+            sessionStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");
@@ -320,12 +322,13 @@ function usePost({ open, setPosts }: any) {
   }
 
   function navigateUserProfile(userData: any) {
-    const { walletAddress, username } = userData
+    const { walletAddress, username } = userData;
 
     if (walletAddress === profile?.walletAddress) navigate(ROUTE.PROFILE);
-    else navigate(`/profile/${walletAddress.slice(2)}`, {
-      state: { name: username }
-    });
+    else
+      navigate(`/profile/${walletAddress.slice(2)}`, {
+        state: { name: username },
+      });
   }
 
   async function handleToggleConfirmationModal(
@@ -347,7 +350,9 @@ function usePost({ open, setPosts }: any) {
   }
 
   const handleViewDetailPost = (contentHash: string) => {
-    const formattedHash = contentHash.includes("0x") ? contentHash : `0x${contentHash}`;
+    const formattedHash = contentHash.includes("0x")
+      ? contentHash
+      : `0x${contentHash}`;
     navigate(`/post/${formattedHash}`);
   };
 
