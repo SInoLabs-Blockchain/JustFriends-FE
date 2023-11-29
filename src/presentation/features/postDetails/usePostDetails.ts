@@ -10,11 +10,10 @@ import { Post } from "src/domain/models/home/Post";
 import { readContract } from "@wagmi/core";
 import justFriendAbi from "src/common/abis/JustFriends.json";
 import { ROUTE } from "src/common/constants/route";
-import { parseEther } from "viem";
 
 const usePostDetails = () => {
   let { id } = useParams();
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, profile } = useAppSelector((state) => state.auth);
   const [post, setPost] = useState<Post | null>(null);
   const [topCreators, setTopCreators] = useState<Array<Profile> | null>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +25,7 @@ const usePostDetails = () => {
     setLoading(true);
     try {
       if (data) {
-        const { creatorEntities, contentEntities } = data;
+        const { creatorEntities, contentEntities, userPostEntities } = data;
         const [detailPost, creatorDetails, prices]: [Post[], Profile[], any] =
           await Promise.all([
             homeRepository.getPosts({
@@ -47,9 +46,10 @@ const usePostDetails = () => {
         setPost({
           ...detailPost[0],
           ...contentEntities[0],
-          isOwner: true,
+          isOwner: userPostEntities.length !== 0 ? true : false,
           price: prices[0],
-          oldPrice: parseEther("0.02"),
+          oldPrice:
+            userPostEntities.length !== 0 ? userPostEntities[0].price : null,
           isPaid: true,
         });
 
@@ -82,15 +82,15 @@ const usePostDetails = () => {
   const { data } = useQuery(GET_POST_DETAIL_DATA, {
     variables: {
       contentHash: id,
+      address: profile?.walletAddress,
     },
     skip: !accessToken || !id,
     onCompleted: getData,
   });
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
+    window.scrollTo(0, 0);
+  }, []);
 
   return { topCreators, post, loading, navigateToProfile };
 };

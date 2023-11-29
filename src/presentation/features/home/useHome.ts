@@ -339,6 +339,7 @@ const useHome = () => {
     if (isFreePosts) return contents;
     let ownedContentHashes = <any>[],
       unpurchasedContentHashes = <any>[];
+
     for (const content of contents) {
       if (content.isOwner) {
         ownedContentHashes.push(content.hash);
@@ -346,6 +347,7 @@ const useHome = () => {
         unpurchasedContentHashes.push(content.hash);
       }
     }
+
     const ownedAmounts = new Array(ownedContentHashes.length).fill(1);
     const unpurchasedAmounts = new Array(unpurchasedContentHashes.length).fill(
       1
@@ -364,7 +366,6 @@ const useHome = () => {
         args: [unpurchasedContentHashes, unpurchasedAmounts],
       }),
     ]);
-    console.log({ sellPrices });
 
     const res = contents.map((content: any) => {
       if (content.isOwner) {
@@ -500,11 +501,15 @@ const useHome = () => {
                 // @ts-ignore
                 ...detailPostList[index],
                 ...detailContent,
+                hash: contentHash,
                 isOwner: !!post,
               };
             })
             ?.filter((content: any) => !!content);
+
           const validContentListWithPrice = await getPrices(validContentList);
+          console.log({ validContentListWithPrice });
+
           // @ts-ignore
           setTrendingPosts(validContentListWithPrice);
           setLoading(false);

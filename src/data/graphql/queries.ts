@@ -92,7 +92,7 @@ const GET_CREDIT_SCORE = gql`
 `;
 
 const GET_POST_DETAIL_DATA = gql`
-  query GetPostDetailData($contentHash: String!) {
+  query GetPostDetailData($contentHash: String!, $address: String!) {
     creatorEntities(orderBy: creditScore, orderDirection: desc) {
       address
       creditScore
@@ -104,6 +104,12 @@ const GET_POST_DETAIL_DATA = gql`
       totalDownvote
       totalSupply
       startedPrice
+    }
+    userPostEntities(where: { account: $address, post: $contentHash }) {
+      account
+      isOwner
+      post
+      price
     }
   }
 `;
@@ -121,6 +127,7 @@ const GET_PURCHASES = gql`
   query GetPurchases($timestamp: String!) {
     accessPurchasedEntities(where: { timestamp_gte: $timestamp }) {
       timestamp
+      hash
     }
   }
 `;
