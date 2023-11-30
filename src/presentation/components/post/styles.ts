@@ -66,11 +66,18 @@ const PostContainer = styled("div")(({ theme, type }: any) => ({
   },
 
   ".content": {
-    whiteSpace: 'pre-line',
     fontFamily: "Gilroy",
-    lineHeight: "24px",
-    fontSize: 14,
     color: COLOR.neutral.neutral_4,
+
+    ol: {
+      margin: 4,
+    },
+    ul: {
+      margin: 4,
+    },
+    p: {
+      margin: 4,
+    },
   },
 
   ".viewmore": {
