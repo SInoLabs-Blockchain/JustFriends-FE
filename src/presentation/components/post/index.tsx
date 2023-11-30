@@ -207,28 +207,31 @@ const Post = ({
           <Typography className="post__interactions-holders">
             {Number(data.totalSupply)} holders
           </Typography>
-          <CustomButton
-            sm
-            title={data?.isOwner ? "Sell Access" : "Buy Access"}
-            variant={"contained"}
-            disabled={data?.isOwner && Number(data?.totalSupply) === 1}
-            onClick={() => {
-              if (accessToken) {
-                handleToggleConfirmationModal(
-                  data?.contentHash,
-                  data?.totalSupply,
-                  data?.price,
-                  data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE,
-                  data?.accessTokenId
-                );
-              } else {
-                toast.warning(
-                  "You need to connect your wallet to interact with the post"
-                );
-              }
-            }}
-            startIcon={<ShareIcon />}
-          />
+          {data?.creator?.toLowerCase() !==
+          profile?.walletAddress?.toLowerCase() ? (
+            <CustomButton
+              sm
+              title={data?.isOwner ? "Sell Access" : "Buy Access"}
+              variant={"contained"}
+              disabled={data?.isOwner && Number(data?.totalSupply) === 1}
+              onClick={() => {
+                if (accessToken) {
+                  handleToggleConfirmationModal(
+                    data?.contentHash,
+                    data?.totalSupply,
+                    data?.price,
+                    data?.isOwner ? MODAL_TYPES.SELL : MODAL_TYPES.PURCHASE,
+                    data?.accessTokenId
+                  );
+                } else {
+                  toast.warning(
+                    "You need to connect your wallet to interact with the post"
+                  );
+                }
+              }}
+              startIcon={<ShareIcon />}
+            />
+          ) : null}
         </Box>
       );
     }

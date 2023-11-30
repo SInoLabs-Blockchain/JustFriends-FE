@@ -141,7 +141,7 @@ const useHome = () => {
           args: [
             `0x${contentHash}`,
             parseEther(basePrice),
-            option.value === FREE_POSTS ? false : true,
+            option.id === 0 ? true : false,
           ],
           account: profile?.walletAddress,
         });
@@ -155,12 +155,12 @@ const useHome = () => {
           entryPointAbi.abi,
           `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`
         );
+
         const msgCallData = getCallDataCreatePost({
           contentHash: `0x${contentHash}`,
           startedPrice: parseEther(basePrice),
           isPaid: option.id === 0 ? true : false,
         });
-
         const callData = getCallDataEntryPoint({
           value: parseEther("0"),
           target: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -494,7 +494,6 @@ const useHome = () => {
             ?.filter((content: any) => !!content);
 
           const validContentListWithPrice = await getPrices(validContentList);
-          console.log({ validContentListWithPrice });
 
           // @ts-ignore
           setTrendingPosts(validContentListWithPrice);

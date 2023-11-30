@@ -10,6 +10,7 @@ const GET_NEW_POSTS = gql`
       totalSupply
       startedPrice
       isPaid
+      creator
     }
     postVoteEntities(where: { account: $address }) {
       post

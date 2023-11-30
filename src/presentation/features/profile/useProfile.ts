@@ -16,7 +16,6 @@ import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { orderByTimeCreated } from "src/common/utils";
 import justFriendAbi from "src/common/abis/JustFriends.json";
 import { Post } from "src/domain/models/home/Post";
-import { parseEther } from "viem";
 
 const TABS = [
   { id: 0, name: "My posts" },
@@ -60,8 +59,6 @@ const useProfile = () => {
     variables: { address: profile?.walletAddress?.toLocaleLowerCase() },
     onCompleted: onChangeCreditScore,
   });
-
-  console.log(contentPurchasedPosts);
 
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
@@ -119,16 +116,20 @@ const useProfile = () => {
     try {
       const res = await profileRepository.getPosts(hashes, accessToken);
 
-      const data = await readContract({
+      const data = (await readContract({
         address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
         abi: JustFriendsABI.abi,
         functionName: "getContentsInfo",
         args: [hashes],
-      });
+      })) as any;
 
-      const posts = res.map((post: object, index: number) => {
+      const posts = res.map((post: any, index: number) => {
         // @ts-ignore
-        return { ...post, ...data[index] };
+        return {
+          ...post,
+          ...data[index],
+          isPaid: post?.type === "paid" ? true : false,
+        };
       });
 
       return orderByTimeCreated(posts);
