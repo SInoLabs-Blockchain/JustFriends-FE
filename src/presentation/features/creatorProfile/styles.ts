@@ -33,7 +33,7 @@ const BackgroundProfileImg = styled("div")({
     height: "100%",
     backgroundSize: "cover",
     backgroundPosition: "center",
-    borderRadius: 20
+    borderRadius: 20,
   },
 
   ".profile__avatar-container": {
@@ -85,6 +85,7 @@ const LeftContent = styled("div")({
 
       ".user-information__content-container": {
         gap: 8,
+        cursor: "pointer",
 
         ".user-information__content-title": {
           fontFamily: "Semibold",

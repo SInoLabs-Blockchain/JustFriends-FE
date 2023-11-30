@@ -3,13 +3,12 @@ import { shortenAddress, stringAvatar } from "src/common/utils";
 import { WalletIcon } from "src/presentation/theme/assets/icons";
 import { ProfileContainer } from "./styles";
 import { useAppSelector } from "src/data/redux/Hooks";
+import Web3 from "web3";
 
-const ProfileCard = ({
-  navigateToProfile,
-  copyAddress,
-  isFullSize
-}: any) => {
+const ProfileCard = ({ navigateToProfile, copyAddress, isFullSize }: any) => {
   const { profile } = useAppSelector((state) => state.auth);
+
+  const address = Web3.utils.toChecksumAddress(profile?.walletAddress || "");
 
   if (profile?.loading) {
     return (
@@ -58,14 +57,12 @@ const ProfileCard = ({
         <Typography className="profile__card-name" onClick={navigateToProfile}>
           {profile?.username}
         </Typography>
-        <Box className="profile__card-address">
-          <Tooltip title="Copy to clipboard">
-            <WalletIcon onClick={copyAddress} />
-          </Tooltip>
-          <Typography>
-            {shortenAddress(profile?.walletAddress || null)}
-          </Typography>
-        </Box>
+        <Tooltip title="Copy to clipboard">
+          <Box className="profile__card-address" onClick={copyAddress}>
+            <WalletIcon />
+            <Typography>{shortenAddress(address || null)}</Typography>
+          </Box>
+        </Tooltip>
       </Box>
       <Box className="profile__statistic">
         <Box className="profile__statistic-item">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "src/data/redux/Hooks";
 import { ProfileRepository } from "src/data/repositories/ProfileRepository";
@@ -61,6 +61,8 @@ const useProfile = () => {
     onCompleted: onChangeCreditScore,
   });
 
+  console.log(contentPurchasedPosts);
+
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
     name: TABS[0].name,
@@ -68,7 +70,6 @@ const useProfile = () => {
 
   const onChangeTab = (data: TabState) => {
     setTab(data);
-    getPosts(data.id);
   };
 
   function onChangeCreditScore() {
@@ -136,9 +137,9 @@ const useProfile = () => {
     }
   };
 
-  async function getPosts(tabId: number) {
+  async function getPosts() {
     setLoading(true);
-    if (tabId || tab.id === 0) {
+    if (tab.id === 0) {
       if (!loadingContentMyPosts && contentMyPosts?.contentEntities) {
         const contentHashes = contentMyPosts?.contentEntities.map(
           (content: any) => content.hash
@@ -161,7 +162,7 @@ const useProfile = () => {
           }))
         );
       }
-    } else if (tabId || tab.id === 1) {
+    } else if (tab.id === 1) {
       if (
         !loadingContentPurchasedPosts &&
         contentPurchasedPosts?.userPostEntities
@@ -200,6 +201,10 @@ const useProfile = () => {
       setLoading(false);
     }, 500);
   }
+
+  useEffect(() => {
+    getPosts();
+  }, [tab]);
 
   return {
     tab,

@@ -275,6 +275,12 @@ const useCreatorProfile = () => {
     }
   };
 
+  const copyAddress = async (creatorAddress: string) => {
+    if (creatorAddress) {
+      await navigator.clipboard.writeText(creatorAddress);
+    }
+  };
+
   useEffect(() => {
     getPosts();
   }, [tab]);
@@ -304,6 +310,7 @@ const useCreatorProfile = () => {
     onChangeTab,
     getPosts,
     setFreePosts,
+    copyAddress,
   };
 };
 

@@ -1,4 +1,4 @@
-import { Box, Typography, Avatar } from "@mui/material";
+import { Box, Typography, Avatar, Tooltip } from "@mui/material";
 import CustomButton from "src/presentation/components/button";
 import Post from "src/presentation/components/post";
 import COLOR from "src/presentation/theme/Color";
@@ -14,6 +14,7 @@ import { stringAvatar } from "src/common/utils";
 import NotFound from "src/presentation/theme/assets/icons/not-found.svg";
 import { isEmpty } from "lodash";
 import Backwall from "src/presentation/theme/assets/images/background.png";
+import Web3 from "web3";
 
 import useCreatorProfile from "./useCreatorProfile";
 import {
@@ -38,9 +39,12 @@ const CreatorProfile = () => {
     totalPosts,
     onChangeTab,
     setFreePosts,
+    copyAddress,
   } = useCreatorProfile();
 
   const { id } = useParams();
+
+  const address = Web3.utils.toChecksumAddress(`0x${id}`);
 
   const renderNoData = () => (
     <Box className="no-data-container">
@@ -127,12 +131,17 @@ const CreatorProfile = () => {
               {creatorInfo.username} {creatorInfo.loyalFan && <FanIcon />}
             </Typography>
           )}
-          <Box className="user-information__content-container flex-center">
-            <WalletIcon />
-            <Typography className="user-information__content-title">
-              {shortenAddress(`0x${id}`)}
-            </Typography>
-          </Box>
+          <Tooltip title="Copy to clipboard" placement="bottom-start">
+            <Box
+              className="user-information__content-container flex-center"
+              onClick={() => copyAddress(address)}
+            >
+              <WalletIcon />
+              <Typography className="user-information__content-title">
+                {shortenAddress(address)}
+              </Typography>
+            </Box>
+          </Tooltip>
           <Box className="user-information__content-container flex-center">
             <Share2Icon />
             <Typography className="user-information__content-title">

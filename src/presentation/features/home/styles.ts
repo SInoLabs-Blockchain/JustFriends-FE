@@ -53,102 +53,105 @@ const PostsContainer = styled("div")(({ theme }: any) => ({
   },
 }));
 
-const ProfileContainer = styled("div")<InputProps>(({ theme, isFullSize }: any) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "16px",
-  padding: 30,
-  height: "fit-content",
-  boxShadow: "0 0 10px rgba(86, 107, 135, 0.08)",
-  borderRadius: 16,
-  backgroundColor: COLOR.white,
-
-  ".profile__card-avatar": {
-    width: "120px",
-    aspectRatio: 1 / 1,
-    borderRadius: "12px",
-    cursor: "pointer",
-  },
-  ".MuiAvatar-root": {
-    width: "120px",
-    height: "120px",
-    aspectRatio: 1 / 1,
-    borderRadius: "12px",
-    cursor: "pointer",
-    fontSize: "48px",
-  },
-  ".profile__info": {
+const ProfileContainer = styled("div")<InputProps>(
+  ({ theme, isFullSize }: any) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  ".profile__card-name": {
-    fontSize: "18px",
-    lineHeight: "24px",
-    fontFamily: "Bold",
-    color: COLOR.neutral.neutral_1,
-    cursor: "pointer",
-  },
+    gap: "16px",
+    padding: 30,
+    height: "fit-content",
+    boxShadow: "0 0 10px rgba(86, 107, 135, 0.08)",
+    borderRadius: 16,
+    backgroundColor: COLOR.white,
 
-  ".profile__card-address": {
-    marginTop: 8,
-    display: "flex",
-    gap: "8px",
-    alignItems: "center",
-
-    svg: {
+    ".profile__card-avatar": {
+      width: "120px",
+      aspectRatio: 1 / 1,
+      borderRadius: "12px",
+      cursor: "pointer",
+    },
+    ".MuiAvatar-root": {
+      width: "120px",
+      height: "120px",
+      aspectRatio: 1 / 1,
+      borderRadius: "12px",
+      cursor: "pointer",
+      fontSize: "48px",
+    },
+    ".profile__info": {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    ".profile__card-name": {
+      fontSize: "18px",
+      lineHeight: "24px",
+      fontFamily: "Bold",
+      color: COLOR.neutral.neutral_1,
       cursor: "pointer",
     },
 
-    p: {
-      fontSize: "14px",
-      fontFamily: "Regular",
-      lineHeight: "18px",
-      color: COLOR.neutral.neutral_4,
+    ".profile__card-address": {
+      marginTop: 8,
+      display: "flex",
+      gap: "8px",
+      alignItems: "center",
+      cursor: "pointer",
+
+      svg: {
+        cursor: "pointer",
+      },
+
+      p: {
+        fontSize: "14px",
+        fontFamily: "Regular",
+        lineHeight: "18px",
+        color: COLOR.neutral.neutral_4,
+      },
     },
-  },
-  ".profile__statistic": {
-    display: "flex",
-    gap: "20px",
-    justifyContents: "space-between",
-  },
-  ".profile__statistic-item": {
-    display: "flex",
-    flexDirection: "column",
-    gap: "5px",
-    alignItems: "center",
-
-    ".profile__card-value": {
-      fontSize: "18px",
-      fontFamily: "Bold",
-      lineHeight: "24px",
-      color: COLOR.neutral.neutral_1,
-    },
-    ".profile__card-label": {
-      fontSize: 12,
-      fontFamily: "SemiBold",
-      lineHeight: "16px",
-      color: COLOR.neutral.neutral_2,
-    },
-  },
-
-  [theme.breakpoints.down("xl")]: {
-    padding: 20,
-  },
-
-  [theme.breakpoints.down("md")]: {
-    width: isFullSize ? "50%" : '80%',
-
-    ".profile__card-avatar": {
-      display: "none",
-    },
-
     ".profile__statistic": {
-      gap: 40,
+      display: "flex",
+      gap: "20px",
+      justifyContents: "space-between",
     },
-  },
-}));
+    ".profile__statistic-item": {
+      display: "flex",
+      flexDirection: "column",
+      gap: "5px",
+      alignItems: "center",
+
+      ".profile__card-value": {
+        fontSize: "18px",
+        fontFamily: "Bold",
+        lineHeight: "24px",
+        color: COLOR.neutral.neutral_1,
+      },
+      ".profile__card-label": {
+        fontSize: 12,
+        fontFamily: "SemiBold",
+        lineHeight: "16px",
+        color: COLOR.neutral.neutral_2,
+      },
+    },
+
+    [theme.breakpoints.down("xl")]: {
+      padding: 20,
+    },
+
+    [theme.breakpoints.down("md")]: {
+      width: isFullSize ? "50%" : "80%",
+
+      ".profile__card-avatar": {
+        display: "none",
+      },
+
+      ".profile__statistic": {
+        gap: 40,
+      },
+    },
+  })
+);
 
 const TopAuthorContainer = styled(Box)(({ theme }: any) => ({
   width: "25%",

@@ -81,7 +81,9 @@ const useHome = () => {
 
   const copyAddress = async () => {
     if (profile?.walletAddress) {
-      await navigator.clipboard.writeText(profile.walletAddress);
+      const address = Web3.utils.toChecksumAddress(profile?.walletAddress);
+
+      await navigator.clipboard.writeText(address);
     }
   };
 
@@ -116,7 +118,7 @@ const useHome = () => {
   const handleSharePost = async () => {
     if (!accessToken) {
       open();
-      return
+      return;
     }
 
     try {
@@ -278,7 +280,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
 
@@ -423,7 +425,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -478,7 +480,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
