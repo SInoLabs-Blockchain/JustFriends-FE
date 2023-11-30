@@ -47,17 +47,17 @@ const Post = ({
 }: PropTypes) => {
   const isConnectedWallet = true;
   const {
+    type,
     accessToken,
     isUpvoting,
     isDownvoting,
     isOpen,
+    isPurchasing,
     handleVotePost,
     handleToggleConfirmationModal,
     handlePurchasePostAccess,
     handleSellPostAccess,
     navigateUserProfile,
-    isPurchasing,
-    type,
     handleViewDetailPost,
   } = usePost({
     open,

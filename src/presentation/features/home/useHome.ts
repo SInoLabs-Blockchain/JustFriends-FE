@@ -63,7 +63,6 @@ const useHome = () => {
   const [openOptionSelect, setOpenOptionSelect] = useState(false);
   const [textareaValue, setTextareaValue] = useState("");
   const [textareaHeight, setTextareaHeight] = useState<number>(160);
-  const [creatingPost, setCreatingPost] = useState<Post | null>(null);
   const [basePrice, setBasePrice] = useState<string>("0");
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [topCreators, setTopCreators] = useState<Array<Profile>>([]);
@@ -117,121 +116,108 @@ const useHome = () => {
   const handleSharePost = async () => {
     if (!accessToken) {
       open();
-    } else {
-      try {
-        setLoading(true);
-        const content = await homeRepository.createPost({
-          content: textareaValue,
-          type: option.value,
-          accessToken,
+      return
+    }
+
+    try {
+      setLoading(true);
+      const content = await homeRepository.createPost({
+        content: textareaValue,
+        type: option.value,
+        accessToken,
+      });
+
+      if (option.id === POST_OPTIONS[1].id) setIsFreePosts(false);
+      else setIsFreePosts(true);
+
+      const { contentHash } = content;
+      if (!profile?.isFriend) {
+        await writeContract({
+          address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+          abi: justFriendAbi.abi,
+          functionName: "postContent",
+          args: [
+            `0x${contentHash}`,
+            parseEther(basePrice),
+            option.value === FREE_POSTS ? false : true,
+          ],
+          account: profile?.walletAddress,
+        });
+      } else {
+        const account = JSON.parse(localStorage.getItem("account") || "{}");
+        const sessionAccount = JSON.parse(
+          localStorage.getItem("sessionAccount") || "{}"
+        );
+        const web3 = new Web3(process.env.REACT_APP_RPC);
+        const entryPointContract = new web3.eth.Contract(
+          entryPointAbi.abi,
+          `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`
+        );
+        const msgCallData = getCallDataCreatePost({
+          contentHash: `0x${contentHash}`,
+          startedPrice: parseEther(basePrice),
+          isPaid: option.id === 0 ? true : false,
         });
 
-        const { contentHash } = content;
-        if (!profile?.isFriend) {
-          await writeContract({
-            address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-            abi: justFriendAbi.abi,
-            functionName: "postContent",
-            args: [
-              `0x${contentHash}`,
-              parseEther(basePrice),
-              option.value === FREE_POSTS ? false : true,
-            ],
-            account: profile?.walletAddress,
-          });
-        } else {
-          const account = JSON.parse(localStorage.getItem("account") || "{}");
-          const sessionAccount = JSON.parse(
-            localStorage.getItem("sessionAccount") || "{}"
-          );
-          const web3 = new Web3(process.env.REACT_APP_RPC);
-          const entryPointContract = new web3.eth.Contract(
-            entryPointAbi.abi,
-            `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`
-          );
-          const msgCallData = getCallDataCreatePost({
-            contentHash: `0x${contentHash}`,
-            startedPrice: parseEther(basePrice),
-            isPaid: option.id === 0 ? true : false,
-          });
-
-          const callData = getCallDataEntryPoint({
-            value: parseEther("0"),
-            target: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-            msgDataEncode: msgCallData,
-          });
-          const op = await fillUserOp(
-            {
-              sender: account.contractAddress,
-              callData,
-              nonce: 1000,
-              maxFeePerGas: 0,
-              maxPriorityFeePerGas: 0,
-              callGasLimit: 400000,
-            },
-            entryPointContract
-          );
-          const decryptedSessionData = await web3.eth.accounts.decrypt(
-            sessionAccount.encryptedPrivateKey,
-            localStorage.getItem("passcode") || ""
-          );
-          if (!decryptedSessionData) {
-            throw new Error("Decrypt private key failed");
-          }
-          const signedUserOp = await signUserOp({
-            op,
-            privateKey: decryptedSessionData.privateKey,
-            entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-            chainId: BAOBAB_CONFIG.id,
-            sessionUser: sessionAccount.address,
-          });
-          await requestToRelayer(signedUserOp);
-        }
-        handleToggleModal();
-        handleRemoveText();
-        setLoading(false);
-        if (option.id === POST_OPTIONS[1].id) {
-          setIsFreePosts(false);
-          setCreatingPost({
-            ...content,
-            user: {
-              username: profile?.username,
-              avatarUrl: profile?.avatarUrl,
-            },
-            totalUpvote: 0,
-            totalDownvote: 0,
-            totalSupply: 1,
-            price: parseEther(basePrice).toString(),
-            isOwner: true,
-            type: PAID_POSTS,
-          });
-        } else {
-          setIsFreePosts(true);
-          setPosts((prev) => {
-            const temp = prev;
-            temp.unshift({
-              ...content,
-              user: {
-                username: profile?.username,
-                avatarUrl: profile?.avatarUrl,
-              },
-              totalUpvote: 0,
-              totalDownvote: 0,
-              price: basePrice,
-              isOwner: true,
-              type: FREE_POSTS,
-            });
-            return temp;
-          });
-        }
-        dispatch(
-          setProfile({ ...profile, totalPost: (profile?.totalPost || 0) + 1 })
+        const callData = getCallDataEntryPoint({
+          value: parseEther("0"),
+          target: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
+          msgDataEncode: msgCallData,
+        });
+        const op = await fillUserOp(
+          {
+            sender: account.contractAddress,
+            callData,
+            nonce: 1000,
+            maxFeePerGas: 0,
+            maxPriorityFeePerGas: 0,
+            callGasLimit: 400000,
+          },
+          entryPointContract
         );
-        toast.success("Your post has been created successfully!");
-      } catch (error: any) {
-        setLoading(false);
-        toast.error(error.message || ERROR_MESSAGE);
+        const decryptedSessionData = await web3.eth.accounts.decrypt(
+          sessionAccount.encryptedPrivateKey,
+          localStorage.getItem("passcode") || ""
+        );
+        if (!decryptedSessionData) {
+          throw new Error("Decrypt private key failed");
+        }
+        const signedUserOp = await signUserOp({
+          op,
+          privateKey: decryptedSessionData.privateKey,
+          entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
+          chainId: BAOBAB_CONFIG.id,
+          sessionUser: sessionAccount.address,
+        });
+        await requestToRelayer(signedUserOp);
       }
+
+      handleToggleModal();
+      handleRemoveText();
+      setLoading(false);
+      setPosts((prev) => {
+        const temp = prev;
+        temp.unshift({
+          ...content,
+          user: {
+            username: profile?.username,
+            avatarUrl: profile?.avatarUrl,
+          },
+          totalUpvote: 0,
+          totalDownvote: 0,
+          price: basePrice,
+          isOwner: true,
+          type: FREE_POSTS,
+        });
+        return temp;
+      });
+      dispatch(
+        setProfile({ ...profile, totalPost: (profile?.totalPost || 0) + 1 })
+      );
+      toast.success("Your post has been created successfully!");
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.message || ERROR_MESSAGE);
     }
   };
 
@@ -292,7 +278,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
 
@@ -308,11 +294,6 @@ const useHome = () => {
           ?.filter((content: any) => !!content);
 
         const orderedPosts = orderByTimeCreated(validContentList);
-
-        if (creatingPost) {
-          orderedPosts.unshift(creatingPost);
-          setCreatingPost(null);
-        }
         const orderedPostsWithPrices = await getPrices(orderedPosts);
         setPosts(orderedPostsWithPrices);
 
@@ -442,7 +423,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -497,7 +478,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
