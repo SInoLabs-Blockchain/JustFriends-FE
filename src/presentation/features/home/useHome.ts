@@ -212,7 +212,11 @@ const useHome = () => {
   };
 
   const navigateToCreatorProfile = (id: string) => {
-    navigate(`/profile/${id}`);
+    if (`0x${id}` === profile?.walletAddress) {
+      navigateToProfile();
+    } else {
+      navigate(`/profile/${id}`);
+    }
   };
 
   const getListOfPostsByType = async () => {
@@ -264,7 +268,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
 
@@ -409,7 +413,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -464,7 +468,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {

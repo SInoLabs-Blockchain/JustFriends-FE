@@ -29,9 +29,7 @@ const TopAuthor = ({ data, viewProfile }: any) => {
               <Box className="author__container">
                 {creator?.avatarUrl ? (
                   <img
-                    src={
-                      "https://upload.wikimedia.org/wikipedia/commons/1/1b/Trump_SQ.png"
-                    }
+                    src={creator?.avatarUrl}
                     alt="avatar"
                     className="author__container-avatar"
                   />

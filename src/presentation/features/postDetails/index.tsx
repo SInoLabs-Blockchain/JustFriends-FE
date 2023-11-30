@@ -7,7 +7,13 @@ import usePostDetails from "./usePostDetails";
 import PostLoading from "src/presentation/components/loading/post";
 
 const PostDetails = () => {
-  const { topCreators, post, loading, navigateToProfile } = usePostDetails();
+  const {
+    topCreators,
+    post,
+    loading,
+    navigateToProfile,
+    navigateToCreatorProfile,
+  } = usePostDetails();
 
   return (
     <Container>
@@ -20,7 +26,11 @@ const PostDetails = () => {
       <Box display={"flex"} flexDirection={"column"} width={"50%"} gap={"24px"}>
         {loading ? <PostLoading /> : <Post data={post} loading={loading} />}
       </Box>
-      <TopAuthor data={topCreators} loading={loading} />
+      <TopAuthor
+        data={topCreators}
+        viewProfile={navigateToCreatorProfile}
+        loading={loading}
+      />
     </Container>
   );
 };

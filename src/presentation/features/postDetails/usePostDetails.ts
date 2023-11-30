@@ -30,7 +30,7 @@ const usePostDetails = () => {
           await Promise.all([
             homeRepository.getPosts({
               contentHashes: [id],
-              accessToken
+              accessToken,
             }),
             profileRepository.getUsers(
               accessToken,
@@ -89,11 +89,25 @@ const usePostDetails = () => {
     onCompleted: getData,
   });
 
+  const navigateToCreatorProfile = (id: string) => {
+    if (`0x${id}` === profile?.walletAddress) {
+      navigateToProfile();
+    } else {
+      navigate(`/profile/${id}`);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  return { topCreators, post, loading, navigateToProfile };
+  return {
+    topCreators,
+    post,
+    loading,
+    navigateToProfile,
+    navigateToCreatorProfile,
+  };
 };
 
 export default usePostDetails;
