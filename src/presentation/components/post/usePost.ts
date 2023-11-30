@@ -19,6 +19,7 @@ import { useState } from "react";
 import { VOTE_TYPES } from "src/common/constants";
 import Web3 from "web3";
 import { ROUTE } from "src/common/constants/route";
+import { useBalance } from "wagmi";
 
 function usePost({ open, setPosts }: any) {
   const { accessToken, profile } = useAppSelector((state) => state.auth);
@@ -35,7 +36,10 @@ function usePost({ open, setPosts }: any) {
     accessTokenId: -1,
   });
   const [type, setType] = useState(0);
-
+  const { data: balance } = useBalance({
+    address: profile?.walletAddress,
+    watch: true,
+  });
   async function handleVotePost(contentHash: string, voteType: number) {
     if (!accessToken) {
       toast.warning(
@@ -114,7 +118,7 @@ function usePost({ open, setPosts }: any) {
                     totalDownvote: Number(content?.totalDownvote) + 1,
                     totalUpvote:
                       content?.isVoted &&
-                        content?.voteType === VOTE_TYPES.UPVOTE
+                      content?.voteType === VOTE_TYPES.UPVOTE
                         ? Number(content?.totalUpvote) - 1
                         : Number(content?.totalUpvote),
                     isVoted: true,
@@ -135,7 +139,7 @@ function usePost({ open, setPosts }: any) {
                     ...content,
                     totalDownvote:
                       content?.isVoted &&
-                        content?.voteType === VOTE_TYPES.DOWNVOTE
+                      content?.voteType === VOTE_TYPES.DOWNVOTE
                         ? Number(content?.totalDownvote) - 1
                         : Number(content?.totalDownvote),
                     totalUpvote: Number(content?.totalUpvote) + 1,
@@ -166,16 +170,10 @@ function usePost({ open, setPosts }: any) {
     } else {
       try {
         setPurchasing(true);
+        if (BigInt(balance?.value || "0") < BigInt(price)) {
+          throw new Error("Insufficient balance");
+        }
         if (!profile?.isFriend) {
-          console.log({
-            address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
-            abi: justFriendAbi.abi,
-            functionName: "buyContentAccess",
-            args: [`${selectingPost.contentHash}`, 1],
-            account: profile?.walletAddress,
-            value: BigInt(selectingPost.price),
-          });
-
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
@@ -236,8 +234,10 @@ function usePost({ open, setPosts }: any) {
           navigate(`/post/${selectingPost.contentHash}`);
           toast.success("Buy Post Access Successfully");
         }, 5000);
-      } catch (error) {
+      } catch (error: any) {
         setPurchasing(false);
+        handleToggleConfirmationModal();
+        toast.error(error.message);
         console.log({ error });
       }
     }
@@ -351,8 +351,8 @@ function usePost({ open, setPosts }: any) {
 
   const handleViewDetailPost = (contentHash: string) => {
     if (!accessToken) {
-      toast.warning('You need to connect your wallet to view this post')
-      return
+      toast.warning("You need to connect your wallet to view this post");
+      return;
     }
 
     const formattedHash = contentHash.includes("0x")
