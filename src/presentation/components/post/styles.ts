@@ -68,7 +68,7 @@ const PostContainer = styled("div")(({ theme, type }: any) => ({
   ".content": {
     fontFamily: "Gilroy",
     color: COLOR.neutral.neutral_4,
-
+    overflowWrap: "break-word",
     ol: {
       margin: 4,
     },

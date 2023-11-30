@@ -2,6 +2,7 @@
 // Example: String manipulation functions, math libraries
 
 import BigNumber from "bignumber.js";
+import { Profile } from "src/domain/models/auth";
 import { Post } from "src/domain/models/home/Post";
 
 const getMonthInText = (month: number) => {
@@ -107,6 +108,17 @@ const orderByTimeCreated = (posts: Array<Post>) => {
   });
 };
 
+const orderByCreditScore = (authors: Array<Profile>) => {
+  if (authors.length === 0) return [];
+
+  return authors.sort((a, b) => {
+    const creditScoreA = new Number(a.creditScore);
+    const creditScoreB = new Number(b.creditScore);
+    // @ts-ignore
+    return creditScoreB - creditScoreA;
+  });
+};
+
 const stringToColor = (string: string) => {
   let hash = 0;
   let i;
@@ -133,10 +145,10 @@ const stringAvatar = (name?: string) => {
     sx: {
       bgcolor: stringToColor(name),
     },
-    children: name.includes('-')
+    children: name.includes("-")
       ? `${name.split("-")[0][0].toUpperCase()}${name
-        .split("-")[1][0]
-        .toUpperCase()}`
+          .split("-")[1][0]
+          .toUpperCase()}`
       : name.substring(0, 1).toUpperCase(),
   };
 };
@@ -148,5 +160,6 @@ export {
   randomNumber,
   timeAgo,
   orderByTimeCreated,
+  orderByCreditScore,
   stringAvatar,
 };

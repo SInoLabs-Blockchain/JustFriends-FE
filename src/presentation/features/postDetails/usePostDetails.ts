@@ -10,6 +10,7 @@ import { Post } from "src/domain/models/home/Post";
 import { readContract } from "@wagmi/core";
 import justFriendAbi from "src/common/abis/JustFriends.json";
 import { ROUTE } from "src/common/constants/route";
+import { orderByCreditScore } from "src/common/utils";
 
 const usePostDetails = () => {
   let { id } = useParams();
@@ -67,7 +68,8 @@ const usePostDetails = () => {
             return null;
           })
           ?.filter((item: any) => parseInt(item?.creditScore) > 0);
-        setTopCreators(validTopCreatorsList);
+
+        setTopCreators(orderByCreditScore(validTopCreatorsList));
       }
       setLoading(false);
     } catch (error) {

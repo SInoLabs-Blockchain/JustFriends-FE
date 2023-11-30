@@ -12,4 +12,5 @@ export interface Profile {
   username: string;
   avatarUrl: string;
   coverUrl: string;
+  creditScore?: number;
 }
