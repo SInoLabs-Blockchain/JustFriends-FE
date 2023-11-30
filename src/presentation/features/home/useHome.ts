@@ -262,19 +262,16 @@ const useHome = () => {
             topCreators.map((creator: any) => creator.address)
           ),
         ]);
-        const validTopCreatorsList = topCreators
-          ?.map((creator: any) => {
-            const detailCreator = detailTopCreatorsList.find(
-              (item: any) =>
-                item.walletAddress.toLowerCase() ===
-                creator.address.toLowerCase()
-            );
-            if (detailCreator) {
-              return { ...detailCreator, creditScore: creator.creditScore };
-            }
-            return null;
-          })
-          ?.filter((item: any) => item !== null);
+        const validTopCreatorsList = topCreators?.map((creator: any) => {
+          const detailCreator = detailTopCreatorsList.find(
+            (item) => item.walletAddress.toLowerCase() === creator.address.toLowerCase()
+          );
+
+          return detailCreator
+            ? { ...detailCreator, creditScore: creator.creditScore }
+            : null;
+        }).filter((item: any) => parseInt(item?.creditScore) > 0);
+
         setTopCreators(validTopCreatorsList);
 
         const validContentList = contents

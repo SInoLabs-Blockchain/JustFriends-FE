@@ -66,7 +66,7 @@ const usePostDetails = () => {
             }
             return null;
           })
-          ?.filter((item: any) => item !== null);
+          ?.filter((item: any) => parseInt(item?.creditScore) > 0);
         setTopCreators(validTopCreatorsList);
       }
       setLoading(false);

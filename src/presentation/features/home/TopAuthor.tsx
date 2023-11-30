@@ -6,7 +6,6 @@ import {
   TopAuthorListContainer,
 } from "./styles";
 import { stringAvatar } from "src/common/utils";
-import CreditScore from "src/presentation/theme/assets/icons/credit-score.svg";
 
 const TopAuthor = ({ data, viewProfile }: any) => {
   if (!data) return null;
