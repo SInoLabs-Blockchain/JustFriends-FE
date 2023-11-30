@@ -1,14 +1,15 @@
 import { Avatar, Box, TextField, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
+import { Editor } from '@tinymce/tinymce-react';
 import {
   ModalContainer,
   StyledSelect,
   StyledSelectMenu,
   StyledSelectItem,
-  StyledTextArea,
   StyledBottomActions,
   StyledButtonShare,
   StyledBaseFeeContainer,
+  EditorContainer
 } from "./styles";
 import {
   ArrowDownIcon,
@@ -28,24 +29,21 @@ import { useAppSelector } from "src/data/redux/Hooks";
 import { stringAvatar } from "src/common/utils";
 
 interface IProps {
+  editorRef: any;
   open: boolean;
   loading: boolean;
   onToggleModal: () => void;
-  onRemoveText: () => void;
   option: any;
   openOptionSelect: any;
-  textareaValue: any;
-  textareaHeight: any;
   basePrice: any;
   onToggleSelect: any;
   onSelectMenu: any;
-  handleTextareaChange: any;
   setBasePrice: any;
   handleSharePost: any;
 }
 
 const ModalCreatePost = (props: IProps) => {
-  const { open, onToggleModal } = props;
+  const { open, editorRef, onToggleModal } = props;
   const { profile } = useAppSelector((state) => state.auth);
 
   const renderPostOptions = () => (
@@ -125,13 +123,29 @@ const ModalCreatePost = (props: IProps) => {
             {renderPostOptions()}
           </Box>
         </Box>
-        <StyledTextArea
-          value={props.textareaValue}
-          placeholder="What is on your mind?"
-          style={{ height: `${props.textareaHeight}px` }}
-          onChange={props.handleTextareaChange}
-        />
-        <StyledBottomActions className="flex-center">
+
+        <EditorContainer>
+          <Editor
+            apiKey={process.env.REACT_APP_EDITOR_API_KEY}
+            onInit={(evt, editor) => editorRef.current = editor}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+              ],
+              toolbar: 'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style: 'body { font-family: Gilroy; line-height: 22px; color: #031D3C }'
+            }}
+          />
+        </EditorContainer>
+
+        {/* <StyledBottomActions className="flex-center">
           <Typography className="action__title">Add to you post</Typography>
           <Box className="bottom__attachs flex-center">
             <Box className="bottom__attach-item">
@@ -156,7 +170,7 @@ const ModalCreatePost = (props: IProps) => {
               <TagUserIcon />
             </Box>
           </Box>
-        </StyledBottomActions>
+        </StyledBottomActions> */}
         {props.option.id === 0 && renderBaseFeeInput()}
         <StyledButtonShare>
           <CustomButton

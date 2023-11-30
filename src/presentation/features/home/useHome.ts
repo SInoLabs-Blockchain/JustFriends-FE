@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ERROR_MESSAGE,
   FREE_POSTS,
-  PAID_POSTS,
   POST_OPTIONS,
   VOTE_TYPES,
 } from "src/common/constants";
@@ -49,6 +48,7 @@ const useHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const navigationType = useNavigationType();
+  const editorRef = useRef<{ getContent: () => void }>(null);
 
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
   const [isTrendingPosts, setIsTrendingPosts] = useState<boolean>(false);
@@ -61,8 +61,6 @@ const useHome = () => {
     value: POST_OPTIONS[0].value,
   });
   const [openOptionSelect, setOpenOptionSelect] = useState(false);
-  const [textareaValue, setTextareaValue] = useState("");
-  const [textareaHeight, setTextareaHeight] = useState<number>(160);
   const [basePrice, setBasePrice] = useState<string>("0");
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [topCreators, setTopCreators] = useState<Array<Profile>>([]);
@@ -102,19 +100,6 @@ const useHome = () => {
     onToggleSelect();
   };
 
-  const handleTextareaChange = (event: any) => {
-    setTextareaValue(event.target.value);
-
-    if (event.target.value)
-      setTextareaHeight(Math.max(event.target.scrollHeight, 160));
-    else setTextareaHeight(0);
-  };
-
-  const handleRemoveText = () => {
-    setTextareaValue("");
-    setTextareaHeight(0);
-  };
-
   const handleSharePost = async () => {
     if (!accessToken) {
       open();
@@ -124,7 +109,7 @@ const useHome = () => {
     try {
       setLoading(true);
       const content = await homeRepository.createPost({
-        content: textareaValue,
+        content: editorRef?.current?.getContent(),
         type: option.value,
         accessToken,
       });
@@ -195,7 +180,6 @@ const useHome = () => {
       }
 
       handleToggleModal();
-      handleRemoveText();
       setLoading(false);
       setPosts((prev) => {
         const temp = prev;
@@ -280,7 +264,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
 
@@ -425,7 +409,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -480,7 +464,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                    profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -519,12 +503,11 @@ const useHome = () => {
   }, [location, navigationType]);
 
   return {
+    editorRef,
     posts,
     openModal,
     option,
     openOptionSelect,
-    textareaValue,
-    textareaHeight,
     basePrice,
     isFreePosts,
     topCreators,
@@ -541,10 +524,8 @@ const useHome = () => {
     onToggleSelect,
     handleToggleModal,
     onSelectMenu,
-    handleTextareaChange,
     handleSharePost,
     navigateToProfile,
-    handleRemoveText,
     getListOfPostsByType,
     handleSwitchZone,
     navigateToCreatorProfile,

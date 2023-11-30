@@ -9,14 +9,13 @@ import PostLoading from "src/presentation/components/loading/post";
 
 const Home = () => {
   const {
+    editorRef,
     posts,
     openModal,
     loading,
     isFreePosts,
     option,
     openOptionSelect,
-    textareaValue,
-    textareaHeight,
     basePrice,
     topCreators,
     isTrendingPosts,
@@ -26,11 +25,9 @@ const Home = () => {
     copyAddress,
     open,
     handleToggleModal,
-    handleRemoveText,
     setPosts,
     onToggleSelect,
     onSelectMenu,
-    handleTextareaChange,
     setBasePrice,
     handleSharePost,
     handleSwitchZone,
@@ -56,7 +53,6 @@ const Home = () => {
               open={open}
               isFreePosts={isFreePosts}
               handleToggleModal={handleToggleModal}
-              handleRemoveText={handleRemoveText}
             />
           );
         })
@@ -71,7 +67,6 @@ const Home = () => {
               open={open}
               isFreePosts={isFreePosts}
               handleToggleModal={handleToggleModal}
-              handleRemoveText={handleRemoveText}
               setPosts={setPosts}
             />
           );
@@ -96,18 +91,15 @@ const Home = () => {
         loading={loading}
       />
       <ModalCreatePost
+        editorRef={editorRef}
         loading={loading}
         open={openModal}
         onToggleModal={handleToggleModal}
-        onRemoveText={handleRemoveText}
         option={option}
         openOptionSelect={openOptionSelect}
-        textareaValue={textareaValue}
-        textareaHeight={textareaHeight}
         basePrice={basePrice}
         onToggleSelect={onToggleSelect}
         onSelectMenu={onSelectMenu}
-        handleTextareaChange={handleTextareaChange}
         setBasePrice={setBasePrice}
         handleSharePost={handleSharePost}
       />

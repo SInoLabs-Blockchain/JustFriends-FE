@@ -87,6 +87,7 @@ const ModalContainer = styled("div")(({ theme }: any) => ({
     width: "76%",
   },
 }));
+
 const StyledSelect = styled("div")({
   padding: "3px 6px 3px 10px",
   backgroundColor: COLOR.border,
@@ -132,29 +133,21 @@ const StyledSelectItem = styled("div")({
   },
 });
 
-const StyledTextArea = styled("textarea")(({ theme }: any) => ({
+const EditorContainer = styled("div")(({ theme }: any) => ({
   marginTop: 30,
-  width: "100%",
-  maxHeight: "50vh",
-  minHeight: "30vh",
-  border: "none",
-  outline: "none",
-  color: COLOR.neutral.neutral_1,
-  fontSize: 16,
-  lineHeight: "22px",
-  fontFamily: "Gilroy",
-  resize: "none",
 
-  "&::placeholder": {
-    color: COLOR.neutral.neutral_2,
-    fontSize: 24,
-    lineHeight: "32px",
-    fontFamily: "Gilroy",
+  '.tox.tox-tinymce': {
+    maxHeight: "50vh",
+    minHeight: "30vh",
   },
 
-  [theme.breakpoints.down("xl")]: {
-    maxHeight: "30vh",
+  '.tox-statusbar__help-text, .tox-statusbar__branding': {
+    display: 'none'
   },
+
+  '.tox .tox-statusbar__text-container.tox-statusbar__text-container--flex-start': {
+    justifyContent: 'space-between'
+  }
 }));
 
 const StyledBottomActions = styled("div")({
@@ -213,7 +206,7 @@ export {
   StyledSelect,
   StyledSelectMenu,
   StyledSelectItem,
-  StyledTextArea,
+  EditorContainer,
   StyledBottomActions,
   StyledButtonShare,
   StyledBaseFeeContainer,

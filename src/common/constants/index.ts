@@ -18,7 +18,6 @@ const LOGIN_STEPS = {
 };
 
 const FREE_POSTS = "free";
-const PAID_POSTS = "paid";
 
 const VOTE_TYPES = {
   DOWNVOTE: 1,
@@ -37,7 +36,6 @@ const ERROR_MESSAGE = 'Error! An error occurred. Please try again later'
 export {
   POST_OPTIONS,
   FREE_POSTS,
-  PAID_POSTS,
   LOGIN_STEPS,
   VOTE_TYPES,
   ZERO_ADDRESS,
