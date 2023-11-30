@@ -207,6 +207,49 @@ const useHeader = () => {
         if (!decryptedData) {
           throw new Error("Decrypt private key failed");
         }
+        const abiEntrypoint = entryPointAbi.abi;
+        const entryPointContract = new web3.eth.Contract(
+          abiEntrypoint,
+          `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`
+        );
+        const startFrom = Math.floor(Date.now() / 1e3);
+        const validUntil = startFrom + 86400;
+        const sessionAccount = ethers.Wallet.createRandom();
+        const totalAmount = web3.utils.toBigInt("1000000000000000000");
+
+        const callData = getCallDataAddSession({
+          sessionUser: sessionAccount.address,
+          startFrom,
+          validUntil,
+          totalAmount,
+        });
+
+        const userOp = await fillUserOp(
+          {
+            sender: contractAddress,
+            callData,
+            nonce: 1000,
+            maxFeePerGas: 0,
+            maxPriorityFeePerGas: 0,
+          },
+          entryPointContract
+        );
+
+        const signedUserOp = await signUserOp({
+          op: {
+            ...userOp,
+            nonce: 1000,
+          },
+          privateKey: decryptedData.privateKey,
+          entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
+          chainId: BAOBAB_CONFIG.id,
+        });
+
+        await requestToRelayer(signedUserOp);
+        const encryptedSessionPrivateKey = await web3.eth.accounts.encrypt(
+          sessionAccount.privateKey,
+          passCode
+        );
         const { challenge } = await authRepository.connectWallet(
           contractAddress
         );
@@ -220,7 +263,17 @@ const useHeader = () => {
         );
         dispatch(setAuth(res.accessToken));
         localStorage.setItem("accessToken", res.accessToken);
-        sessionStorage.setItem("passcode", otp);
+        localStorage.setItem("passcode", otp);
+        localStorage.setItem(
+          "sessionAccount",
+          JSON.stringify({
+            address: sessionAccount.address,
+            encryptedPrivateKey: encryptedSessionPrivateKey,
+            startFrom,
+            validUntil,
+            totalAmount: totalAmount.toString(),
+          })
+        );
         onToggleModal();
         toast.success("Connect Successfully");
       } else {
@@ -333,7 +386,7 @@ const useHeader = () => {
       localStorage.removeItem("accessToken"),
       localStorage.removeItem("sessionAccount"),
       localStorage.removeItem("wagmi.wallet"),
-      sessionStorage.removeItem("passcode"),
+      localStorage.removeItem("passcode"),
     ]);
     window.location.reload();
   };

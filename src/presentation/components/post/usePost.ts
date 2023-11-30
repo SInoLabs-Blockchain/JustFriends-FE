@@ -89,7 +89,7 @@ function usePost({ open, setPosts }: any) {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            sessionStorage.getItem("passcode") || ""
+            localStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");
@@ -216,7 +216,7 @@ function usePost({ open, setPosts }: any) {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            sessionStorage.getItem("passcode") || ""
+            localStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");
@@ -292,7 +292,7 @@ function usePost({ open, setPosts }: any) {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            sessionStorage.getItem("passcode") || ""
+            localStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");

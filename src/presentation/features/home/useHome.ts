@@ -173,7 +173,7 @@ const useHome = () => {
           );
           const decryptedSessionData = await web3.eth.accounts.decrypt(
             sessionAccount.encryptedPrivateKey,
-            sessionStorage.getItem("passcode") || ""
+            localStorage.getItem("passcode") || ""
           );
           if (!decryptedSessionData) {
             throw new Error("Decrypt private key failed");
@@ -262,15 +262,19 @@ const useHome = () => {
             topCreators.map((creator: any) => creator.address)
           ),
         ]);
-        const validTopCreatorsList = topCreators?.map((creator: any) => {
-          const detailCreator = detailTopCreatorsList.find(
-            (item) => item.walletAddress.toLowerCase() === creator.address.toLowerCase()
-          );
+        const validTopCreatorsList = topCreators
+          ?.map((creator: any) => {
+            const detailCreator = detailTopCreatorsList.find(
+              (item) =>
+                item.walletAddress.toLowerCase() ===
+                creator.address.toLowerCase()
+            );
 
-          return detailCreator
-            ? { ...detailCreator, creditScore: creator.creditScore }
-            : null;
-        }).filter((item: any) => parseInt(item?.creditScore) > 0);
+            return detailCreator
+              ? { ...detailCreator, creditScore: creator.creditScore }
+              : null;
+          })
+          .filter((item: any) => parseInt(item?.creditScore) > 0);
 
         setTopCreators(validTopCreatorsList);
 
@@ -287,7 +291,7 @@ const useHome = () => {
             const post = myPosts?.find(
               (post: any) =>
                 post.account.toLowerCase() ===
-                profile?.walletAddress?.toLowerCase() &&
+                  profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
             return {
@@ -436,7 +440,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
@@ -491,7 +495,7 @@ const useHome = () => {
               const post = myPosts?.find(
                 (post: any) =>
                   post.account.toLowerCase() ===
-                  profile?.walletAddress?.toLowerCase() &&
+                    profile?.walletAddress?.toLowerCase() &&
                   post.post === contentHash
               );
               return {
