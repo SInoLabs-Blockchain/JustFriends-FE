@@ -19,7 +19,8 @@ import { useState } from "react";
 import { VOTE_TYPES } from "src/common/constants";
 import Web3 from "web3";
 import { ROUTE } from "src/common/constants/route";
-import { useBalance } from "wagmi";
+import { useBalance, useNetwork } from "wagmi";
+import { getWalletClient } from "@wagmi/core";
 
 function usePost({ open, setPosts }: any) {
   const { accessToken, profile } = useAppSelector((state) => state.auth);
@@ -40,6 +41,8 @@ function usePost({ open, setPosts }: any) {
     address: profile?.walletAddress,
     watch: true,
   });
+  const { chain } = useNetwork();
+
   async function handleVotePost(contentHash: string, voteType: number) {
     if (!accessToken) {
       toast.warning(
@@ -54,6 +57,12 @@ function usePost({ open, setPosts }: any) {
       }
       try {
         if (!profile?.isFriend) {
+          const walletClient = await getWalletClient();
+          // @ts-ignore
+          if (chain.id !== BAOBAB_CONFIG.id) {
+            // @ts-ignore
+            await walletClient?.switchChain(BAOBAB_CONFIG);
+          }
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
@@ -174,6 +183,12 @@ function usePost({ open, setPosts }: any) {
           throw new Error("Insufficient balance");
         }
         if (!profile?.isFriend) {
+          const walletClient = await getWalletClient();
+          // @ts-ignore
+          if (chain.id !== BAOBAB_CONFIG.id) {
+            // @ts-ignore
+            await walletClient?.switchChain(BAOBAB_CONFIG);
+          }
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,
@@ -253,6 +268,12 @@ function usePost({ open, setPosts }: any) {
           throw new Error("You cannot sell the last content access");
         }
         if (!profile?.isFriend) {
+          const walletClient = await getWalletClient();
+          // @ts-ignore
+          if (chain.id !== BAOBAB_CONFIG.id) {
+            // @ts-ignore
+            await walletClient?.switchChain(BAOBAB_CONFIG);
+          }
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
             abi: justFriendAbi.abi,

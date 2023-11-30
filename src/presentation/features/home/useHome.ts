@@ -42,6 +42,8 @@ import { ProfileRepository } from "src/data/repositories/ProfileRepository";
 import { Profile } from "src/domain/models/auth";
 import JustFriendsABI from "src/common/abis/JustFriends.json";
 import { setProfile } from "src/data/redux/auth/AuthReducer";
+import { getWalletClient } from "@wagmi/core";
+import { useNetwork } from "wagmi";
 
 const useHome = () => {
   const { open } = useWeb3Modal();
@@ -71,6 +73,7 @@ const useHome = () => {
 
   const { accessToken, profile } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(true);
+  const { chain } = useNetwork();
 
   const [getVotes, { loading: loadingVotes, data: votes }] =
     useLazyQuery(GET_VOTES);
@@ -119,6 +122,12 @@ const useHome = () => {
 
       const { contentHash } = content;
       if (!profile?.isFriend) {
+        const walletClient = await getWalletClient();
+        // @ts-ignore
+        if (chain.id !== BAOBAB_CONFIG.id) {
+          // @ts-ignore
+          await walletClient?.switchChain(BAOBAB_CONFIG);
+        }
         await writeContract({
           address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
           abi: justFriendAbi.abi,

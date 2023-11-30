@@ -25,7 +25,7 @@ import { address } from "src/common/constants/solidityTypes";
 import { LOGIN_STEPS } from "src/common/constants";
 import { useLazyQuery } from "@apollo/client";
 import { GET_MY_PROFILE } from "src/data/graphql/queries";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect, useNetwork } from "wagmi";
 
 const useHeader = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -43,6 +43,7 @@ const useHeader = () => {
   const openAccountDropdown = Boolean(anchorEl);
   const { disconnect } = useDisconnect();
   const { address: walletClientAddr } = useAccount();
+  const { chain } = useNetwork();
 
   const [getDetailProfile] = useLazyQuery(GET_MY_PROFILE);
 
@@ -94,6 +95,7 @@ const useHeader = () => {
 
       if (data) {
         const { creatorEntities, userPostEntities } = data;
+
         const myProfile = {
           ...res,
           totalUpvote: creatorEntities[0]?.totalUpVote || 0,
@@ -365,7 +367,11 @@ const useHeader = () => {
 
   const connectWallet = async () => {
     const walletClient = await getWalletClient();
-
+    // @ts-ignore
+    if (chain.id !== BAOBAB_CONFIG.id) {
+      // @ts-ignore
+      await walletClient?.switchChain(BAOBAB_CONFIG);
+    }
     // @ts-ignore: Unreachable code error
     const { challenge } = await authRepository.connectWallet(walletClientAddr);
     // @ts-ignore: Unreachable code error
