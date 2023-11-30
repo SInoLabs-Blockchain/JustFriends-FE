@@ -254,6 +254,7 @@ const useHome = () => {
       } = data;
 
       const contentHashes = contents.map((content: any) => content.hash);
+
       try {
         const [detailContentList, detailTopCreatorsList] = await Promise.all([
           homeRepository.getPosts({ contentHashes, accessToken }),
@@ -294,6 +295,7 @@ const useHome = () => {
                   profile?.walletAddress?.toLowerCase() &&
                 post.post === contentHash
             );
+
             return {
               ...content,
               ...detailContent,

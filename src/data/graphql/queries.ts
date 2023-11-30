@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 const GET_NEW_POSTS = gql`
   query GetNewPosts($address: String!, $isPaid: Boolean!) {
-    contentEntities(where: { isPaid: $isPaid }) {
+    contentEntities(first: 50, where: { isPaid: $isPaid }) {
       id
       hash
       totalUpvote
@@ -55,6 +55,7 @@ const GET_PURCHASED_POSTS = gql`
   query GetPurchasedPosts($account: String!) {
     userPostEntities(where: { isOwner: false, account: $account }) {
       post
+      price
     }
   }
 `;
@@ -79,6 +80,7 @@ const GET_PAID_POSTS = gql`
     }
     userPostEntities(where: { account: $account }) {
       post
+      price
     }
   }
 `;
@@ -116,7 +118,7 @@ const GET_POST_DETAIL_DATA = gql`
 
 const GET_VOTES = gql`
   query GetVotes($timestamp: String!) {
-    votedEntities(where: { timestamp_gte: $timestamp }) {
+    votedEntities(first: 50, where: { timestamp_gte: $timestamp }) {
       timestamp
       hash
     }
@@ -125,7 +127,7 @@ const GET_VOTES = gql`
 
 const GET_PURCHASES = gql`
   query GetPurchases($timestamp: String!) {
-    accessPurchasedEntities(where: { timestamp_gte: $timestamp }) {
+    accessPurchasedEntities(first: 50, where: { timestamp_gte: $timestamp }) {
       timestamp
       hash
     }

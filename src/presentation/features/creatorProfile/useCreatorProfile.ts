@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { GET_FREE_POSTS, GET_MY_PROFILE, GET_PAID_POSTS } from "src/data/graphql/queries";
+import {
+  GET_FREE_POSTS,
+  GET_MY_PROFILE,
+  GET_PAID_POSTS,
+} from "src/data/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { readContract } from "@wagmi/core";
@@ -25,7 +29,7 @@ type TabState = {
 };
 
 const useCreatorProfile = () => {
-  const location = useLocation()
+  const location = useLocation();
 
   const [tab, setTab] = useState<TabState>({
     id: TABS[0].id,
@@ -40,8 +44,8 @@ const useCreatorProfile = () => {
     avatarUrl: "",
     coverUrl: "",
     loyalFan: false,
-    numberOfUpVotes: '',
-    numberOfDownVotes: '',
+    numberOfUpVotes: "",
+    numberOfDownVotes: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [totalPosts, setTotalPosts] = useState<number>(0);
@@ -128,7 +132,9 @@ const useCreatorProfile = () => {
           contentPosts?.map((content, index) => ({
             ...content,
             price: BigInt(contentPrices[index]),
-            oldPrice: parseEther("0.002"),
+            oldPrice: contentPaidPosts?.userPostEntities?.find(
+              (myPost: any) => myPost.post === `0x${content.contentHash}`
+            )?.price,
             isOwner: true,
           }))
         );
@@ -165,7 +171,6 @@ const useCreatorProfile = () => {
           contentPosts?.map((content, index) => ({
             ...content,
             price: BigInt(contentPrices[index]),
-            oldPrice: parseEther("0.002"),
           }))
         );
       }
@@ -214,16 +219,16 @@ const useCreatorProfile = () => {
       const isLoyalFan = await getLoyalFan(walletAddress);
 
       if (!isEmpty(res) && !loadingProfile) {
-        const { creatorEntities, userPostEntities } = profileData
+        const { creatorEntities, userPostEntities } = profileData;
 
         setCreatorInfo({
           ...res[0],
           loyalFan: !!isLoyalFan,
           numberOfUpVotes: creatorEntities[0].totalUpVote,
-          numberOfDownVotes: creatorEntities[0].totalDownVote
+          numberOfDownVotes: creatorEntities[0].totalDownVote,
         });
 
-        setTotalPosts(userPostEntities.length || 0)
+        setTotalPosts(userPostEntities.length || 0);
       }
     } catch (error) {
       console.log({ error });
@@ -251,24 +256,24 @@ const useCreatorProfile = () => {
     GET_MY_PROFILE,
     {
       variables: { address: walletAddress },
-      onCompleted: getCreatorInfo
+      onCompleted: getCreatorInfo,
     }
   );
 
   const getCreatorInfoFromGraphQL = () => {
     if (!loadingProfile) {
-      const { creatorEntities, userPostEntities } = profileData
+      const { creatorEntities, userPostEntities } = profileData;
 
       setCreatorInfo({
         ...creatorInfo,
         username: location.state.name,
         numberOfUpVotes: creatorEntities[0].totalUpVote,
-        numberOfDownVotes: creatorEntities[0].totalDownVote
+        numberOfDownVotes: creatorEntities[0].totalDownVote,
       });
 
-      setTotalPosts(userPostEntities.length || 0)
+      setTotalPosts(userPostEntities.length || 0);
     }
-  }
+  };
 
   useEffect(() => {
     getPosts();
@@ -276,12 +281,12 @@ const useCreatorProfile = () => {
 
   useEffect(() => {
     if (accessToken) getCreatorInfo();
-    else getCreatorInfoFromGraphQL()
+    else getCreatorInfoFromGraphQL();
   }, [accessToken]);
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   return {
     totalPosts,

@@ -157,7 +157,6 @@ const useProfile = () => {
           contentPosts?.map((content, index) => ({
             ...content,
             price: BigInt(contentPrices[index]),
-            oldPrice: parseEther("0.02"),
             isOwner: true,
           }))
         );
@@ -168,6 +167,7 @@ const useProfile = () => {
         contentPurchasedPosts?.userPostEntities
       ) {
         const purchasedList = contentPurchasedPosts?.userPostEntities;
+
         const [contentPosts, contentPrices]: [Post[] | undefined, any] =
           await Promise.all([
             getContentPosts(
@@ -191,7 +191,7 @@ const useProfile = () => {
             contentHash: content.contentHash?.substring(2),
             isOwner: true,
             price: contentPrices[index],
-            oldPrice: parseEther("0.02"),
+            oldPrice: purchasedList[index]?.price,
           }))
         );
       }
