@@ -82,16 +82,19 @@ const useCreatorProfile = () => {
     try {
       const res = await profileRepository.getPosts(hashes, accessToken);
 
-      const data = await readContract({
+      const data = (await readContract({
         address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}` || "",
         abi: JustFriendsABI.abi,
         functionName: "getContentsInfo",
         args: [hashes],
-      });
+      })) as any;
 
-      const posts = res.map((post: object, index: number) => {
+      const posts = res.map((post: any) => {
         // @ts-ignore
-        return { ...data[index], ...post };
+        const postData = data.find(
+          (item: any) => item.contentHash === `0x${post.contentHash}`
+        );
+        return { ...postData, ...post };
       });
 
       return orderByTimeCreated(posts);
@@ -176,6 +179,7 @@ const useCreatorProfile = () => {
       }
     } else if (tab.id === 2) {
       const { contentEntities, postVoteEntities } = contentFreePosts;
+
       if (!loadingContentFreePosts && contentEntities) {
         const contentPosts = await getContentPosts(
           contentFreePosts?.contentEntities.map((content: any) => content.hash)
@@ -186,6 +190,7 @@ const useCreatorProfile = () => {
           const vote = postVoteEntities.find(
             (vote: any) => vote.post === contentHash
           );
+
           if (!vote) {
             return { ...content, isVoted: false };
           } else {
