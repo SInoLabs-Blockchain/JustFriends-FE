@@ -61,7 +61,7 @@ const Footer = () => {
           </a>
         </SocialSection>
         <AddressText>
-          © S-Mart Team, Proudly Crafting Products for Klaymaker 2023
+          © S-Mart Team, Proudly Crafting Products for Ava Hackathon
         </AddressText>
       </SocialContainer>
     </FooterContainer>

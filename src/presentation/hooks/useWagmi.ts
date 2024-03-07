@@ -1,4 +1,4 @@
-import { BAOBAB_CONFIG } from "src/data/config/chains";
+import { FUJI_CONFIG } from "src/data/config/chains";
 import { configureChains, createConfig } from "wagmi";
 import { EthereumClient, w3mProvider } from "@web3modal/ethereum";
 import { CustomW3mConnector } from "src/common/helpers/CustomW3mConnector";
@@ -9,7 +9,7 @@ function useWagmi() {
   const projectId: string = process.env.REACT_APP_PROJECT_ID || "";
 
   const { chains, publicClient, webSocketPublicClient } = configureChains(
-    [BAOBAB_CONFIG],
+    [FUJI_CONFIG],
     [w3mProvider({ projectId })]
   );
 

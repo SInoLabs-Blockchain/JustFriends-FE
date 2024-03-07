@@ -76,13 +76,13 @@ const Post = ({
             profile?.walletAddress?.toLowerCase() ? (
             <Tooltip title="Bought For">
               <PriceContainer className="MuiCardHeader__prices-old">
-                <Typography>{formatEther(data.oldPrice)} KLAY</Typography>
+                <Typography>{formatEther(data.oldPrice)} AVAX</Typography>
               </PriceContainer>
             </Tooltip>
           ) : null}
           <Tooltip title="Current Price">
             <PriceContainer className="MuiCardHeader__prices-new">
-              <Typography>{formatEther(data.price)} KLAY</Typography>
+              <Typography>{formatEther(data.price)} AVAX</Typography>
             </PriceContainer>
           </Tooltip>
         </Box>

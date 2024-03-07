@@ -114,7 +114,7 @@ const Profile = () => {
           <Box className="user-information__content-container flex-center">
             <DollarIcon />
             <Typography className="user-information__content-title">
-              Total earn: <span>0 KLAY</span>
+              Total earn: <span>0 AVAX</span>
             </Typography>
           </Box>
         </Box>

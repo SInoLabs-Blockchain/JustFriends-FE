@@ -31,7 +31,7 @@ const ConfirmModal = (props: IProps) => {
           <Typography>
             Are you sure you want to{" "}
             {props.type === MODAL_TYPES.PURCHASE ? "purchase" : "sell"} this
-            post for {formatEther(props.price || "")} KLAY?
+            post for {formatEther(props.price || "")} AVAX?
           </Typography>
         </Box>
         <Box className="modal-action">

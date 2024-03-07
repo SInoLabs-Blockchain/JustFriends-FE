@@ -1,8 +1,8 @@
 import { Box, Grid, Typography } from "@mui/material";
 import {
-  KlaytnLogo1,
-  KlaytnLogo2,
-  KlaytnLogo3,
+  AvaLogo1,
+  AvaLogo2,
+  AvaLogo3,
   ArrowDownIcon,
 } from "src/presentation/theme/assets/icons";
 
@@ -31,13 +31,16 @@ const Revenue = () => {
       <Grid container spacing={3}>
         <Box className="revenue__description">
           <Typography>
-            To access revenue details and further information, please consult the smart contract at:
+            To access revenue details and further information, please consult
+            the smart contract at:
           </Typography>
-          <a href={`https://baobab.klaytnscope.com/account/0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}?tabId=contractCode`}
+          <a
+            href={`https://subnets-test.avax.network/c-chain/address/0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}?tab=code`}
             target="_blank"
             rel="noreferrer"
           >
-            https://baobab.klaytnscope.com/account/0x{process.env.REACT_APP_JUST_FRIENDS_CONTRACT}?tabId=contractCode
+            https://subnets-test.avax.network/c-chain/address/0x
+            {process.env.REACT_APP_JUST_FRIENDS_CONTRACT}?tab=code
           </a>
         </Box>
         <Grid item sm={12} md={12} lg={4.8}>
@@ -45,11 +48,11 @@ const Revenue = () => {
             <Box>
               <Typography className="profit__title">Total Profit</Typography>
               <Typography className="profit__value">
-                1,023.631235 KLAY
+                1,023.631235 AVAX
               </Typography>
             </Box>
             <Box className="flex-center">
-              <KlaytnLogo1 />
+              <AvaLogo1 width={130} height={130} />
             </Box>
             <Box className="profit__content">
               <Box className="profit__content-item">
@@ -96,11 +99,11 @@ const Revenue = () => {
                 Active Income
               </Typography>
               <Typography className="active-income__value">
-                91,454914 KLAY
+                91,454914 AVAX
               </Typography>
             </Box>
             <Box className="flex-center">
-              <KlaytnLogo2 />
+              <AvaLogo2 width={130} height={130} />
             </Box>
             <Box className="active-income__content">
               <Box>
@@ -129,11 +132,11 @@ const Revenue = () => {
                 Passive Income
               </Typography>
               <Typography className="passive-income__value">
-                932.176321 KLAY
+                932.176321 AVAX
               </Typography>
             </Box>
             <Box className="flex-center">
-              <KlaytnLogo3 />
+              <AvaLogo3 width={130} height={130} />
             </Box>
             <Box className="passive-income__content">
               <Box>

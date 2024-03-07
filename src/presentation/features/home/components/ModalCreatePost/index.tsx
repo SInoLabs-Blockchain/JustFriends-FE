@@ -83,7 +83,7 @@ const ModalCreatePost = (props: IProps) => {
           onChange={(e) => props.setBasePrice(e.target.value)}
           placeholder="0"
         />
-        <Typography className="fee__symbol">KLAY</Typography>
+        <Typography className="fee__symbol">AVAX</Typography>
       </Box>
     </StyledBaseFeeContainer>
   );

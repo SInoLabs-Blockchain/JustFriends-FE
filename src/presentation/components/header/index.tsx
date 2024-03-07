@@ -91,9 +91,9 @@ const Header = () => {
             <Box className="header__account-info">
               <img
                 src={
-                  "https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F2275886173-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252Fo8dCjygb765jszAbMUcT%252Ficon%252FESDHrIEI6MgYJP8Zm82T%252FKlaytn%2520logo%2520(transparent).png%3Falt%3Dmedia%26token%3Dbac8f114-f7a7-4e88-8396-75aa9cbef3e2"
+                  "https://assets.coingecko.com/coins/images/12559/standard/Avalanche_Circle_RedWhite_Trans.png?1696512369"
                 }
-                alt="klaytn"
+                alt="fuji"
               />
               {profile?.loading ? (
                 <Skeleton
@@ -107,7 +107,7 @@ const Header = () => {
                 </Typography>
               )}
             </Box>
-            <Box sx={{ cursor: 'pointer' }}>
+            <Box sx={{ cursor: "pointer" }}>
               {profile?.avatarUrl ? (
                 <img
                   src={profile?.avatarUrl}

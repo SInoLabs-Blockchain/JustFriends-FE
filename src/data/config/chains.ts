@@ -25,3 +25,31 @@ export const BAOBAB_CONFIG = {
   },
   testnet: true,
 };
+
+export const FUJI_CONFIG = {
+  id: 43113,
+  name: "Avalanche Fuji",
+  network: "fuji",
+  nativeCurrency: {
+    name: "AVAX",
+    symbol: "AVAX",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://api.avax-test.network/ext/bc/C/rpc"],
+      webSocket: ["wss://api.avax-test.network/ext/bc/C/ws"],
+    },
+    public: {
+      http: ["https://api.avax-test.network/ext/bc/C/rpc"],
+      webSocket: ["wss://api.avax-test.network/ext/bc/C/ws"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "AvalancheFuji",
+      url: "https://testnet.snowtrace.io",
+    },
+  },
+  testnet: true,
+};

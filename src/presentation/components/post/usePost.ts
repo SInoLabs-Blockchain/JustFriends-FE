@@ -12,7 +12,7 @@ import {
 } from "src/common/utils/wallet";
 import { requestToRelayer } from "src/presentation/services";
 import { useNavigate } from "react-router-dom";
-import { BAOBAB_CONFIG } from "src/data/config/chains";
+import { FUJI_CONFIG } from "src/data/config/chains";
 import entryPointAbi from "src/common/abis/IEntryPoint.json";
 import justFriendAbi from "src/common/abis/JustFriends.json";
 import { useState } from "react";
@@ -59,9 +59,9 @@ function usePost({ open, setPosts }: any) {
         if (!profile?.isFriend) {
           const walletClient = await getWalletClient();
           // @ts-ignore
-          if (chain.id !== BAOBAB_CONFIG.id) {
+          if (chain.id !== FUJI_CONFIG.id) {
             // @ts-ignore
-            await walletClient?.switchChain(BAOBAB_CONFIG);
+            await walletClient?.switchChain(FUJI_CONFIG);
           }
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -111,7 +111,7 @@ function usePost({ open, setPosts }: any) {
             op,
             privateKey: decryptedSessionData.privateKey,
             entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-            chainId: BAOBAB_CONFIG.id,
+            chainId: FUJI_CONFIG.id,
             sessionUser: sessionAccount.address,
           });
           await requestToRelayer(signedUserOp);
@@ -185,9 +185,9 @@ function usePost({ open, setPosts }: any) {
         if (!profile?.isFriend) {
           const walletClient = await getWalletClient();
           // @ts-ignore
-          if (chain.id !== BAOBAB_CONFIG.id) {
+          if (chain.id !== FUJI_CONFIG.id) {
             // @ts-ignore
-            await walletClient?.switchChain(BAOBAB_CONFIG);
+            await walletClient?.switchChain(FUJI_CONFIG);
           }
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -238,7 +238,7 @@ function usePost({ open, setPosts }: any) {
             op,
             privateKey: decryptedSessionData.privateKey,
             entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-            chainId: BAOBAB_CONFIG.id,
+            chainId: FUJI_CONFIG.id,
             sessionUser: sessionAccount.address,
           });
           await requestToRelayer(signedUserOp);
@@ -270,9 +270,9 @@ function usePost({ open, setPosts }: any) {
         if (!profile?.isFriend) {
           const walletClient = await getWalletClient();
           // @ts-ignore
-          if (chain.id !== BAOBAB_CONFIG.id) {
+          if (chain.id !== FUJI_CONFIG.id) {
             // @ts-ignore
-            await walletClient?.switchChain(BAOBAB_CONFIG);
+            await walletClient?.switchChain(FUJI_CONFIG);
           }
           await writeContract({
             address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -322,7 +322,7 @@ function usePost({ open, setPosts }: any) {
             op,
             privateKey: decryptedSessionData.privateKey,
             entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-            chainId: BAOBAB_CONFIG.id,
+            chainId: FUJI_CONFIG.id,
             sessionUser: sessionAccount.address,
           });
           await requestToRelayer(signedUserOp);

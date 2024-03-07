@@ -8,7 +8,7 @@ import {
 import { ABI_FUNCTION } from "../abis";
 import * as typ from "src/common/constants/solidityTypes";
 import { ethers } from "ethers";
-import { BAOBAB_CONFIG } from "src/data/config/chains";
+import { FUJI_CONFIG } from "src/data/config/chains";
 import BigNumber from "bignumber.js";
 import { utils, BigNumber as BigNum, Contract } from "ethers";
 import { arrayify } from "@ethersproject/bytes";
@@ -319,7 +319,7 @@ export async function signUserOp({
   op,
   privateKey,
   entryPoint,
-  chainId = BAOBAB_CONFIG.id,
+  chainId = FUJI_CONFIG.id,
   sessionUser,
 }: any) {
   // Define the range
