@@ -50,8 +50,7 @@ const useHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const navigationType = useNavigationType();
-  const editorRef = useRef<{ getContent: () => void }>(null);
-
+  const [editor, setEditor] = useState<string>("");
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
   const [isTrendingPosts, setIsTrendingPosts] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -112,7 +111,7 @@ const useHome = () => {
     try {
       setLoading(true);
       const content = await homeRepository.createPost({
-        content: editorRef?.current?.getContent(),
+        content: editor,
         type: option.value,
         accessToken,
       });
@@ -210,6 +209,7 @@ const useHome = () => {
         setProfile({ ...profile, totalPost: (profile?.totalPost || 0) + 1 })
       );
       toast.success("Your post has been created successfully!");
+      setEditor("");
     } catch (error: any) {
       setLoading(false);
       toast.error(error.message || ERROR_MESSAGE);
@@ -516,7 +516,7 @@ const useHome = () => {
   }, [location, navigationType]);
 
   return {
-    editorRef,
+    editor,
     posts,
     openModal,
     option,
@@ -543,6 +543,7 @@ const useHome = () => {
     handleSwitchZone,
     navigateToCreatorProfile,
     setIsTrendingPosts,
+    setEditor,
   };
 };
 

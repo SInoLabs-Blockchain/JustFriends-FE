@@ -1,6 +1,6 @@
 import { Avatar, Box, TextField, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import { Editor } from '@tinymce/tinymce-react';
+import { Editor } from "@tinymce/tinymce-react";
 import {
   ModalContainer,
   StyledSelect,
@@ -9,7 +9,7 @@ import {
   StyledBottomActions,
   StyledButtonShare,
   StyledBaseFeeContainer,
-  EditorContainer
+  EditorContainer,
 } from "./styles";
 import {
   ArrowDownIcon,
@@ -27,6 +27,8 @@ import CustomButton from "src/presentation/components/button";
 import COLOR from "src/presentation/theme/Color";
 import { useAppSelector } from "src/data/redux/Hooks";
 import { stringAvatar } from "src/common/utils";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 interface IProps {
   editorRef: any;
@@ -40,10 +42,11 @@ interface IProps {
   onSelectMenu: any;
   setBasePrice: any;
   handleSharePost: any;
+  setEditor: any;
 }
 
 const ModalCreatePost = (props: IProps) => {
-  const { open, editorRef, onToggleModal } = props;
+  const { open, editorRef, onToggleModal, setEditor } = props;
   const { profile } = useAppSelector((state) => state.auth);
 
   const renderPostOptions = () => (
@@ -125,23 +128,73 @@ const ModalCreatePost = (props: IProps) => {
         </Box>
 
         <EditorContainer>
-          <Editor
+          {/* <Editor
             apiKey={process.env.REACT_APP_EDITOR_API_KEY}
-            onInit={(evt, editor) => editorRef.current = editor}
+            onInit={(evt, editor) => (editorRef.current = editor)}
             init={{
               height: 500,
               menubar: false,
               plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                "advlist",
+                "autolink",
+                "lists",
+                "link",
+                "image",
+                "charmap",
+                "preview",
+                "anchor",
+                "searchreplace",
+                "visualblocks",
+                "code",
+                "fullscreen",
+                "insertdatetime",
+                "media",
+                "table",
+                "code",
+                "help",
+                "wordcount",
               ],
-              toolbar: 'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style: 'body { font-family: Gilroy; line-height: 22px; color: #031D3C }'
+              toolbar:
+                "undo redo | blocks | " +
+                "bold italic forecolor | alignleft aligncenter " +
+                "alignright alignjustify | bullist numlist outdent indent | " +
+                "removeformat | help",
+              content_style:
+                "body { font-family: Gilroy; line-height: 22px; color: #031D3C }",
             }}
+          /> */}
+          <ReactQuill
+            theme="snow"
+            value={editorRef}
+            formats={[
+              "header",
+              "font",
+              "size",
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "blockquote",
+              "list",
+              "bullet",
+              "indent",
+              "align",
+            ]}
+            modules={{
+              toolbar: [
+                [{ header: "1" }, { header: "2" }, { font: [] }],
+                [{ size: [] }],
+                ["bold", "italic", "underline", "strike", "blockquote"],
+                [
+                  { list: "ordered" },
+                  { list: "bullet" },
+                  { indent: "-1" },
+                  { indent: "+1" },
+                ],
+                [{ align: [] }],
+              ],
+            }}
+            onChange={setEditor}
           />
         </EditorContainer>
 
