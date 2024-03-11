@@ -349,6 +349,7 @@ const useHeader = () => {
             totalAmount: totalAmount.toString(),
           })
         );
+        localStorage.setItem("passcode", otp);
         onToggleModal();
         toast.success("Connect Successfully");
       }
