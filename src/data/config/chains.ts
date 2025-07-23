@@ -25,3 +25,31 @@ export const BAOBAB_CONFIG = {
   },
   testnet: true,
 };
+
+export const LISK_CONFIG = {
+  id: 42002,
+  name: "Fisk Sepolia",
+  network: "fuji",
+  nativeCurrency: {
+    name: "ETH",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.sepolia-api.lisk.com"],
+      webSocket: ["wss://ws.sepolia-api.lisk.com"],
+    },
+    public: {
+      http: ["https://rpc.sepolia-api.lisk.com"],
+      webSocket: ["wss://ws.sepolia-api.lisk.com"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "FiskSepolia",
+      url: "https://sepolia-blockscout.lisk.com/",
+    },
+  },
+  testnet: true,
+};

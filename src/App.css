@@ -99,3 +99,20 @@
   background: #eefae8;
   color: #1e2430;
 }
+
+.ql-editor {
+  min-height: 18em;
+}
+
+.ql-container {
+  border-bottom-left-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+  background: #fefcfc;
+}
+
+.ql-snow.ql-toolbar {
+  display: block;
+  background: #f4f5f8;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+}

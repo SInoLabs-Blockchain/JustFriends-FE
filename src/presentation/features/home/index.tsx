@@ -9,7 +9,7 @@ import PostLoading from "src/presentation/components/loading/post";
 
 const Home = () => {
   const {
-    editorRef,
+    editor,
     posts,
     openModal,
     loading,
@@ -32,6 +32,7 @@ const Home = () => {
     handleSharePost,
     handleSwitchZone,
     setIsTrendingPosts,
+    setEditor,
   } = useHome();
 
   const renderPostSection = () => (
@@ -91,7 +92,7 @@ const Home = () => {
         loading={loading}
       />
       <ModalCreatePost
-        editorRef={editorRef}
+        editorRef={editor}
         loading={loading}
         open={openModal}
         onToggleModal={handleToggleModal}
@@ -102,6 +103,7 @@ const Home = () => {
         onSelectMenu={onSelectMenu}
         setBasePrice={setBasePrice}
         handleSharePost={handleSharePost}
+        setEditor={setEditor}
       />
     </HomeContainer>
   );

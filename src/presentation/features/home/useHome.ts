@@ -34,7 +34,7 @@ import {
 } from "src/common/utils/wallet";
 import entryPointAbi from "src/common/abis/IEntryPoint.json";
 import justFriendAbi from "src/common/abis/JustFriends.json";
-import { BAOBAB_CONFIG } from "src/data/config/chains";
+import { LISK_CONFIG } from "src/data/config/chains";
 import { requestToRelayer } from "src/presentation/services";
 import { orderByTimeCreated } from "src/common/utils";
 import { Post } from "src/domain/models/home/Post";
@@ -50,8 +50,7 @@ const useHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const navigationType = useNavigationType();
-  const editorRef = useRef<{ getContent: () => void }>(null);
-
+  const [editor, setEditor] = useState<string>("");
   const [isFreePosts, setIsFreePosts] = useState<boolean>(true);
   const [isTrendingPosts, setIsTrendingPosts] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -112,7 +111,7 @@ const useHome = () => {
     try {
       setLoading(true);
       const content = await homeRepository.createPost({
-        content: editorRef?.current?.getContent(),
+        content: editor,
         type: option.value,
         accessToken,
       });
@@ -124,9 +123,9 @@ const useHome = () => {
       if (!profile?.isFriend) {
         const walletClient = await getWalletClient();
         // @ts-ignore
-        if (chain.id !== BAOBAB_CONFIG.id) {
+        if (chain.id !== LISK_CONFIG.id) {
           // @ts-ignore
-          await walletClient?.switchChain(BAOBAB_CONFIG);
+          await walletClient?.switchChain(LISK_CONFIG);
         }
         await writeContract({
           address: `0x${process.env.REACT_APP_JUST_FRIENDS_CONTRACT}`,
@@ -182,7 +181,7 @@ const useHome = () => {
           op,
           privateKey: decryptedSessionData.privateKey,
           entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-          chainId: BAOBAB_CONFIG.id,
+          chainId: LISK_CONFIG.id,
           sessionUser: sessionAccount.address,
         });
         await requestToRelayer(signedUserOp);
@@ -210,6 +209,7 @@ const useHome = () => {
         setProfile({ ...profile, totalPost: (profile?.totalPost || 0) + 1 })
       );
       toast.success("Your post has been created successfully!");
+      setEditor("");
     } catch (error: any) {
       setLoading(false);
       toast.error(error.message || ERROR_MESSAGE);
@@ -516,7 +516,7 @@ const useHome = () => {
   }, [location, navigationType]);
 
   return {
-    editorRef,
+    editor,
     posts,
     openModal,
     option,
@@ -543,6 +543,7 @@ const useHome = () => {
     handleSwitchZone,
     navigateToCreatorProfile,
     setIsTrendingPosts,
+    setEditor,
   };
 };
 

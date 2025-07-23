@@ -14,7 +14,7 @@ import {
 } from "src/common/utils/wallet";
 import { randomNumber } from "src/common/utils";
 import Web3 from "web3";
-import { BAOBAB_CONFIG } from "src/data/config/chains";
+import { LISK_CONFIG } from "src/data/config/chains";
 import { requestToRelayer } from "src/presentation/services";
 import factoryAbi from "src/common/abis/SimpleAccountFactory.json";
 import { readContract } from "@wagmi/core";
@@ -178,7 +178,7 @@ const useHeader = () => {
         },
         privateKey,
         entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-        chainId: BAOBAB_CONFIG.id,
+        chainId: LISK_CONFIG.id,
       });
 
       await requestToRelayer(signedUserOp);
@@ -244,7 +244,7 @@ const useHeader = () => {
           },
           privateKey: decryptedData.privateKey,
           entryPoint: `0x${process.env.REACT_APP_ENTRY_POINT_ADDRESS}`,
-          chainId: BAOBAB_CONFIG.id,
+          chainId: LISK_CONFIG.id,
         });
 
         await requestToRelayer(signedUserOp);
@@ -349,6 +349,7 @@ const useHeader = () => {
             totalAmount: totalAmount.toString(),
           })
         );
+        localStorage.setItem("passcode", otp);
         onToggleModal();
         toast.success("Connect Successfully");
       }
@@ -368,9 +369,9 @@ const useHeader = () => {
   const connectWallet = async () => {
     const walletClient = await getWalletClient();
     // @ts-ignore
-    if (chain.id !== BAOBAB_CONFIG.id) {
+    if (chain.id !== LISK_CONFIG.id) {
       // @ts-ignore
-      await walletClient?.switchChain(BAOBAB_CONFIG);
+      await walletClient?.switchChain(LISK_CONFIG);
     }
     // @ts-ignore: Unreachable code error
     const { challenge } = await authRepository.connectWallet(walletClientAddr);

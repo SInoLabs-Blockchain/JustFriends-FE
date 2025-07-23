@@ -36,3 +36,6 @@ export { ReactComponent as KlaytnLogo2 } from "src/presentation/theme/assets/ico
 export { ReactComponent as KlaytnLogo3 } from "src/presentation/theme/assets/icons/klaytn-logo/klaytn-logo-3.svg";
 export { ReactComponent as WalletIcon2 } from "src/presentation/theme/assets/icons/wallet-2.svg";
 export { ReactComponent as LogoutIcon } from "src/presentation/theme/assets/icons/arrow.svg";
+export { ReactComponent as AvaLogo1 } from "src/presentation/theme/assets/icons/ava-logo/ava-logo-1.svg";
+export { ReactComponent as AvaLogo2 } from "src/presentation/theme/assets/icons/ava-logo/ava-logo-2.svg";
+export { ReactComponent as AvaLogo3 } from "src/presentation/theme/assets/icons/ava-logo/ava-logo-3.svg";
