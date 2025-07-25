@@ -17,9 +17,6 @@ export default class APIGateWay {
 
     const defaultHeaderOptions = {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": "true",
-      "ngrok-skip-browser-warning": "skip-browser-warning",
     };
 
     let config: AxiosRequestConfig = {
