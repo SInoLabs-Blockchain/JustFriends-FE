@@ -27,7 +27,7 @@ export const BAOBAB_CONFIG = {
 };
 
 export const LISK_CONFIG = {
-  id: 42002,
+  id: 4202,
   name: "Fisk Sepolia",
   network: "fuji",
   nativeCurrency: {
