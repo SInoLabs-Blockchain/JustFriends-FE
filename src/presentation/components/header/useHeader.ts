@@ -263,7 +263,7 @@ const useHeader = () => {
         );
         const signature = web3.eth.accounts.sign(
           challenge,
-          decryptedData.privateKey
+          sessionAccount.privateKey
         );
         const res = await authRepository.login(
           contractAddress,
