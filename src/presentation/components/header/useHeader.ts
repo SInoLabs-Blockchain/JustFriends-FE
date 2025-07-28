@@ -291,6 +291,7 @@ const useHeader = () => {
           owner.privateKey,
           passCode
         );
+        console.log("address owner br 2: ", owner.address);
         const randNum = randomNumber();
         const abiFactory = factoryAbi.abi;
         const accountAddress = (await readContract({
