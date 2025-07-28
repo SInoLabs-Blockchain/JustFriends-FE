@@ -225,7 +225,7 @@ const useHeader = () => {
           validUntil,
           totalAmount,
         });
-        console.log("address owner: ", sessionAccount.address)
+        console.log("address owner: ", sessionAccount.address);
 
         const userOp = await fillUserOp(
           {
@@ -323,8 +323,15 @@ const useHeader = () => {
         const { challenge } = await authRepository.connectWallet(
           accountAddress
         );
-        const signature = await web3.eth.personal.sign(challenge, decryptedData.privateKey);
-
+        const messageHash =
+          web3.utils.soliditySha3(
+            {
+              type: "string",
+              value: "\x19Ethereum Signed Message:\n" + challenge.length,
+            },
+            { type: "string", value: challenge }
+          ) || "";
+        const signature = web3.eth.accounts.sign(messageHash, owner.privateKey);
         // const signature = web3.eth.accounts.sign(challenge, owner.privateKey);
         const res = await authRepository.login(
           accountAddress,
