@@ -195,12 +195,17 @@ const useHeader = () => {
   };
 
   const connectSelfDeployWallet = async () => {
+    console.log("🚀 connectSelfDeployWallet called");
     setLoading(true);
     const web3 = new Web3(process.env.REACT_APP_RPC);
     const account = localStorage.getItem("account");
+    console.log("🚀 ~ connectSelfDeployWal ~ account:", account);
     const passCode = otp;
+    console.log("📦 Account from localStorage:", account);
+    console.log("🔑 PassCode:", passCode ? "[PROVIDED]" : "[EMPTY]");
     try {
       if (account) {
+        console.log("✅ Existing account found, processing...");
         const { contractAddress, encryptedPrivateKey } = JSON.parse(account);
         const decryptedData = await web3.eth.accounts.decrypt(
           encryptedPrivateKey,
