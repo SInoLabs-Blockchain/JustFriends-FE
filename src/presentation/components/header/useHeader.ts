@@ -329,16 +329,21 @@ const useHeader = () => {
         const { challenge } = await authRepository.connectWallet(
           accountAddress
         );
-        const messageHash =
-          web3.utils.soliditySha3(
-            {
-              type: "string",
-              value: "\x19Ethereum Signed Message:\n" + challenge.length,
-            },
-            { type: "string", value: challenge }
-          ) || "";
-        const signature = web3.eth.accounts.sign(messageHash, owner.privateKey);
-        // const signature = web3.eth.accounts.sign(challenge, owner.privateKey);
+        // const messageHash =
+        //   web3.utils.soliditySha3(
+        //     {
+        //       type: "string",
+        //       value: "\x19Ethereum Signed Message:\n" + challenge.length,
+        //     },
+        //     { type: "string", value: challenge }
+        //   ) || "";
+        // const signature = web3.eth.accounts.sign(messageHash, owner.privateKey);
+        console.log(
+          "🚀 ~ connectSelfDeployWal ~ owner.privateKey:",
+          owner.privateKey
+        );
+        const signature = web3.eth.accounts.sign(challenge, owner.privateKey);
+
         const res = await authRepository.login(
           accountAddress,
           signature.signature
