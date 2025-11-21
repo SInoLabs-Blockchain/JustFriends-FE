@@ -61,7 +61,7 @@ const Footer = () => {
           </a>
         </SocialSection>
         <AddressText>
-          © S-Mart Team, Proudly Crafting Products for Lisk Vietnam BUIDL-athon
+          © S-Mart Team - Sino Labs - Smart Osc
         </AddressText>
       </SocialContainer>
     </FooterContainer>
